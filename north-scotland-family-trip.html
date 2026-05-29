@@ -1,0 +1,337 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8" />
+<meta name="viewport" content="width=device-width,initial-scale=1" />
+<title>Nairn Family Loop — Glasgow → Glenfinnan → Nairn → A9 home (30–31 May 2026)</title>
+<link rel="stylesheet" href="https://unpkg.com/leaflet@1.9.4/dist/leaflet.css" integrity="sha256-p4NxAoJBhIIN+hmNHrzRCf9tD/miZyoHS5obTRR9BMY=" crossorigin="" />
+<style>
+  :root{
+    --bg:#fafaf7; --ink:#1d1d1b; --muted:#6b6b66; --card:#ffffff; --line:#e7e3da;
+    --accent:#0f5e3e; --accent-soft:#dff1e7;
+    --up:#1d4e89; --nairn:#b3261e; --back:#c97b1e; --free:#0f8a4f;
+    --gold:#b89241;
+    --shadow:0 1px 3px rgba(0,0,0,.06), 0 8px 24px rgba(0,0,0,.05);
+  }
+  *{box-sizing:border-box}
+  html,body{margin:0;padding:0}
+  body{font-family:-apple-system,BlinkMacSystemFont,"Segoe UI",Roboto,Helvetica,Arial,sans-serif;background:var(--bg);color:var(--ink);line-height:1.55;-webkit-font-smoothing:antialiased}
+  a{color:var(--accent);text-decoration:none}
+  a:hover{text-decoration:underline}
+  .wrap{max-width:1180px;margin:0 auto;padding:24px}
+  header.hero{padding:48px 24px 32px;border-bottom:1px solid var(--line);background:linear-gradient(180deg,#eaf2ec 0%, #fafaf7 100%)}
+  header.hero .wrap{padding:0 24px}
+  h1{font-size:32px;line-height:1.15;margin:0 0 8px;letter-spacing:-0.01em}
+  h2{font-size:23px;margin:36px 0 6px;letter-spacing:-0.005em}
+  h2 .sub{font-size:14px;font-weight:500;color:var(--muted);margin-left:6px}
+  h3{font-size:17px;margin:0 0 8px}
+  p{margin:8px 0}
+  .lede{color:var(--muted);font-size:16px;max-width:820px}
+  .pill{display:inline-block;padding:3px 10px;border-radius:999px;background:var(--accent-soft);color:var(--accent);font-size:12px;font-weight:600;letter-spacing:.02em}
+  .meta{display:flex;flex-wrap:wrap;gap:8px;margin-top:14px}
+  .meta .pill{background:#fff;border:1px solid var(--line);color:var(--ink);font-weight:500}
+
+  .grid{display:grid;gap:20px}
+  .grid.cols-2{grid-template-columns:repeat(2,1fr)}
+  @media (max-width:880px){.grid.cols-2{grid-template-columns:1fr}}
+
+  .card{background:var(--card);border:1px solid var(--line);border-radius:14px;padding:20px;box-shadow:var(--shadow)}
+  .card h3{margin-top:0}
+  .free-tag{display:inline-block;background:var(--free);color:#fff;padding:2px 8px;border-radius:6px;font-size:11px;font-weight:700}
+  .paid-tag{display:inline-block;background:#9a9a93;color:#fff;padding:2px 8px;border-radius:6px;font-size:11px;font-weight:600}
+  .warn{padding:12px 14px;background:#fff4e5;border-left:4px solid #c97b1e;border-radius:6px;font-size:14px}
+
+  .map{height:520px;border-radius:14px;overflow:hidden;border:1px solid var(--line);box-shadow:var(--shadow)}
+  .map-caption{font-size:13px;color:var(--muted);margin-top:8px}
+  .legend{display:flex;flex-wrap:wrap;gap:14px;margin:10px 0 0;font-size:13px;color:var(--muted)}
+  .legend span{display:inline-flex;align-items:center;gap:6px}
+  .dot{width:12px;height:12px;border-radius:50%;display:inline-block;border:2px solid #fff;box-shadow:0 0 0 1px rgba(0,0,0,.15)}
+
+  table.stops{width:100%;border-collapse:collapse;font-size:13.5px;background:#fff;border:1px solid var(--line);border-radius:10px;overflow:hidden}
+  table.stops thead th{color:#fff;text-align:left;padding:9px 11px;font-weight:600;font-size:12.5px;letter-spacing:.02em}
+  .up table.stops thead th{background:var(--up)} .back table.stops thead th{background:var(--back)}
+  table.stops tbody td{padding:10px 11px;border-bottom:1px solid var(--line);vertical-align:top}
+  table.stops tbody tr:last-child td{border-bottom:none}
+  table.stops tbody tr:nth-child(even){background:#fbfaf6}
+  .stops .pl{font-weight:700;font-size:14px}
+  .stops .tags{font-size:12px;margin:2px 0 0;letter-spacing:1px}
+  .stops .sig{color:var(--muted);font-size:12.5px;margin-top:3px}
+  .stops .addr{font-size:12.5px}
+  .stops .num{font-variant-numeric:tabular-nums;white-space:nowrap}
+  .stops .when{font-weight:700;font-variant-numeric:tabular-nums}
+  .stops .drv{font-size:11.5px;color:var(--muted)}
+  .seg{display:inline-block;width:22px;height:22px;line-height:20px;text-align:center;border-radius:50%;font-weight:700;font-size:12px;color:#fff}
+  .up .seg{background:var(--up)} .back .seg{background:var(--back)}
+  .yes{color:var(--free);font-weight:700} .no{color:#b3261e;font-weight:700}
+  .endrow td{background:#f3efe5;font-weight:700}
+
+  .cost td:last-child{text-align:right;font-variant-numeric:tabular-nums}
+  .cost tr.total td{font-weight:700;background:#f6f3ea}
+  table.cost{width:100%;border-collapse:collapse;font-size:14px;background:#fff;border:1px solid var(--line);border-radius:10px;overflow:hidden}
+  table.cost td{padding:9px 12px;border-bottom:1px solid var(--line)}
+
+  ul.notes{margin:8px 0 0;padding-left:18px}
+  ul.notes li{margin:6px 0;font-size:14px}
+
+  footer{margin:40px 0 16px;color:var(--muted);font-size:13px;text-align:center}
+  .leaflet-popup-content{font-size:13px;line-height:1.45}
+  .leaflet-popup-content b{font-size:14px}
+  .pin-num{background:#fff;border-radius:50%;width:26px;height:26px;line-height:22px;text-align:center;font-weight:700;font-size:13px;border:2px solid #333;box-shadow:0 1px 4px rgba(0,0,0,.3)}
+
+  @media print{
+    body{background:#fff}
+    .wrap{max-width:none;padding:0 10px}
+    header.hero{padding:18px 10px;background:#fff}
+    .map{height:300px;box-shadow:none}
+    .leaflet-control-zoom,.leaflet-control-attribution{display:none!important}
+    .card,table.stops,table.cost{box-shadow:none;break-inside:avoid}
+    table.stops tbody tr{break-inside:avoid}
+    h2{break-after:avoid}
+    a{color:#1d1d1b;text-decoration:none}
+    *{-webkit-print-color-adjust:exact;print-color-adjust:exact}
+  }
+</style>
+</head>
+<body>
+<header class="hero">
+  <div class="wrap">
+    <span class="pill">3 adults + 2 kids (5 &amp; 7) · free-first · toilets at every main stop</span>
+    <h1>The Nairn Grand Loop — up the wild west, home down the A9</h1>
+    <p class="lede">One night in <b>Nairn (IV12 5DE)</b>: check-in <b>6 PM Sat 30 May</b>, <b>early check-out ~8:45 AM Sun 31 May 2026</b> to free the whole of Sunday. Leave Glasgow <b>6 AM Saturday</b>; home Sunday evening. Two different routes so no view repeats, every stop chosen for <b>old heritage and the best scenery</b>: <b>Saturday (7 stops)</b> = Loch Lomond, Glencoe, the <b>Glenfinnan "Harry Potter" viaduct</b>, Jacobite Fort William, Loch Ness &amp; Urquhart Castle, Clava Cairns/Culloden; <b>Sunday (7 stops)</b> = the Cairngorms, the open-air Highland Folk Museum, Ruthven Barracks, Killiecrankie, Pitlochry &amp; Dunkeld Cathedral. <b>Every stop below is free to enter</b>, flat and kid-friendly, with its significance, Google-Maps postcode, arrival time and stay length — plus a paid heritage-upgrade menu at the foot.</p>
+    <div class="meta">
+      <span class="pill">Grand loop ≈ 395 mi · one car</span>
+      <span class="pill">Sat: 6 AM → Nairn 6 PM</span>
+      <span class="pill">Sun: out ~9 AM → home ~7:45 PM</span>
+      <span class="pill">🚂 Glenfinnan viaduct (train if running — check live)</span>
+      <span class="pill">Est. spend ≈ £270–290 (excl. hotel)</span>
+    </div>
+  </div>
+</header>
+
+<main class="wrap">
+
+  <div class="card" style="margin-top:22px;border-left:6px solid var(--nairn)">
+    <span class="free-tag">FREE-FIRST · GRAND LOOP · PDF-READY</span>
+    <h3 style="margin-top:10px">How to read this plan</h3>
+    <p>The route <em>is</em> the holiday. Two big driving days, each a string of free, flat, toilet-equipped stops chosen for <b>old heritage + the best scenic views</b>. <b>Saturday</b> takes the long scenic west road to Nairn; <b>Sunday</b>, after an early checkout, ambles home down the A9. The two tables give you everything to optimise on Google Maps: <b>significance · postcode · arrive · drive · stay · toilets · cost</b>. Times are tentative — trim a stop or two if the kids flag (I flag the best ones to drop).</p>
+    <p style="font-size:13px;color:var(--muted);margin-top:8px"><b>Tag key:</b> 🏰 heritage / history · 🏞️ scenic view · 👦 great for the kids · 🚂 the railway · 🍽️ food stop.</p>
+    <p class="warn" style="margin-top:12px"><b>⚠ Steam train not confirmed.</b> As of late-May 2026 West Coast Railways had <b>delayed the Jacobite season with no published start date</b> (carriage safety retrofit). Don't bank on a steam crossing — <b>check live tonight</b> at <a href="https://westcoastrailways.co.uk/jacobite/timetables" target="_blank" rel="noopener">westcoastrailways.co.uk</a>. Backup: the viaduct is free &amp; stunning anyway, and ordinary <b>ScotRail Fort William→Mallaig</b> trains cross it daily — look up a time at <a href="https://www.scotrail.co.uk" target="_blank" rel="noopener">scotrail.co.uk</a>.</p>
+  </div>
+
+  <h2>The loop at a glance <span class="sub">blue = Saturday up · orange = Sunday home</span></h2>
+  <div id="mapA" class="map"></div>
+  <div class="legend">
+    <span><i class="dot" style="background:var(--up)"></i> Saturday — up the west (1–7)</span>
+    <span><i class="dot" style="background:var(--back)"></i> Sunday — home down the A9 (A–G)</span>
+    <span><i class="dot" style="background:var(--nairn)"></i> Nairn (hotel base)</span>
+    <span><i class="dot" style="background:#888"></i> Glasgow</span>
+  </div>
+  <p class="map-caption">Click any pin for the same detail as the tables below. Scroll to zoom (click map first).</p>
+
+  <div class="up">
+    <h2>Saturday 30 May — Glasgow → Nairn <span class="sub">up the west · ≈218 mi · depart 6:00 AM</span></h2>
+    <table class="stops" id="satTable">
+      <thead><tr>
+        <th>#</th><th>Place &amp; why it's worth it</th><th>Google Maps (tap postcode)</th>
+        <th>Arrive</th><th>Stay</th><th>WC</th><th>Cost</th>
+      </tr></thead>
+      <tbody></tbody>
+    </table>
+  </div>
+
+  <div class="card" style="margin-top:16px">
+    <h3>Saturday evening in Nairn <span class="paid-tag" style="background:var(--nairn)">arrive ~5–6 PM</span></h3>
+    <p>Check in, drop bags, then a free long-daylight evening (sunset ~9:45 PM):</p>
+    <ul class="notes">
+      <li><b>Nairn Central Beach &amp; promenade</b> — <i>Marine Rd, Nairn IV12 4EA</i>. Wide flat sand, play area, toilets, ice cream; bottlenose dolphins sometimes offshore. Free parking. <span class="free-tag">FREE</span></li>
+      <li><b>Nairn Harbour</b> — <i>Harbour St, Nairn IV12 4PH</i>. Pretty boats, short stroll, crab-watching. <span class="free-tag">FREE</span></li>
+      <li>Dinner in town (chip shops, pubs, Indian/Italian on the High St) then back for an early night before the big Sunday.</li>
+    </ul>
+  </div>
+
+  <div class="back">
+    <h2>Sunday 31 May — Nairn → Glasgow <span class="sub">home down the A9 · ≈177 mi · early checkout, out ~9:00 AM</span></h2>
+    <table class="stops" id="sunTable">
+      <thead><tr>
+        <th>#</th><th>Place &amp; why it's worth it</th><th>Google Maps (tap postcode)</th>
+        <th>Arrive</th><th>Stay</th><th>WC</th><th>Cost</th>
+      </tr></thead>
+      <tbody></tbody>
+    </table>
+    <p class="map-caption">If the kids fade, the two easiest to drop are <b>The Hermitage</b> (last stop) and <b>House of Bruar</b> — you'll still get the Cairngorms, Folk Museum and Pitlochry.</p>
+  </div>
+
+  <h2>What it costs <span class="sub">3 adults + 2 kids, one car, hotel excluded</span></h2>
+  <div class="grid cols-2">
+    <div class="card">
+      <h3>Money</h3>
+      <table class="cost"><tbody>
+        <tr><td>Fuel — loop ≈ 395 mi @ 38 mpg, £1.55/L</td><td>≈ £88</td></tr>
+        <tr><td>All sights free to enter</td><td>£0</td></tr>
+        <tr><td>Parking (Luss, Glencoe, Glenfinnan £3.50, Loch Morlich, Hermitage)</td><td>≈ £22</td></tr>
+        <tr><td>Sat lunch (Fort William) + Sun lunch (Folk Museum / picnic)</td><td>≈ £55</td></tr>
+        <tr><td>Sat supper (Nairn) + Sun dinner (Pitlochry), party of 5</td><td>≈ £80–110</td></tr>
+        <tr><td>Ice creams / coffees / treats</td><td>≈ £25</td></tr>
+        <tr class="total"><td>Trip spend excl. hotel</td><td>≈ £270–300</td></tr>
+      </tbody></table>
+      <p class="map-caption">Every sight is free — the spend is essentially fuel, parking coins and three meals out.</p>
+    </div>
+    <div class="card">
+      <h3>Toilet &amp; kid logistics</h3>
+      <ul class="notes">
+        <li><b>Toilets on tap:</b> Luss, Glencoe Centre, Glenfinnan, Fort William, Fort Augustus, Drumnadrochit (Sat); Loch Morlich, Folk Museum, House of Bruar, Pitlochry, Hermitage (Sun).</li>
+        <li><b>The one stop with NO toilets:</b> <span class="no">Ruthven Barracks</span> — go at the Highland Folk Museum 5 min before. (Clava Cairns now pairs with Culloden's NTS centre, which has toilets.)</li>
+        <li><b>No real walking anywhere</b> — Glenfinnan uses the flat under-the-arches path (skip the 20-min hill); everything else is roadside or a short flat stroll.</li>
+        <li><b>Fuel discipline:</b> the A82 is remote — top up in <b>Fort William</b> before Loch Ness. A9 home has plenty (Aviemore, Pitlochry).</li>
+        <li>Pack a picnic + flasks; cap each stop to the times shown to keep momentum.</li>
+      </ul>
+    </div>
+  </div>
+
+  <div class="card" style="margin-top:20px">
+    <h3>Heritage &amp; scenic upgrades <span class="paid-tag">swap in only if you have the appetite</span></h3>
+    <p>Each sits a few minutes off a stop already on the route — pay-to-enter castles and big-ticket sights for the history-loving adults. Trade one in for a free stop on the same leg rather than adding it on top, or you'll lose your timings.</p>
+    <div class="grid cols-2">
+      <ul class="notes">
+        <li><b>On the way up (Sat):</b></li>
+        <li>🏰 <b>Stirling Castle</b> — <i>FK8 1EJ</i>. Scotland's grandest royal fortress (Stewart palace, Wallace/Bruce country), 35 min out of Glasgow. ~£18.50 adult / kids free under 7. A whole half-day on its own.</li>
+        <li>🏰 <b>Doune Castle</b> — <i>FK16 6EA</i>. Outlander's 'Castle Leoch' &amp; Monty Python's Holy Grail; just off the A84. ~£9.50 adult.</li>
+        <li>🏰 <b>Urquhart Castle interior</b> — <i>IV63 6XJ</i>. Pay in (HES, ~£13.50 adult) for the towers &amp; trebuchet rather than the free lay-by view.</li>
+        <li>🏰 <b>Culloden NTS centre</b> — <i>IV2 5EU</i>. Beside Clava; immersive battle-immersion film &amp; museum, ~£17 adult (moor walk stays free).</li>
+      </ul>
+      <ul class="notes">
+        <li><b>Near Nairn / on the way home (Sun):</b></li>
+        <li>🏰 <b>Cawdor Castle &amp; gardens</b> — <i>IV12 5RD</i>. Storybook 'Macbeth' castle, gardens, nature trails, 10 min from the hotel. ~£14.30 adult.</li>
+        <li>🏰 <b>Fort George</b> — <i>IV2 7TD</i>. Vast working Georgian artillery fort on the firth, dolphins from the ramparts. ~£12.50 adult.</li>
+        <li>🏰 <b>Blair Castle</b> — <i>PH18 5TG</i>. White-turreted Atholl seat, 30 rooms &amp; deer park, 2 min from House of Bruar. ~£14.50 adult.</li>
+        <li>🏞️ <b>Queen's View</b> — <i>PH16 5NR</i>. The classic Loch Tummel panorama, 7 mi west of Pitlochry (parking ~£3, view free).</li>
+      </ul>
+    </div>
+  </div>
+
+  <footer>
+    Data captured 30 May 2026 from public tourism sources (VisitScotland, NTS, HES, Scottish Canals, High Life Highland, West Coast Railways, ScotRail). Opening hours, prices &amp; the steam-train schedule change — verify before travelling. Distances/drive times approximate; postcodes for sat-nav guidance.
+  </footer>
+</main>
+
+<script src="https://unpkg.com/leaflet@1.9.4/dist/leaflet.js" integrity="sha256-20nQCchB9co0qIjJZRGuk2/Z9VM+kNiyxNV1lvTlZBo=" crossorigin=""></script>
+<script>
+const GLASGOW={lat:55.8642,lng:-4.2518,name:"Glasgow"};
+const NAIRN={lat:57.5856,lng:-3.8654,name:"Nairn (hotel, IV12 5DE)"};
+
+// ---------- Saturday: up the west ----------
+const SAT=[
+ {n:1,name:"Loch Lomond — Luss village",tags:"🏞️ 🏰",lat:56.1006,lng:-4.6394,free:true,
+  sig:"The 'bonnie banks' of Britain's largest loch by surface area, framed by Ben Lomond. Luss is a preserved 18th–19th-century slate-quarry village of rose-clad cottages; its lochside churchyard (St Kessog's) sits on a 7th-century Christian site and holds Norse 'hogback' gravestones — a quiet heritage gem the tour buses skip.",
+  addr:"Luss, Alexandria G83 8NN",arrive:"6:50",drive:"+50 min · 25 mi",stay:"20 min",wc:1,cost:"Parking ~£5"},
+ {n:2,name:"Glencoe — Three Sisters &amp; Folk Museum",tags:"🏞️ 🏰",lat:56.6685,lng:-4.9333,free:true,
+  sig:"Scotland's most cinematic glen — three glacier-carved spurs of Bidean nam Bian, scene of the 1692 Massacre of Glencoe and a backdrop in Skyfall and the Harry Potter films. The viewpoint is roadside (no walk); in the village the donation-funded Glencoe Folk Museum occupies 18th-century heather-thatched cottages, and the NTS Visitor Centre (PH49 4HX) tells the massacre story with café &amp; toilets.",
+  addr:"Three Sisters Viewpoint, A82, Glencoe PH49 4HX",arrive:"8:25",drive:"+1h15 · 45 mi",stay:"30 min",wc:1,cost:"Free (parking ~£4)"},
+ {n:3,name:"Glenfinnan Viaduct &amp; Monument — 🚂 the Harry Potter bridge",tags:"🚂 🏰 🏞️",lat:56.8714,lng:-5.4336,free:true,
+  sig:"The 21-arch 'Hogwarts Express' viaduct (1901, an early mass-concrete marvel) curving above Loch Shiel. At its foot the Glenfinnan Monument marks the exact spot where Bonnie Prince Charlie raised his standard to launch the 1745 Jacobite rising. Flat tarmac path 5–10 min to stand UNDER the arches — pushchair-friendly, no climb.",
+  addr:"Glenfinnan Visitor Centre, Glenfinnan PH37 4LT",arrive:"10:10",drive:"+1h15 · 50 mi",stay:"75 min",wc:1,cost:"Parking £3.50",
+  link:"https://www.nts.org.uk/visit/places/glenfinnan-monument"},
+ {n:4,name:"Fort William — West Highland Museum, Old Inverlochy Castle &amp; lunch",tags:"🏰 🍽️",lat:56.8198,lng:-5.1052,free:true,
+  sig:"The 'Outdoor Capital of the UK' at the foot of Ben Nevis, Britain's highest mountain. The FREE West Highland Museum is a Jacobite treasure-house — including the famous anamorphic 'secret portrait' of Prince Charlie. On the town's edge, FREE Old Inverlochy Castle is a near-intact 13th-century courtyard fortress that saw two battles. Best lunch &amp; last big fuel before the remote Loch Ness road.",
+  addr:"West Highland Museum, Cameron Square, Fort William PH33 6AJ",arrive:"11:55",drive:"+30 min · 17 mi",stay:"70 min",wc:1,cost:"Free (lunch)",
+  link:"https://www.westhighlandmuseum.org.uk/"},
+ {n:5,name:"Fort Augustus — Caledonian Canal locks",tags:"🏰 🏞️ 👦",lat:57.1437,lng:-4.6806,free:true,
+  sig:"A staircase of five locks lifting boats 13m where Thomas Telford's Caledonian Canal (opened 1822) meets the southern tip of Loch Ness — boats rising, the swing-bridge turning, beside the site of the old Hanoverian fort that named the village. Cafés, ice cream, toilets; superb kid-watching.",
+  addr:"Fort Augustus PH32 4BD",arrive:"13:55",drive:"+50 min · 33 mi",stay:"45 min",wc:1,cost:"Free",
+  link:"https://www.scottishcanals.co.uk/caledonian-canal/"},
+ {n:6,name:"Loch Ness — Urquhart Castle",tags:"🏰 🏞️",lat:57.3242,lng:-4.4426,free:true,
+  sig:"The most famous loch on earth (the UK's largest body of fresh water by volume) and, on a rocky headland, one of Scotland's biggest medieval castles — held and besieged from the 1200s to 1692, its Grant Tower still standing. Free lay-by views; history-loving adults may want to pay in (HES) for the full ruin. Nessie-spotting delights the kids.",
+  addr:"Urquhart Castle, Drumnadrochit IV63 6XJ",arrive:"15:10",drive:"+30 min · 18 mi",stay:"35 min",wc:1,cost:"Free view / ~£15 in"},
+ {n:7,name:"Clava Cairns &amp; Culloden Battlefield",tags:"🏰 🏞️",lat:57.4730,lng:-4.0730,free:true,
+  sig:"Two heritage heavyweights side by side. Clava Cairns: 4,000-year-old Bronze Age passage-graves aligned to the midwinter-solstice sunset, ringed by standing stones (Outlander's 'Craigh na Dun'). Five minutes away, Culloden Moor is where the rising died on 16 April 1746 — walk the clan-grave lines free; the immersive NTS centre (toilets/café) is optional/paid.",
+  addr:"Clava Cairns, Culloden, Inverness IV2 5EU",arrive:"16:30",drive:"+45 min · 22 mi",stay:"50 min",wc:1,cost:"Free",
+  link:"https://www.historicenvironment.scot/visit-a-place/places/clava-cairns/"}
+];
+const SAT_END={name:"Nairn — hotel (IV12 5DE)",arrive:"~17:45",drive:"+25 min · 12 mi",note:"Check-in 6 PM · evening on the beach"};
+
+// ---------- Sunday: home down the A9 ----------
+const SUN=[
+ {n:"A",name:"Loch Morlich, Glenmore (Cairngorms)",tags:"🏞️ 👦",lat:57.1626,lng:-3.6957,free:true,
+  sig:"Britain's highest sandy beach — freshwater, ringed by the Cairngorm massif and the ancient Caledonian pinewoods of Rothiemurchus and Glenmore (red squirrels, crested tits, sometimes free-ranging reindeer). Paddling, stone-skimming and a flat lochshore loop.",
+  addr:"Glenmore, Aviemore PH22 1QU",arrive:"9:55",drive:"+55 min · 38 mi",stay:"50 min",wc:1,cost:"Free (parking ~£4)"},
+ {n:"B",name:"Highland Folk Museum, Newtonmore",tags:"🏰 👦 🍽️",lat:57.0566,lng:-4.1260,free:true,
+  sig:"Britain's first open-air museum (1934): walk through Baile Gean, a fully re-created 1700s Highland township of turf houses you can step inside — used as an Outlander season-1 filming set — plus a Victorian schoolroom, a 1930s working farm and costumed interpreters. Playground, café, picnic lawns.",
+  addr:"Highland Folk Museum, Kingussie Rd, Newtonmore PH20 1AY",arrive:"11:10",drive:"+25 min · 22 mi",stay:"1h40 (lunch)",wc:1,cost:"Free (donation)",
+  link:"https://www.highlifehighland.com/highlandfolkmuseum/"},
+ {n:"C",name:"Ruthven Barracks, Kingussie",tags:"🏰 🏞️",lat:57.0758,lng:-4.0588,free:true,
+  sig:"A gaunt 1719 infantry barracks raised by the government to police the Highlands after the 1715 rising — and the very place the Jacobite army rallied after Culloden before scattering, burning it behind them. A floodlit ruin on a glacial mound with huge Spey-valley views; 5-min walk up. 2 min from the Folk Museum.",
+  addr:"Ruthven Barracks, Kingussie PH21 1NR",arrive:"12:55",drive:"+5 min · 3 mi",stay:"25 min",wc:0,cost:"Free",
+  link:"https://www.historicenvironment.scot/visit-a-place/places/ruthven-barracks/"},
+ {n:"D",name:"House of Bruar &amp; Falls of Bruar (Blair Castle nearby)",tags:"🏞️ 🍽️ 🏰",lat:56.7820,lng:-3.8870,free:true,
+  sig:"Scotland's grandest farm-shop &amp; food hall, with a short flat path to the lower Falls of Bruar — walks first laid out after Robert Burns asked the Duke to clothe the bare braes with trees in 1787. Heritage upgrade 2 min south: Blair Castle, white-turreted seat of the Dukes of Atholl and home to Britain's last private army, the Atholl Highlanders (paid).",
+  addr:"House of Bruar, Blair Atholl PH18 5TW",arrive:"14:05",drive:"+45 min · 28 mi",stay:"40 min",wc:1,cost:"Free",
+  link:"https://www.houseofbruar.com/"},
+ {n:"E",name:"Killiecrankie — Soldier's Leap",tags:"🏰 🏞️",lat:56.7350,lng:-3.7790,free:true,
+  sig:"A steep wooded gorge above the River Garry where the first Jacobite rising opened with the Battle of Killiecrankie (1689) — and where a fleeing government soldier made the legendary 18-foot 'Soldier's Leap' across the water. Free NTS site with short flat paths to the viewpoints; blazing autumn-into-summer colour and a cracking story for the kids.",
+  addr:"Killiecrankie, Pitlochry PH16 5LG",arrive:"15:00",drive:"+15 min · 9 mi",stay:"35 min",wc:1,cost:"Free",
+  link:"https://www.nts.org.uk/visit/places/killiecrankie"},
+ {n:"F",name:"Pitlochry — Dam, salmon ladder &amp; early dinner",tags:"🏞️ 🍽️",lat:56.7019,lng:-3.7297,free:true,
+  sig:"A genteel Victorian spa town that boomed after Queen Victoria toured Perthshire. The free Dam visitor centre has a glass-walled fish ladder where you watch salmon climb; riverside walks and plenty of cafés for an early dinner. Scenic upgrade: Queen's View over Loch Tummel, 7 mi west, named for the Queen's 1866 visit.",
+  addr:"Pitlochry Dam, Armoury Road, Pitlochry PH16 5ND",arrive:"15:45",drive:"+10 min · 4 mi",stay:"1h20 (dinner)",wc:1,cost:"Free",
+  link:"https://pitlochrydam.com/"},
+ {n:"G",name:"Dunkeld — Cathedral &amp; The Hermitage",tags:"🏰 🏞️",lat:56.5689,lng:-3.5936,free:true,
+  sig:"A perfect heritage-and-scenery finale. Dunkeld Cathedral (free) is a part-ruined medieval cathedral on the Tay, burial place of the 'Wolf of Badenoch'. Two miles on, The Hermitage frames Ossian's Hall folly above the roaring Black Linn falls among some of Britain's tallest Douglas firs — flat riverside paths.",
+  addr:"The Hermitage, Dunkeld PH8 0JR",arrive:"17:20",drive:"+15 min · 12 mi",stay:"55 min",wc:1,cost:"Parking ~£4 (NTS)",
+  link:"https://www.nts.org.uk/visit/places/the-hermitage"}
+];
+const SUN_END={name:"Home — Glasgow",arrive:"~19:45",drive:"+1h30 · 62 mi",note:"Relaxed — hours inside your midnight limit"};
+
+function gmap(addr){return "https://www.google.com/maps/search/?api=1&query="+encodeURIComponent(addr);}
+function pcode(addr){const m=addr.match(/[A-Z]{1,2}\d[A-Z\d]?\s*\d[A-Z]{2}/);return m?m[0]:addr;}
+
+// ----- build tables -----
+function buildTable(id,arr,end,cls){
+  const tb=document.querySelector("#"+id+" tbody");
+  let rows=arr.map(s=>{
+    const wc = s.wc? '<span class="yes">Yes</span>' : '<span class="no">None*</span>';
+    const lk = s.link? ' · <a href="'+s.link+'" target="_blank" rel="noopener">info</a>' : '';
+    return '<tr>'+
+      '<td><span class="seg">'+s.n+'</span></td>'+
+      '<td><div class="pl">'+s.name+'</div>'+(s.tags?'<div class="tags">'+s.tags+'</div>':'')+'<div class="sig">'+s.sig+'</div></td>'+
+      '<td class="addr"><a href="'+gmap(s.addr)+'" target="_blank" rel="noopener"><b>'+pcode(s.addr)+'</b></a><br>'+s.addr.replace(/\s*\([^)]*\)/,'')+lk+'</td>'+
+      '<td class="when">'+s.arrive+'<div class="drv">'+s.drive+'</div></td>'+
+      '<td class="num">'+s.stay+'</td>'+
+      '<td>'+wc+'</td>'+
+      '<td class="num">'+s.cost+'</td>'+
+    '</tr>';
+  }).join("");
+  rows+='<tr class="endrow"><td>★</td><td>'+end.name+'</td><td></td><td class="when">'+end.arrive+'<div class="drv">'+end.drive+'</div></td><td colspan="3">'+end.note+'</td></tr>';
+  tb.innerHTML=rows;
+}
+buildTable("satTable",SAT,SAT_END,"up");
+buildTable("sunTable",SUN,SUN_END,"back");
+
+// ----- map -----
+function pinIcon(color,label){return L.divIcon({className:"",html:'<div class="pin-num" style="border-color:'+color+';color:'+color+'">'+label+'</div>',iconSize:[26,26],iconAnchor:[13,13],popupAnchor:[0,-14]});}
+function dot(color){return L.divIcon({className:"",html:'<div style="width:15px;height:15px;border-radius:50%;background:'+color+';border:2px solid #fff;box-shadow:0 0 0 1px rgba(0,0,0,.3)"></div>',iconSize:[15,15],iconAnchor:[8,8],popupAnchor:[0,-8]});}
+function pop(s){
+  return '<b>'+s.name+'</b><br><span style="color:#0f8a4f;font-weight:700">FREE</span>'+(s.tags?' &nbsp;'+s.tags:'')+'<br>'+s.sig+
+    '<br><b>'+pcode(s.addr)+'</b> · <a href="'+gmap(s.addr)+'" target="_blank" rel="noopener">Maps ↗</a>'+
+    '<br><i>Arrive '+s.arrive+' · stay '+s.stay+' · WC: '+(s.wc?'yes':'none')+'</i>';
+}
+const mapA=L.map("mapA",{scrollWheelZoom:false});
+L.tileLayer("https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png",{maxZoom:19,attribution:"&copy; OpenStreetMap"}).addTo(mapA);
+mapA.on("click",()=>mapA.scrollWheelZoom.enable());
+mapA.on("mouseout",()=>mapA.scrollWheelZoom.disable());
+
+let pts=[[GLASGOW.lat,GLASGOW.lng]];
+L.marker([GLASGOW.lat,GLASGOW.lng],{icon:dot("#888")}).addTo(mapA).bindPopup("<b>Glasgow</b><br>Depart 6:00 AM Sat");
+SAT.forEach(s=>{L.marker([s.lat,s.lng],{icon:pinIcon("#1d4e89",s.n)}).addTo(mapA).bindPopup(pop(s));pts.push([s.lat,s.lng]);});
+L.marker([NAIRN.lat,NAIRN.lng],{icon:pinIcon("#b3261e","★")}).addTo(mapA).bindPopup("<b>Nairn — hotel (IV12 5DE)</b><br>Check-in 6 PM Sat · check-out ~8:45 AM Sun");
+pts.push([NAIRN.lat,NAIRN.lng]);
+L.polyline(pts,{color:"#1d4e89",weight:3,opacity:.5,dashArray:"6 8"}).addTo(mapA);
+
+let rpts=[[NAIRN.lat,NAIRN.lng]];
+SUN.forEach(s=>{L.marker([s.lat,s.lng],{icon:pinIcon("#c97b1e",s.n)}).addTo(mapA).bindPopup(pop(s));rpts.push([s.lat,s.lng]);});
+rpts.push([GLASGOW.lat,GLASGOW.lng]);
+L.polyline(rpts,{color:"#c97b1e",weight:3,opacity:.55,dashArray:"2 7"}).addTo(mapA);
+
+mapA.fitBounds(pts.concat(rpts),{padding:[40,40]});
+</script>
+</body>
+</html>
