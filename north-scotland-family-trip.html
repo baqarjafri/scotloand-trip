@@ -118,6 +118,7 @@
     <h3 style="margin-top:10px">How to read this plan</h3>
     <p>The route <em>is</em> the holiday. Two big driving days, each a string of free, flat, toilet-equipped stops chosen for <b>old heritage + the best scenic views</b>. <b>Saturday</b> is the big one — the long scenic west road out to the <b>Isle of Skye</b>, then across to Nairn; <b>Sunday</b>, after an early checkout, ambles home down the A9. The two tables give you everything to optimise on Google Maps: <b>significance · postcode · arrive · drive · stay · toilets · cost</b>. Times are tentative — trim a stop or two if the kids flag (I flag the best ones to drop).</p>
     <p style="font-size:13px;color:var(--muted);margin-top:8px"><b>Tag key:</b> 🏰 heritage / history · 🏞️ scenic view · 👦 great for the kids · 🏝️ the island · 🍽️ food stop.</p>
+    <p style="font-size:13px;color:var(--muted);margin-top:4px"><b>Reaching each spot:</b> every address is the <b>precise car park / entrance</b> — not just a postcode-area centroid. In the table tap the <b>postcode</b> to drop the exact pin, or <b>navigate ▸</b> to start Google Maps directions straight there. (Rural Highland postcodes alone can land you a mile off, so use the named car park.)</p>
     <p class="warn" style="margin-top:12px"><b>⚠ Saturday is a long day.</b> Reaching Skye and back to Nairn is ≈9 hrs driving plus stops — plan for a <b>~8:45 PM arrival in Nairn</b> (hotel check-in is flexible up to 10 PM). Late-May sunset is ~9:45 PM, so you'll have daylight the whole way. <b>Fuel up in Fort William</b> — it's the last reliable filling stop before Skye. If the kids melt, <b>Culloden (the last stop) is the one to drop</b> — it puts you at the hotel ~45 min earlier.</p>
   </div>
 
@@ -135,7 +136,7 @@
     <h2>Saturday 30 May — Glasgow → Isle of Skye → Nairn <span class="sub">up the west to Skye · ≈344 mi · depart 8:00 AM</span></h2>
     <table class="stops" id="satTable">
       <thead><tr>
-        <th>#</th><th>Place &amp; why it's worth it</th><th>Google Maps (tap postcode)</th>
+        <th>#</th><th>Place &amp; why it's worth it</th><th>Exact spot — tap to open / navigate</th>
         <th>Arrive</th><th>Stay</th><th>WC</th><th>Cost</th>
       </tr></thead>
       <tbody></tbody>
@@ -156,7 +157,7 @@
     <h2>Sunday 31 May — Nairn → Glasgow <span class="sub">home down the A9 · ≈177 mi · early checkout, out ~9:00 AM</span></h2>
     <table class="stops" id="sunTable">
       <thead><tr>
-        <th>#</th><th>Place &amp; why it's worth it</th><th>Google Maps (tap postcode)</th>
+        <th>#</th><th>Place &amp; why it's worth it</th><th>Exact spot — tap to open / navigate</th>
         <th>Arrive</th><th>Stay</th><th>WC</th><th>Cost</th>
       </tr></thead>
       <tbody></tbody>
@@ -189,39 +190,39 @@ const NAIRN={lat:57.5856,lng:-3.8654,name:"Nairn (hotel, IV12 5DE)"};
 const SAT=[
  {n:1,name:"Glencoe — Three Sisters &amp; Folk Museum",tags:"🏞️ 🏰",lat:56.6685,lng:-4.9333,free:true,
   sig:"Scotland's most cinematic glen — three glacier-carved spurs of Bidean nam Bian, scene of the 1692 Massacre of Glencoe and a backdrop in Skyfall and the Harry Potter films. The viewpoint is roadside (no walk); in the village the donation-funded Glencoe Folk Museum occupies 18th-century heather-thatched cottages, and the NTS Visitor Centre (PH49 4HX) tells the massacre story with café &amp; toilets.",
-  addr:"Three Sisters Viewpoint, A82, Glencoe PH49 4HX",arrive:"10:15",drive:"+2h15 · 92 mi",stay:"20 min",wc:1,cost:"Free (parking ~£4)"},
+  addr:"Three Sisters Viewpoint Car Park, A82, Glencoe PH49 4HX",arrive:"10:15",drive:"+2h15 · 92 mi",stay:"20 min",wc:1,cost:"Free (parking ~£4)"},
  {n:2,name:"Fort William — West Highland Museum, Old Inverlochy Castle &amp; lunch",tags:"🏰 🍽️",lat:56.8198,lng:-5.1052,free:true,
   sig:"The 'Outdoor Capital of the UK' at the foot of Ben Nevis, Britain's highest mountain. The FREE West Highland Museum is a Jacobite treasure-house — including the famous anamorphic 'secret portrait' of Prince Charlie. On the town's edge, FREE Old Inverlochy Castle is a near-intact 13th-century courtyard fortress that saw two battles. Best lunch &amp; the last reliable fuel before the run out to Skye.",
   addr:"West Highland Museum, Cameron Square, Fort William PH33 6AJ",arrive:"11:05",drive:"+30 min · 16 mi",stay:"50 min",wc:1,cost:"Free (lunch)",
   link:"https://www.westhighlandmuseum.org.uk/"},
  {n:3,name:"Eilean Donan Castle, Dornie",tags:"🏰 🏞️",lat:57.2740,lng:-5.5160,free:true,
   sig:"Scotland's most photographed castle — a 13th-century stronghold of the Mackenzies on its own tidal islet where three sea lochs meet, reached by an arched stone bridge. Blown up by Royal Navy frigates during the 1719 Jacobite rising and lovingly rebuilt 1911–32. The classic view from the roadside car park is free; it's the perfect gateway shot as you cross to Skye. Café &amp; toilets on site.",
-  addr:"Eilean Donan Castle, Dornie, Kyle of Lochalsh IV40 8DX",arrive:"13:30",drive:"+1h35 · 66 mi",stay:"30 min",wc:1,cost:"Free view / ~£12 in",
+  addr:"Eilean Donan Castle Car Park, Dornie, Kyle of Lochalsh IV40 8DX",arrive:"13:30",drive:"+1h35 · 66 mi",stay:"30 min",wc:1,cost:"Free view / ~£12 in",
   link:"https://www.eileandonancastle.com/"},
  {n:4,name:"Sligachan, Isle of Skye — Old Bridge &amp; Cuillin view",tags:"🏝️ 🏞️",lat:57.2900,lng:-6.1700,free:true,
   sig:"The postcard heart of Skye: the old stone bridge (c.1810) framing the jagged Black Cuillin and Sgùrr nan Gillean behind it — one of the most photographed mountain scenes in Britain. Flat riverside spot, free parking; legend says dunking your face in the cold Sligachan water grants eternal beauty. A proper 'we made it to Skye' moment for the kids.",
-  addr:"Sligachan, Isle of Skye IV47 8SW",arrive:"14:50",drive:"+50 min · 35 mi",stay:"20 min",wc:1,cost:"Free"},
+  addr:"Sligachan Old Bridge Car Park, Sligachan, Isle of Skye IV47 8SW",arrive:"14:50",drive:"+50 min · 35 mi",stay:"20 min",wc:1,cost:"Free"},
  {n:5,name:"Portree, Isle of Skye — harbour town",tags:"🏝️ 🍽️ 👦",lat:57.4125,lng:-6.1956,free:true,
   sig:"Skye's pretty capital, built around a sheltered harbour ringed by a famous row of pastel-painted houses below the cliffs of the Lump. The island turnaround point: toilets, cafés and chip shops for a late lunch, harbour wall for boat- and bird-watching, and the iconic colourful-cottage photo. Named for King James V's 1540 visit — Port Rìgh, 'the king's port'.",
-  addr:"Portree Harbour, Isle of Skye IV51 9DG",arrive:"15:30",drive:"+20 min · 9 mi",stay:"45 min",wc:1,cost:"Free (parking ~£2)"},
+  addr:"Portree Harbour Car Park (Quay Brae), Portree, Isle of Skye IV51 9DG",arrive:"15:30",drive:"+20 min · 9 mi",stay:"45 min",wc:1,cost:"Free (parking ~£2)"},
  {n:6,name:"Loch Ness — Urquhart Castle",tags:"🏰 🏞️",lat:57.3242,lng:-4.4426,free:true,
   sig:"The most famous loch on earth (the UK's largest body of fresh water by volume) and, on a rocky headland, one of Scotland's biggest medieval castles — held and besieged from the 1200s to 1692, its Grant Tower still standing. Free lay-by views (paid HES entry will have closed by now); Nessie-spotting delights the kids. A scenic leg-stretch on the long drive back east.",
-  addr:"Urquhart Castle, Drumnadrochit IV63 6XJ",arrive:"18:40",drive:"+2h25 · 92 mi",stay:"25 min",wc:1,cost:"Free view"},
+  addr:"Urquhart Castle Car Park, A82, Drumnadrochit IV63 6XJ",arrive:"18:40",drive:"+2h25 · 92 mi",stay:"25 min",wc:1,cost:"Free view"},
  {n:7,name:"Clava Cairns &amp; Culloden Battlefield",tags:"🏰 🏞️",lat:57.4730,lng:-4.0730,free:true,
   sig:"Two heritage heavyweights side by side — and the easiest stop to drop if the day's run long. Clava Cairns: 4,000-year-old Bronze Age passage-graves aligned to the midwinter-solstice sunset, ringed by standing stones (Outlander's 'Craigh na Dun'). Five minutes away, Culloden Moor is where the rising died on 16 April 1746 — walk the clan-grave lines free; the NTS centre is shut by this hour.",
-  addr:"Clava Cairns, Culloden, Inverness IV2 5EU",arrive:"19:50",drive:"+45 min · 22 mi",stay:"30 min",wc:1,cost:"Free",
+  addr:"Clava Cairns Car Park, Culloden, Inverness IV2 5EU",arrive:"19:50",drive:"+45 min · 22 mi",stay:"30 min",wc:1,cost:"Free",
   link:"https://www.historicenvironment.scot/visit-a-place/places/clava-cairns/"}
 ];
 const SAT_END={name:"Nairn — hotel (IV12 5DE)",arrive:"~20:45",drive:"+25 min · 12 mi",note:"Flexible check-in to 10 PM · late beach stroll in the last daylight"};
 
 // ---------- Sunday: home down the A9 ----------
 const SUN=[
- {n:"A",name:"Loch Morlich, Glenmore (Cairngorms)",tags:"🏞️ 👦",lat:57.1626,lng:-3.6957,free:true,
+ {n:"A",name:"Loch Morlich, Glenmore (Cairngorms)",tags:"🏞️ 👦",lat:57.1599,lng:-3.7130,free:true,
   sig:"Britain's highest sandy beach — freshwater, ringed by the Cairngorm massif and the ancient Caledonian pinewoods of Rothiemurchus and Glenmore (red squirrels, crested tits, sometimes free-ranging reindeer). Paddling, stone-skimming and a flat lochshore loop.",
-  addr:"Glenmore, Aviemore PH22 1QU",arrive:"9:55",drive:"+55 min · 38 mi",stay:"50 min",wc:1,cost:"Free (parking ~£4)"},
- {n:"B",name:"Highland Folk Museum, Newtonmore",tags:"🏰 👦 🍽️",lat:57.0566,lng:-4.1260,free:true,
+  addr:"Loch Morlich Beach Car Park, Glenmore, Aviemore PH22 1QU",arrive:"9:55",drive:"+55 min · 38 mi",stay:"50 min",wc:1,cost:"Free (parking ~£4)"},
+ {n:"B",name:"Highland Folk Museum, Newtonmore",tags:"🏰 👦 🍽️",lat:57.0728,lng:-4.1283,free:true,
   sig:"Britain's first open-air museum (1934): walk through Baile Gean, a fully re-created 1700s Highland township of turf houses you can step inside — used as an Outlander season-1 filming set — plus a Victorian schoolroom, a 1930s working farm and costumed interpreters. Playground, café, picnic lawns.",
-  addr:"Highland Folk Museum, Kingussie Rd, Newtonmore PH20 1AY",arrive:"11:10",drive:"+25 min · 22 mi",stay:"1h40 (lunch)",wc:1,cost:"Free (donation)",
+  addr:"Highland Folk Museum, Aultlarie Croft, Kingussie Rd, Newtonmore PH20 1AY",arrive:"11:10",drive:"+25 min · 22 mi",stay:"1h40 (lunch)",wc:1,cost:"Free (donation)",
   link:"https://www.highlifehighland.com/highlandfolkmuseum/"},
  {n:"C",name:"Ruthven Barracks, Kingussie",tags:"🏰 🏞️",lat:57.0758,lng:-4.0588,free:true,
   sig:"A gaunt 1719 infantry barracks raised by the government to police the Highlands after the 1715 rising — and the very place the Jacobite army rallied after Culloden before scattering, burning it behind them. A floodlit ruin on a glacial mound with huge Spey-valley views; 5-min walk up. 2 min from the Folk Museum.",
@@ -233,7 +234,7 @@ const SUN=[
   link:"https://www.houseofbruar.com/"},
  {n:"E",name:"Killiecrankie — Soldier's Leap",tags:"🏰 🏞️",lat:56.7350,lng:-3.7790,free:true,
   sig:"A steep wooded gorge above the River Garry where the first Jacobite rising opened with the Battle of Killiecrankie (1689) — and where a fleeing government soldier made the legendary 18-foot 'Soldier's Leap' across the water. Free NTS site with short flat paths to the viewpoints; blazing autumn-into-summer colour and a cracking story for the kids.",
-  addr:"Killiecrankie, Pitlochry PH16 5LG",arrive:"15:00",drive:"+15 min · 9 mi",stay:"35 min",wc:1,cost:"Free",
+  addr:"Killiecrankie Visitor Centre Car Park, Killiecrankie, Pitlochry PH16 5LG",arrive:"15:00",drive:"+15 min · 9 mi",stay:"35 min",wc:1,cost:"Free",
   link:"https://www.nts.org.uk/visit/places/killiecrankie"},
  {n:"F",name:"Pitlochry — Dam, salmon ladder &amp; early dinner",tags:"🏞️ 🍽️",lat:56.7019,lng:-3.7297,free:true,
   sig:"A genteel Victorian spa town that boomed after Queen Victoria toured Perthshire. The free Dam visitor centre has a glass-walled fish ladder where you watch salmon climb; riverside walks and plenty of cafés for an early dinner. Scenic upgrade: Queen's View over Loch Tummel, 7 mi west, named for the Queen's 1866 visit.",
@@ -247,6 +248,7 @@ const SUN=[
 const SUN_END={name:"Home — Glasgow",arrive:"~19:45",drive:"+1h30 · 62 mi",note:"Relaxed — home in good time"};
 
 function gmap(addr){return "https://www.google.com/maps/search/?api=1&query="+encodeURIComponent(addr);}
+function gdir(addr){return "https://www.google.com/maps/dir/?api=1&destination="+encodeURIComponent(addr);}
 function pcode(addr){const m=addr.match(/[A-Z]{1,2}\d[A-Z\d]?\s*\d[A-Z]{2}/);return m?m[0]:addr;}
 
 // ----- build tables -----
@@ -258,7 +260,7 @@ function buildTable(id,arr,end,cls){
     return '<tr>'+
       '<td><span class="seg">'+s.n+'</span></td>'+
       '<td><div class="pl">'+s.name+'</div>'+(s.tags?'<div class="tags">'+s.tags+'</div>':'')+'<div class="sig">'+s.sig+'</div></td>'+
-      '<td class="addr"><a href="'+gmap(s.addr)+'" target="_blank" rel="noopener"><b>'+pcode(s.addr)+'</b></a><br>'+s.addr.replace(/\s*\([^)]*\)/,'')+lk+'</td>'+
+      '<td class="addr"><a href="'+gmap(s.addr)+'" target="_blank" rel="noopener"><b>'+pcode(s.addr)+'</b></a> · <a href="'+gdir(s.addr)+'" target="_blank" rel="noopener">navigate ▸</a><br>'+s.addr.replace(/\s*\([^)]*\)/,'')+lk+'</td>'+
       '<td class="when">'+s.arrive+'<div class="drv">'+s.drive+'</div></td>'+
       '<td class="num">'+s.stay+'</td>'+
       '<td>'+wc+'</td>'+
@@ -276,7 +278,8 @@ function pinIcon(color,label){return L.divIcon({className:"",html:'<div class="p
 function dot(color){return L.divIcon({className:"",html:'<div style="width:15px;height:15px;border-radius:50%;background:'+color+';border:2px solid #fff;box-shadow:0 0 0 1px rgba(0,0,0,.3)"></div>',iconSize:[15,15],iconAnchor:[8,8],popupAnchor:[0,-8]});}
 function pop(s){
   return '<b>'+s.name+'</b><br><span style="color:#0f8a4f;font-weight:700">FREE</span>'+(s.tags?' &nbsp;'+s.tags:'')+'<br>'+s.sig+
-    '<br><b>'+pcode(s.addr)+'</b> · <a href="'+gmap(s.addr)+'" target="_blank" rel="noopener">Maps ↗</a>'+
+    '<br><b>'+pcode(s.addr)+'</b> · <a href="'+gmap(s.addr)+'" target="_blank" rel="noopener">Maps ↗</a> · <a href="'+gdir(s.addr)+'" target="_blank" rel="noopener">Navigate ▸</a>'+
+    '<br><span style="color:#6b6b66">Exact: '+s.addr.replace(/\s*\([^)]*\)/,'')+'</span>'+
     '<br><i>Arrive '+s.arrive+' · stay '+s.stay+' · WC: '+(s.wc?'yes':'none')+'</i>';
 }
 const mapA=L.map("mapA",{scrollWheelZoom:false});
