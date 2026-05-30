@@ -116,6 +116,7 @@
     <h3 style="margin-top:10px">How to read this plan</h3>
     <p>The route <em>is</em> the holiday. Two big driving days, each a string of free, flat, toilet-equipped stops chosen for <b>old heritage + the best scenic views</b>. <b>Saturday</b> takes the long scenic west road to Nairn; <b>Sunday</b>, after an early checkout, ambles home down the A9. The two tables give you everything to optimise on Google Maps: <b>significance · postcode · arrive · drive · stay · toilets · cost</b>. Times are tentative — trim a stop or two if the kids flag (I flag the best ones to drop).</p>
     <p style="font-size:13px;color:var(--muted);margin-top:8px"><b>Tag key:</b> 🏰 heritage / history · 🏞️ scenic view · 👦 great for the kids · 🚂 the railway · 🍽️ food stop.</p>
+    <p style="font-size:13px;color:var(--muted);margin-top:4px"><b>Reaching each spot:</b> every address is the <b>precise car park / entrance</b> — not just a postcode-area centroid. In the table tap the <b>postcode</b> to drop the exact pin, or <b>navigate ▸</b> to start Google Maps directions straight there. (Rural postcodes alone can land you a mile off, so use the named car park.)</p>
     <p class="warn" style="margin-top:12px"><b>⚠ Steam train not confirmed.</b> As of late-May 2026 West Coast Railways had <b>delayed the Jacobite season with no published start date</b> (carriage safety retrofit). Don't bank on a steam crossing — <b>check live tonight</b> at <a href="https://westcoastrailways.co.uk/jacobite/timetables" target="_blank" rel="noopener">westcoastrailways.co.uk</a>. Backup: the viaduct is free &amp; stunning anyway, and ordinary <b>ScotRail Fort William→Mallaig</b> trains cross it daily — look up a time at <a href="https://www.scotrail.co.uk" target="_blank" rel="noopener">scotrail.co.uk</a>.</p>
   </div>
 
@@ -133,7 +134,7 @@
     <h2>Saturday 30 May — Glasgow → Nairn <span class="sub">up the west · ≈218 mi · depart 6:00 AM</span></h2>
     <table class="stops" id="satTable">
       <thead><tr>
-        <th>#</th><th>Place &amp; why it's worth it</th><th>Google Maps (tap postcode)</th>
+        <th>#</th><th>Place &amp; why it's worth it</th><th>Exact spot — tap to open / navigate</th>
         <th>Arrive</th><th>Stay</th><th>WC</th><th>Cost</th>
       </tr></thead>
       <tbody></tbody>
@@ -154,7 +155,7 @@
     <h2>Sunday 31 May — Nairn → Glasgow <span class="sub">home down the A9 · ≈177 mi · early checkout, out ~9:00 AM</span></h2>
     <table class="stops" id="sunTable">
       <thead><tr>
-        <th>#</th><th>Place &amp; why it's worth it</th><th>Google Maps (tap postcode)</th>
+        <th>#</th><th>Place &amp; why it's worth it</th><th>Exact spot — tap to open / navigate</th>
         <th>Arrive</th><th>Stay</th><th>WC</th><th>Cost</th>
       </tr></thead>
       <tbody></tbody>
@@ -187,7 +188,7 @@ const NAIRN={lat:57.5856,lng:-3.8654,name:"Nairn (hotel, IV12 5DE)"};
 const SAT=[
  {n:1,name:"Loch Lomond — Luss village",tags:"🏞️ 🏰",lat:56.1006,lng:-4.6394,free:true,
   sig:"The 'bonnie banks' of Britain's largest loch by surface area, framed by Ben Lomond. Luss is a preserved 18th–19th-century slate-quarry village of rose-clad cottages; its lochside churchyard (St Kessog's) sits on a 7th-century Christian site and holds Norse 'hogback' gravestones — a quiet heritage gem the tour buses skip.",
-  addr:"Luss, Alexandria G83 8NN",arrive:"6:50",drive:"+50 min · 25 mi",stay:"20 min",wc:1,cost:"Parking ~£5"},
+  addr:"Luss Village Car Park, Pier Road, Luss G83 8NN",arrive:"6:50",drive:"+50 min · 25 mi",stay:"20 min",wc:1,cost:"Parking ~£5"},
  {n:2,name:"Glencoe — Three Sisters &amp; Folk Museum",tags:"🏞️ 🏰",lat:56.6685,lng:-4.9333,free:true,
   sig:"Scotland's most cinematic glen — three glacier-carved spurs of Bidean nam Bian, scene of the 1692 Massacre of Glencoe and a backdrop in Skyfall and the Harry Potter films. The viewpoint is roadside (no walk); in the village the donation-funded Glencoe Folk Museum occupies 18th-century heather-thatched cottages, and the NTS Visitor Centre (PH49 4HX) tells the massacre story with café &amp; toilets.",
   addr:"Three Sisters Viewpoint, A82, Glencoe PH49 4HX",arrive:"8:25",drive:"+1h15 · 45 mi",stay:"30 min",wc:1,cost:"Free (parking ~£4)"},
@@ -201,7 +202,7 @@ const SAT=[
   link:"https://www.westhighlandmuseum.org.uk/"},
  {n:5,name:"Fort Augustus — Caledonian Canal locks",tags:"🏰 🏞️ 👦",lat:57.1437,lng:-4.6806,free:true,
   sig:"A staircase of five locks lifting boats 13m where Thomas Telford's Caledonian Canal (opened 1822) meets the southern tip of Loch Ness — boats rising, the swing-bridge turning, beside the site of the old Hanoverian fort that named the village. Cafés, ice cream, toilets; superb kid-watching.",
-  addr:"Fort Augustus PH32 4BD",arrive:"13:55",drive:"+50 min · 33 mi",stay:"45 min",wc:1,cost:"Free",
+  addr:"Caledonian Canal Locks Car Park, Fort Augustus PH32 4BD",arrive:"13:55",drive:"+50 min · 33 mi",stay:"45 min",wc:1,cost:"Free",
   link:"https://www.scottishcanals.co.uk/caledonian-canal/"},
  {n:6,name:"Loch Ness — Urquhart Castle",tags:"🏰 🏞️",lat:57.3242,lng:-4.4426,free:true,
   sig:"The most famous loch on earth (the UK's largest body of fresh water by volume) and, on a rocky headland, one of Scotland's biggest medieval castles — held and besieged from the 1200s to 1692, its Grant Tower still standing. Free lay-by views; history-loving adults may want to pay in (HES) for the full ruin. Nessie-spotting delights the kids.",
@@ -215,12 +216,12 @@ const SAT_END={name:"Nairn — hotel (IV12 5DE)",arrive:"~17:45",drive:"+25 min 
 
 // ---------- Sunday: home down the A9 ----------
 const SUN=[
- {n:"A",name:"Loch Morlich, Glenmore (Cairngorms)",tags:"🏞️ 👦",lat:57.1626,lng:-3.6957,free:true,
+ {n:"A",name:"Loch Morlich, Glenmore (Cairngorms)",tags:"🏞️ 👦",lat:57.1599,lng:-3.7130,free:true,
   sig:"Britain's highest sandy beach — freshwater, ringed by the Cairngorm massif and the ancient Caledonian pinewoods of Rothiemurchus and Glenmore (red squirrels, crested tits, sometimes free-ranging reindeer). Paddling, stone-skimming and a flat lochshore loop.",
-  addr:"Glenmore, Aviemore PH22 1QU",arrive:"9:55",drive:"+55 min · 38 mi",stay:"50 min",wc:1,cost:"Free (parking ~£4)"},
- {n:"B",name:"Highland Folk Museum, Newtonmore",tags:"🏰 👦 🍽️",lat:57.0566,lng:-4.1260,free:true,
+  addr:"Loch Morlich Beach Car Park, Glenmore, Aviemore PH22 1QU",arrive:"9:55",drive:"+55 min · 38 mi",stay:"50 min",wc:1,cost:"Free (parking ~£4)"},
+ {n:"B",name:"Highland Folk Museum, Newtonmore",tags:"🏰 👦 🍽️",lat:57.0728,lng:-4.1283,free:true,
   sig:"Britain's first open-air museum (1934): walk through Baile Gean, a fully re-created 1700s Highland township of turf houses you can step inside — used as an Outlander season-1 filming set — plus a Victorian schoolroom, a 1930s working farm and costumed interpreters. Playground, café, picnic lawns.",
-  addr:"Highland Folk Museum, Kingussie Rd, Newtonmore PH20 1AY",arrive:"11:10",drive:"+25 min · 22 mi",stay:"1h40 (lunch)",wc:1,cost:"Free (donation)",
+  addr:"Highland Folk Museum, Aultlarie Croft, Kingussie Rd, Newtonmore PH20 1AY",arrive:"11:10",drive:"+25 min · 22 mi",stay:"1h40 (lunch)",wc:1,cost:"Free (donation)",
   link:"https://www.highlifehighland.com/highlandfolkmuseum/"},
  {n:"C",name:"Ruthven Barracks, Kingussie",tags:"🏰 🏞️",lat:57.0758,lng:-4.0588,free:true,
   sig:"A gaunt 1719 infantry barracks raised by the government to police the Highlands after the 1715 rising — and the very place the Jacobite army rallied after Culloden before scattering, burning it behind them. A floodlit ruin on a glacial mound with huge Spey-valley views; 5-min walk up. 2 min from the Folk Museum.",
@@ -232,7 +233,7 @@ const SUN=[
   link:"https://www.houseofbruar.com/"},
  {n:"E",name:"Killiecrankie — Soldier's Leap",tags:"🏰 🏞️",lat:56.7350,lng:-3.7790,free:true,
   sig:"A steep wooded gorge above the River Garry where the first Jacobite rising opened with the Battle of Killiecrankie (1689) — and where a fleeing government soldier made the legendary 18-foot 'Soldier's Leap' across the water. Free NTS site with short flat paths to the viewpoints; blazing autumn-into-summer colour and a cracking story for the kids.",
-  addr:"Killiecrankie, Pitlochry PH16 5LG",arrive:"15:00",drive:"+15 min · 9 mi",stay:"35 min",wc:1,cost:"Free",
+  addr:"Killiecrankie Visitor Centre Car Park, Killiecrankie, Pitlochry PH16 5LG",arrive:"15:00",drive:"+15 min · 9 mi",stay:"35 min",wc:1,cost:"Free",
   link:"https://www.nts.org.uk/visit/places/killiecrankie"},
  {n:"F",name:"Pitlochry — Dam, salmon ladder &amp; early dinner",tags:"🏞️ 🍽️",lat:56.7019,lng:-3.7297,free:true,
   sig:"A genteel Victorian spa town that boomed after Queen Victoria toured Perthshire. The free Dam visitor centre has a glass-walled fish ladder where you watch salmon climb; riverside walks and plenty of cafés for an early dinner. Scenic upgrade: Queen's View over Loch Tummel, 7 mi west, named for the Queen's 1866 visit.",
@@ -246,6 +247,7 @@ const SUN=[
 const SUN_END={name:"Home — Glasgow",arrive:"~19:45",drive:"+1h30 · 62 mi",note:"Relaxed — hours inside your midnight limit"};
 
 function gmap(addr){return "https://www.google.com/maps/search/?api=1&query="+encodeURIComponent(addr);}
+function gdir(addr){return "https://www.google.com/maps/dir/?api=1&destination="+encodeURIComponent(addr);}
 function pcode(addr){const m=addr.match(/[A-Z]{1,2}\d[A-Z\d]?\s*\d[A-Z]{2}/);return m?m[0]:addr;}
 
 // ----- build tables -----
@@ -257,7 +259,7 @@ function buildTable(id,arr,end,cls){
     return '<tr>'+
       '<td><span class="seg">'+s.n+'</span></td>'+
       '<td><div class="pl">'+s.name+'</div>'+(s.tags?'<div class="tags">'+s.tags+'</div>':'')+'<div class="sig">'+s.sig+'</div></td>'+
-      '<td class="addr"><a href="'+gmap(s.addr)+'" target="_blank" rel="noopener"><b>'+pcode(s.addr)+'</b></a><br>'+s.addr.replace(/\s*\([^)]*\)/,'')+lk+'</td>'+
+      '<td class="addr"><a href="'+gmap(s.addr)+'" target="_blank" rel="noopener"><b>'+pcode(s.addr)+'</b></a> · <a href="'+gdir(s.addr)+'" target="_blank" rel="noopener">navigate ▸</a><br>'+s.addr.replace(/\s*\([^)]*\)/,'')+lk+'</td>'+
       '<td class="when">'+s.arrive+'<div class="drv">'+s.drive+'</div></td>'+
       '<td class="num">'+s.stay+'</td>'+
       '<td>'+wc+'</td>'+
@@ -275,7 +277,8 @@ function pinIcon(color,label){return L.divIcon({className:"",html:'<div class="p
 function dot(color){return L.divIcon({className:"",html:'<div style="width:15px;height:15px;border-radius:50%;background:'+color+';border:2px solid #fff;box-shadow:0 0 0 1px rgba(0,0,0,.3)"></div>',iconSize:[15,15],iconAnchor:[8,8],popupAnchor:[0,-8]});}
 function pop(s){
   return '<b>'+s.name+'</b><br><span style="color:#0f8a4f;font-weight:700">FREE</span>'+(s.tags?' &nbsp;'+s.tags:'')+'<br>'+s.sig+
-    '<br><b>'+pcode(s.addr)+'</b> · <a href="'+gmap(s.addr)+'" target="_blank" rel="noopener">Maps ↗</a>'+
+    '<br><b>'+pcode(s.addr)+'</b> · <a href="'+gmap(s.addr)+'" target="_blank" rel="noopener">Maps ↗</a> · <a href="'+gdir(s.addr)+'" target="_blank" rel="noopener">Navigate ▸</a>'+
+    '<br><span style="color:#6b6b66">Exact: '+s.addr.replace(/\s*\([^)]*\)/,'')+'</span>'+
     '<br><i>Arrive '+s.arrive+' · stay '+s.stay+' · WC: '+(s.wc?'yes':'none')+'</i>';
 }
 const mapA=L.map("mapA",{scrollWheelZoom:false});
