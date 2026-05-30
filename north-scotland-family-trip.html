@@ -82,8 +82,9 @@
     body{background:#fff}
     .wrap{max-width:none;padding:0 10px}
     header.hero{padding:18px 10px;background:#fff}
-    .map{height:300px;box-shadow:none}
+    .map{height:520px;box-shadow:none;break-inside:avoid;break-before:page}
     .leaflet-control-zoom,.leaflet-control-attribution{display:none!important}
+    .map-caption,.legend{break-before:avoid}
     .card,table.stops,table.cost{box-shadow:none;break-inside:avoid}
     table.stops tbody tr{break-inside:avoid}
     h2{break-after:avoid}
@@ -278,7 +279,7 @@ function pop(s){
     '<br><i>Arrive '+s.arrive+' · stay '+s.stay+' · WC: '+(s.wc?'yes':'none')+'</i>';
 }
 const mapA=L.map("mapA",{scrollWheelZoom:false});
-L.tileLayer("https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png",{maxZoom:19,attribution:"&copy; OpenStreetMap"}).addTo(mapA);
+L.tileLayer("https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png",{maxZoom:19,detectRetina:true,attribution:"&copy; OpenStreetMap"}).addTo(mapA);
 mapA.on("click",()=>mapA.scrollWheelZoom.enable());
 mapA.on("mouseout",()=>mapA.scrollWheelZoom.disable());
 
