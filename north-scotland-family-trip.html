@@ -118,7 +118,7 @@
     <h3 style="margin-top:10px">How to read this plan</h3>
     <p>The route <em>is</em> the holiday. <b>Saturday</b> is the big one — the long scenic west road out to the <b>Isle of Skye</b>, then across to Nairn. <b>Sunday</b> is <b>the haunted road home</b>: a witch-trial site, a towering Pictish battle-stone, Jacobite battlefield ghosts, a cathedral of the dead, Bruce's Bannockburn and a Roman fort — all free and open-access, strung down the A9. The two tables give you everything to optimise on Google Maps: <b>significance · postcode · arrive · drive · stay · toilets · cost</b>. Times are tentative — trim a stop if the kids flag (I flag the best ones to drop).</p>
     <p style="font-size:13px;color:var(--muted);margin-top:8px"><b>Tag key:</b> 👻 haunted · 🏰 heritage / history · 🏞️ scenic view · 👦 great for the kids · 🏝️ the island · 🍽️ food stop.</p>
-    <p style="font-size:13px;color:var(--muted);margin-top:4px"><b>Reaching each spot:</b> every address is the <b>precise car park / entrance</b> — not just a postcode-area centroid. In the table tap the <b>postcode</b> to drop the exact pin, or <b>navigate ▸</b> to start Google Maps directions straight there. (Rural Highland postcodes alone can land you a mile off, so use the named car park.)</p>
+    <p style="font-size:13px;color:var(--muted);margin-top:4px"><b>Reaching each spot:</b> every map link uses the <b>exact car-park / site coordinates</b>, not a postcode-area centroid. In the table tap the <b>postcode</b> to drop the precise pin, or <b>navigate ▸</b> to start Google Maps directions straight to that point. (Rural Highland postcodes alone can land you a mile off, so the links are coordinate-based.)</p>
     <p class="warn" style="margin-top:12px"><b>⚠ Saturday is a long day.</b> Reaching Skye and back to Nairn is ≈9 hrs driving plus stops — plan for a <b>~8:45 PM arrival in Nairn</b> (hotel check-in is flexible up to 10 PM). Late-May sunset is ~9:45 PM, so you'll have daylight the whole way. <b>Fuel up in Fort William</b> — it's the last reliable filling stop before Skye. If the kids melt, <b>Culloden (the last stop) is the one to drop</b> — it puts you at the hotel ~45 min earlier.</p>
   </div>
 
@@ -195,11 +195,11 @@ const SAT=[
   sig:"The 'Outdoor Capital of the UK' at the foot of Ben Nevis, Britain's highest mountain. The FREE West Highland Museum is a Jacobite treasure-house — including the famous anamorphic 'secret portrait' of Prince Charlie. On the town's edge, FREE Old Inverlochy Castle is a near-intact 13th-century courtyard fortress that saw two battles. Best lunch &amp; the last reliable fuel before the run out to Skye.",
   addr:"West Highland Museum, Cameron Square, Fort William PH33 6AJ",arrive:"11:05",drive:"+30 min · 16 mi",stay:"50 min",wc:1,cost:"Free (lunch)",
   link:"https://www.westhighlandmuseum.org.uk/"},
- {n:3,name:"Eilean Donan Castle, Dornie",tags:"🏰 🏞️",lat:57.2740,lng:-5.5160,free:true,
+ {n:3,name:"Eilean Donan Castle, Dornie",tags:"🏰 🏞️",lat:57.2741,lng:-5.5163,free:true,
   sig:"Scotland's most photographed castle — a 13th-century stronghold of the Mackenzies on its own tidal islet where three sea lochs meet, reached by an arched stone bridge. Blown up by Royal Navy frigates during the 1719 Jacobite rising and lovingly rebuilt 1911–32. The classic view from the roadside car park is free; it's the perfect gateway shot as you cross to Skye. Café &amp; toilets on site.",
   addr:"Eilean Donan Castle Car Park, Dornie, Kyle of Lochalsh IV40 8DX",arrive:"13:30",drive:"+1h35 · 66 mi",stay:"30 min",wc:1,cost:"Free view / ~£12 in",
   link:"https://www.eileandonancastle.com/"},
- {n:4,name:"Sligachan, Isle of Skye — Old Bridge &amp; Cuillin view",tags:"🏝️ 🏞️",lat:57.2900,lng:-6.1700,free:true,
+ {n:4,name:"Sligachan, Isle of Skye — Old Bridge &amp; Cuillin view",tags:"🏝️ 🏞️",lat:57.2904,lng:-6.1708,free:true,
   sig:"The postcard heart of Skye: the old stone bridge (c.1810) framing the jagged Black Cuillin and Sgùrr nan Gillean behind it — one of the most photographed mountain scenes in Britain. Flat riverside spot, free parking; legend says dunking your face in the cold Sligachan water grants eternal beauty. A proper 'we made it to Skye' moment for the kids.",
   addr:"Sligachan Old Bridge Car Park, Sligachan, Isle of Skye IV47 8SW",arrive:"14:50",drive:"+50 min · 35 mi",stay:"20 min",wc:1,cost:"Free"},
  {n:5,name:"Portree, Isle of Skye — harbour town",tags:"🏝️ 🍽️ 👦",lat:57.4125,lng:-6.1956,free:true,
@@ -217,7 +217,7 @@ const SAT_END={name:"Nairn — hotel (IV12 5DE)",arrive:"~20:45",drive:"+25 min 
 
 // ---------- Sunday: home down the A9 ----------
 const SUN=[
- {n:"A",name:"Auldearn — Witch of Auldearn site &amp; Boath Doocot",tags:"👻 🏰",lat:57.5719,lng:-3.8067,free:true,
+ {n:"A",name:"Auldearn — Witch of Auldearn site &amp; Boath Doocot",tags:"👻 🏰",lat:57.5894,lng:-3.8064,free:true,
   sig:"5 min from the hotel, a chilling start. Auldearn is where Isobel Gowdie gave her 1662 witchcraft confession — the most detailed account of witch-belief in all of Europe, our richest window into covens, charms and the 'Queen of Elfhame'. Her 'green lady' is still said to walk here. The free NTS Boath Doocot (a 17th-C dovecote) crowns the mound that was the centre of the 1645 Battle of Auldearn.",
   addr:"Boath Doocot, Auldearn, Nairn IV12 5HX",arrive:"11:10",drive:"+10 min · 4 mi",stay:"45 min",wc:0,cost:"Free",
   link:"https://www.nts.org.uk/visit/places/boath-doocot"},
@@ -225,11 +225,11 @@ const SUN=[
   sig:"A short hop east to Britain's tallest early-medieval carved stone — a 7-metre Pictish monument of c.850–950 AD. One face is a Celtic cross; the other a vast, grisly battle scene with rows of beheaded warriors and heads piled high. Local legend ties Forres to the three witches who met Macbeth (the Witches' Stone, where 'witches' were rolled downhill in spiked barrels, is a few minutes away). Free, open access, behind glass at the roadside.",
   addr:"Sueno's Stone, Findhorn Road, Forres IV36 1RU",arrive:"12:10",drive:"+15 min · 8 mi",stay:"30 min",wc:0,cost:"Free",
   link:"https://www.historicenvironment.scot/visit-a-place/places/suenos-stone/"},
- {n:"C",name:"Ruthven Barracks, Kingussie",tags:"👻 🏰 🏞️",lat:57.0758,lng:-4.0588,free:true,
+ {n:"C",name:"Ruthven Barracks, Kingussie",tags:"👻 🏰 🏞️",lat:57.0833,lng:-4.0667,free:true,
   sig:"A gaunt 1719 infantry barracks raised by the government to police the Highlands after the 1715 rising — and the very place the Jacobite army rallied after Culloden before scattering, burning it behind them. The final act of the '45. A floodlit ruin on a glacial mound with huge Spey-valley views; 5-min walk up, eerie at any hour.",
   addr:"Ruthven Barracks Car Park, Ruthven Road, Kingussie PH21 1NR",arrive:"14:05",drive:"+1h25 · 64 mi",stay:"40 min",wc:0,cost:"Free",
   link:"https://www.historicenvironment.scot/visit-a-place/places/ruthven-barracks/"},
- {n:"D",name:"Killiecrankie — Soldier's Leap &amp; lunch",tags:"👻 🏰 🍽️",lat:56.7350,lng:-3.7790,free:true,
+ {n:"D",name:"Killiecrankie — Soldier's Leap &amp; lunch",tags:"👻 🏰 🍽️",lat:56.7339,lng:-3.7797,free:true,
   sig:"Said to be Scotland's most haunted battlefield — phantom armies marching to their doom, a red glow over the pass, even a floating severed head. A steep wooded gorge above the River Garry where the 1689 Battle of Killiecrankie opened the entire Jacobite era, and a fleeing government soldier made the legendary 18-foot 'Soldier's Leap'. Free NTS site, short flat paths; cafés in Pitlochry 5 min on for lunch.",
   addr:"Killiecrankie Visitor Centre Car Park, Killiecrankie, Pitlochry PH16 5LG",arrive:"15:35",drive:"+50 min · 43 mi",stay:"1h15 (lunch)",wc:1,cost:"Free",
   link:"https://www.nts.org.uk/visit/places/killiecrankie"},
@@ -237,7 +237,7 @@ const SUN=[
   sig:"A part-ruined medieval cathedral on the Tay (free), holding the tomb of the 'Wolf of Badenoch' — the savage earl who burned Elgin Cathedral in 1390. Across the river stands the last of Birnam Wood, the forest of Macbeth's doom ('till Birnam Wood remove to Dunsinane'). Atmospheric riverside paths; a town with toilets and cafés.",
   addr:"Dunkeld Cathedral, High Street, Dunkeld PH8 0AW",arrive:"17:15",drive:"+25 min · 17 mi",stay:"45 min",wc:1,cost:"Free",
   link:"https://www.historicenvironment.scot/visit-a-place/places/dunkeld-cathedral/"},
- {n:"F",name:"Bannockburn — Rotunda &amp; Bruce statue",tags:"👻 🏰 🏞️",lat:56.0905,lng:-3.9170,free:true,
+ {n:"F",name:"Bannockburn — Rotunda &amp; Bruce statue",tags:"👻 🏰 🏞️",lat:56.0892,lng:-3.9170,free:true,
   sig:"The decisive battlefield of Scottish history: over two days in June 1314 Robert the Bruce smashed Edward II's far larger English army and all but won Scotland's independence. The outdoor Rotunda and the great bronze of Bruce on his warhorse are free and open at any hour. The wider battlefield carries a haunted reputation — phantom soldiers are reported in the grounds of nearby Bannockburn House. No closing time, so it works however late you arrive.",
   addr:"Bannockburn Battlefield (Rotunda), Glasgow Road, Stirling FK7 0LJ",arrive:"19:00",drive:"+1h00 · 50 mi",stay:"40 min",wc:1,cost:"Free (outdoor)",
   link:"https://www.nts.org.uk/visit/places/bannockburn"},
@@ -248,8 +248,10 @@ const SUN=[
 ];
 const SUN_END={name:"Home — Glasgow",arrive:"~21:25",drive:"+40 min · 25 mi",note:"Home by ~9:25 PM — generous stays all day, still inside your 10:30 PM cap"};
 
-function gmap(addr){return "https://www.google.com/maps/search/?api=1&query="+encodeURIComponent(addr);}
-function gdir(addr){return "https://www.google.com/maps/dir/?api=1&destination="+encodeURIComponent(addr);}
+// Links use exact car-park / site coordinates so the pin lands precisely
+// on the spot (text/postcode geocoding can drift a mile off in the Highlands).
+function gmap(s){return "https://www.google.com/maps/search/?api=1&query="+s.lat+"%2C"+s.lng;}
+function gdir(s){return "https://www.google.com/maps/dir/?api=1&destination="+s.lat+"%2C"+s.lng;}
 function pcode(addr){const m=addr.match(/[A-Z]{1,2}\d[A-Z\d]?\s*\d[A-Z]{2}/);return m?m[0]:addr;}
 
 // ----- build tables -----
@@ -261,7 +263,7 @@ function buildTable(id,arr,end,cls){
     return '<tr>'+
       '<td><span class="seg">'+s.n+'</span></td>'+
       '<td><div class="pl">'+s.name+'</div>'+(s.tags?'<div class="tags">'+s.tags+'</div>':'')+'<div class="sig">'+s.sig+'</div></td>'+
-      '<td class="addr"><a href="'+gmap(s.addr)+'" target="_blank" rel="noopener"><b>'+pcode(s.addr)+'</b></a> · <a href="'+gdir(s.addr)+'" target="_blank" rel="noopener">navigate ▸</a><br>'+s.addr.replace(/\s*\([^)]*\)/,'')+lk+'</td>'+
+      '<td class="addr"><a href="'+gmap(s)+'" target="_blank" rel="noopener"><b>'+pcode(s.addr)+'</b></a> · <a href="'+gdir(s)+'" target="_blank" rel="noopener">navigate ▸</a><br>'+s.addr.replace(/\s*\([^)]*\)/,'')+lk+'</td>'+
       '<td class="when">'+s.arrive+'<div class="drv">'+s.drive+'</div></td>'+
       '<td class="num">'+s.stay+'</td>'+
       '<td>'+wc+'</td>'+
@@ -279,8 +281,8 @@ function pinIcon(color,label){return L.divIcon({className:"",html:'<div class="p
 function dot(color){return L.divIcon({className:"",html:'<div style="width:15px;height:15px;border-radius:50%;background:'+color+';border:2px solid #fff;box-shadow:0 0 0 1px rgba(0,0,0,.3)"></div>',iconSize:[15,15],iconAnchor:[8,8],popupAnchor:[0,-8]});}
 function pop(s){
   return '<b>'+s.name+'</b><br><span style="color:#0f8a4f;font-weight:700">FREE</span>'+(s.tags?' &nbsp;'+s.tags:'')+'<br>'+s.sig+
-    '<br><b>'+pcode(s.addr)+'</b> · <a href="'+gmap(s.addr)+'" target="_blank" rel="noopener">Maps ↗</a> · <a href="'+gdir(s.addr)+'" target="_blank" rel="noopener">Navigate ▸</a>'+
-    '<br><span style="color:#6b6b66">Exact: '+s.addr.replace(/\s*\([^)]*\)/,'')+'</span>'+
+    '<br><b>'+pcode(s.addr)+'</b> · <a href="'+gmap(s)+'" target="_blank" rel="noopener">Maps ↗</a> · <a href="'+gdir(s)+'" target="_blank" rel="noopener">Navigate ▸</a>'+
+    '<br><span style="color:#6b6b66">Exact: '+s.addr.replace(/\s*\([^)]*\)/,'')+' ('+s.lat.toFixed(4)+', '+s.lng.toFixed(4)+')</span>'+
     '<br><i>Arrive '+s.arrive+' · stay '+s.stay+' · WC: '+(s.wc?'yes':'none')+'</i>';
 }
 const mapA=L.map("mapA",{scrollWheelZoom:false});
