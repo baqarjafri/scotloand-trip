@@ -1,7 +1,7 @@
 # Surah Al-Falaq (113): numbers, letters, structure and protection
 
 Part 1 of a study of the *Mu'awwidhatayn* (the two "refuge" surahs, 113 and 114). This part covers Al-Falaq.
-Part 2 ([02-al-falaq-counter-pattern.md](02-al-falaq-counter-pattern.md)) reads the surah as a counter-pattern to sorcery. An-Nas and the combined analysis come next; section 9 previews them.
+Part 2 ([02-al-falaq-counter-pattern.md](02-al-falaq-counter-pattern.md)) reads the surah as a counter-pattern to sorcery. Part 3 ([03-an-nas-and-the-pair.md](03-an-nas-and-the-pair.md)) covers An-Nas and the pair; section 9 below was the first preview.
 
 > قُلْ أَعُوذُ بِرَبِّ ٱلْفَلَقِ ۝١ مِن شَرِّ مَا خَلَقَ ۝٢ وَمِن شَرِّ غَاسِقٍ إِذَا وَقَبَ ۝٣
 > وَمِن شَرِّ ٱلنَّفَّٰثَٰتِ فِى ٱلْعُقَدِ ۝٤ وَمِن شَرِّ حَاسِدٍ إِذَا حَسَدَ ۝٥
