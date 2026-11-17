@@ -1,10 +1,12 @@
 import sys, os
 sys.path.insert(0, os.path.dirname(os.path.abspath(__file__)))
 from compose import *
+if os.environ.get('MODE') == 'svg':
+    from svgscene import SvgScene as Scene
 W = load_ways(['osm/ways1.json', 'osm/ways2.json', 'osm/ways3.json'])
 C = centre_low = (-4.2083686, 55.921989)
-S = Scene((-4.20975, 55.92265, -4.20700, 55.92125))
-app2 = W[1427552263]          # two-way, 1 lane each way
+S = Scene((-4.20975, 55.92265, -4.20700, 55.92125), heading=215)
+app2 = W[1427552263][-2:] if os.environ.get('MODE') == 'svg' else W[1427552263]
 flare = W[1222830046]              # oneway, 2 lanes: left | through;right
 exitSW = list(reversed(W[247132526]))
 nw = W[31093561]
@@ -16,6 +18,7 @@ outer = lambda b0, b1: S.P([(arc(C, 9.6, b0, b1), 0)])
 ahead = right_app + inner(80, 222) + S.P([([dest(C, 228, 15), exitSW[0]] + exitSW[1:], -1.7)])
 left = left_app + outer(70, 122) + S.P([([dest(C, 125, 11), dest(C, 136, 34)], -1.6)])
 right = right_app + inner(80, 282) + S.P([(nw, -1.6)])
+S.island(C, 4.2)
 S.path(left, MAGENTA, w=11, dash=22)
 S.path(right, ORANGE, w=11, dash=22)
 S.path(ahead, BLUE, w=15)
@@ -23,6 +26,8 @@ S.path(ahead, BLUE, w=15)
 la = S.offpx(flare, -1.7)[0]; ra = S.offpx(flare, +1.7)[0]
 S.label((la[0]-190, la[1]-60), 'LEFT LANE\nleft only', col=MAGENTA, sz=26, anchor='mm', dot=la)
 S.label((ra[0]+150, ra[1]+40), 'RIGHT LANE\nahead or right', col=BLUE, sz=26, anchor='mm', dot=ra)
+if getattr(S, 'svg', False):
+    _W, _T = load_all(); lane_pills(S, _W, _T, 1222830046, 1, back_m=8, use=(1,))
 up = S.offpx(app2, -1.7)[1]
 S.signal((up[0]-120, up[1]-110), 'N', text='NO SIGNAL on approach\n(going ahead)', anchor='mm')
 # signal point after passing the 1st exit

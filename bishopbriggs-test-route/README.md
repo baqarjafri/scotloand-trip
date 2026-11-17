@@ -1,8 +1,9 @@
 # Bishopbriggs Test Route
 
 Study guide for the Bishopbriggs driving test centre (Crosshill Road, B819, G64 2QA).
-Open `index.html`. Each junction is one picture (`img/`): an aerial photo with the route lane,
-lane arrows, other choices, traffic lights and signal points drawn on, plus the instruction and options.
+Open `index.html`. One card per junction: the instruction, a driver's-eye view of the lanes with their painted
+arrows (your lane highlighted), a heading-up drawing of the junction with your route, other choices and signal
+points, and the options if the examiner sends you another way. The aerial photo version (`img/`) sits under each card.
 
 ## Cards
 

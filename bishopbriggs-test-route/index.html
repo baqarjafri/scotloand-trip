@@ -4,7 +4,7 @@
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
 <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Atkinson+Hyperlegible:wght@400;700&family=Barlow+Condensed:wght@600;700&family=JetBrains+Mono:wght@400;600&display=swap">
 <style>
-/* Layout: a pocket route book. One column, driving order. Each junction is one picture: photo, lanes, signals and options in a single image. */
+/* Layout: a pocket route book. One card per junction in driving order: instruction, driver's-eye lane view, heading-up junction diagram, options. */
 :root {
   --bg: #f2f4f1;
   --surface: #ffffff;
@@ -12,26 +12,42 @@
   --muted: #56625b;
   --rule: #d6ddd7;
   --sign: #00703c;
-  --sign-ink: #ffffff;
   --route-no: #ffd200;
   --route: #1d5fd1;
-  --alt: #c44a10;
-  --amber: #ffb000;
+  --tint: #e6eefc;
+  --trap-bg: #fdf1d6;
+  --trap-ink: #7a4a00;
   --stretch-bg: #e8ece8;
+  --d-bg: #eef1ec;
+  --d-road: #c3c9c4;
+  --d-island: #a9d6a0;
+  --d-label: #ffffff;
+  --l-sky: #dde6ee;
+  --c-route: #1d5fd1;
+  --c-mag: #c2338f;
+  --c-org: #d9691a;
+  --c-grey: #5f6663;
+  --c-red: #c0261d;
+  --c-teal: #00897b;
+  --c-amber: #ffb000;
   --font-display: "Barlow Condensed", "Arial Narrow", "Roboto Condensed", sans-serif;
   --font-body: "Atkinson Hyperlegible", "Segoe UI", Roboto, Helvetica, Arial, sans-serif;
   --font-data: "JetBrains Mono", ui-monospace, SFMono-Regular, Menlo, Consolas, monospace;
 }
 @media (prefers-color-scheme: dark) {
   :root:not([data-theme="light"]) {
-    --bg: #0f1411; --surface: #171e1a; --fg: #e6ebe7; --muted: #9ba8a0; --rule: #2b362f;
-    --sign: #1c8f53; --sign-ink: #ffffff; --route-no: #ffd200; --route: #7ea6f0; --alt: #f08a4b; --amber: #ffb000; --stretch-bg: #1d2621;
+    --bg: #0f1411; --surface: #171e1a; --fg: #e6ebe7; --muted: #9ba8a0; --rule: #2b362f; --sign: #1c8f53; --route-no: #ffd200; --route: #7ea6f0;
+    --tint: #1c2840; --trap-bg: #3a2e12; --trap-ink: #f3c76b; --stretch-bg: #1d2621;
+    --d-bg: #1a211d; --d-road: #46514a; --d-island: #2f5a36; --d-label: #222a25; --l-sky: #18212a;
+    --c-route: #7ea6f0; --c-mag: #f07fcd; --c-org: #f5a25a; --c-grey: #b3bab6; --c-red: #ff8a7a; --c-teal: #5fd0c0; --c-amber: #ffb000;
     color-scheme: dark;
   }
 }
 :root[data-theme="dark"] {
-  --bg: #0f1411; --surface: #171e1a; --fg: #e6ebe7; --muted: #9ba8a0; --rule: #2b362f;
-  --sign: #1c8f53; --sign-ink: #ffffff; --route-no: #ffd200; --route: #7ea6f0; --alt: #f08a4b; --amber: #ffb000; --stretch-bg: #1d2621;
+  --bg: #0f1411; --surface: #171e1a; --fg: #e6ebe7; --muted: #9ba8a0; --rule: #2b362f; --sign: #1c8f53; --route-no: #ffd200; --route: #7ea6f0;
+  --tint: #1c2840; --trap-bg: #3a2e12; --trap-ink: #f3c76b; --stretch-bg: #1d2621;
+  --d-bg: #1a211d; --d-road: #46514a; --d-island: #2f5a36; --d-label: #222a25; --l-sky: #18212a;
+  --c-route: #7ea6f0; --c-mag: #f07fcd; --c-org: #f5a25a; --c-grey: #b3bab6; --c-red: #ff8a7a; --c-teal: #5fd0c0; --c-amber: #ffb000;
   color-scheme: dark;
 }
 * { box-sizing: border-box; }
@@ -42,55 +58,105 @@ body {
   padding-right: max(16px, env(safe-area-inset-right, 0px));
   padding-block: 24px 64px;
 }
-.wrap { max-width: 860px; margin: 0 auto; display: grid; gap: 28px; }
+.wrap { max-width: 720px; margin: 0 auto; display: grid; gap: 26px; }
 h1, h2, h3 { font-family: var(--font-display); font-weight: 700; line-height: 1.1; text-wrap: balance; margin: 0; letter-spacing: 0.01em; }
 h1 { font-size: clamp(2.2rem, 7vw, 3.4rem); }
 h2 { font-size: 1.9rem; }
 p { margin: 0; max-width: 65ch; }
 a { color: var(--route); }
-a:focus-visible { outline: 3px solid var(--route); outline-offset: 2px; }
+a:focus-visible, summary:focus-visible, svg:focus-visible { outline: 3px solid var(--route); outline-offset: 2px; }
 .eyebrow { font-family: var(--font-data); font-size: 0.78rem; letter-spacing: 0.06em; text-transform: uppercase; color: var(--muted); }
 .muted { color: var(--muted); }
 .rn { display: inline-block; font-family: var(--font-display); font-weight: 700; font-size: 0.95em; padding: 0 0.35em; border-radius: 3px; line-height: 1.35; white-space: nowrap; }
 .rn.a { background: var(--sign); color: var(--route-no); }
-.rn.b { background: #fff; color: #111; border: 1.5px solid #111; }
-
-header.top { display: grid; gap: 10px; }
+.rn.b { background: #ffffff; color: #111111; border: 1.5px solid #111111; }
 .sub { font-size: 1.05rem; color: var(--muted); }
 
-.key { display: flex; flex-wrap: wrap; gap: 10px 18px; background: var(--surface); border: 1px solid var(--rule); border-radius: 10px; padding: 14px 16px; font-size: 0.93rem; }
-.key span { display: inline-flex; align-items: center; gap: 8px; }
-.sw { width: 34px; height: 10px; border-radius: 5px; background: var(--route); flex: none; }
-.sw.dash { background: repeating-linear-gradient(90deg, var(--alt) 0 9px, transparent 9px 14px); }
-.pill { font-family: var(--font-body); font-weight: 700; font-size: 0.9rem; padding: 0 7px; border-radius: 5px; border: 2px solid #282828; background: #fff; color: #111; line-height: 1.4; }
-.pill.on { background: #1d5fd1; color: #fff; border-color: #fff; outline: 1px solid #1d5fd1; }
-.amb { background: var(--amber); color: #111; font-weight: 700; padding: 0 7px; border-radius: 5px; border: 2px solid #111; font-size: 0.85rem; }
-.tl { display: inline-grid; gap: 2px; background: #141414; padding: 3px; border-radius: 4px; }
-.tl i { width: 7px; height: 7px; border-radius: 50%; display: block; }
-
-nav.jump { display: flex; flex-wrap: wrap; gap: 8px; }
-nav.jump a { text-decoration: none; font-weight: 700; padding: 7px 14px; border-radius: 999px; border: 1.5px solid var(--rule); background: var(--surface); color: var(--fg); }
-nav.jump a.a { border-color: var(--route); }
-nav.jump a.b { border-color: var(--alt); }
+.howto { display: grid; gap: 10px; background: var(--surface); border: 1px solid var(--rule); border-radius: 12px; padding: 14px 16px; }
+.howto ul { margin: 0; padding: 0; list-style: none; display: grid; gap: 8px; font-size: 0.95rem; }
+.howto li { display: flex; gap: 10px; align-items: center; }
+.ic { flex: none; width: 40px; height: 22px; border-radius: 6px; display: inline-grid; place-items: center; font-weight: 700; font-size: 0.8rem; }
+.ic.you { background: #1d5fd1; color: #ffffff; }
+.ic.road { background: #3b4045; color: #ffffff; font-size: 1rem; }
+.ic.line { background: var(--c-route); height: 8px; }
+.ic.dash { background: repeating-linear-gradient(90deg, var(--c-mag) 0 9px, transparent 9px 14px); height: 8px; }
+.ic.amb { background: var(--c-amber); color: #111111; border: 2px solid #111111; }
 
 figure { margin: 0; display: grid; gap: 6px; }
-figure img { width: 100%; height: auto; display: block; border-radius: 10px; border: 1px solid var(--rule); background: var(--surface); }
+figure img { width: 100%; height: auto; display: block; border-radius: 10px; border: 1px solid var(--rule); }
 figcaption { font-size: 0.85rem; color: var(--muted); }
+nav.jump { display: flex; flex-wrap: wrap; gap: 8px; }
+nav.jump a { text-decoration: none; font-weight: 700; padding: 7px 14px; border-radius: 999px; border: 1.5px solid var(--rule); background: var(--surface); color: var(--fg); }
+nav.jump a.a { border-color: var(--c-route); }
+nav.jump a.b { border-color: var(--c-org); }
 
-section.leg { display: grid; gap: 16px; }
+section.leg { display: grid; gap: 18px; }
 .leghead { display: grid; gap: 6px; border-top: 4px solid var(--sign); padding-top: 14px; }
-.leghead.a { border-color: var(--route); }
-.leghead.b { border-color: var(--alt); }
+.leghead.a { border-color: var(--c-route); }
+.leghead.b { border-color: var(--c-org); }
 
-.card { display: grid; gap: 8px; }
-.card .meta { display: flex; flex-wrap: wrap; gap: 8px 14px; align-items: center; font-size: 0.88rem; color: var(--muted); }
-.dist { font-family: var(--font-data); font-weight: 600; color: var(--fg); background: var(--surface); border: 1px solid var(--rule); padding: 2px 8px; border-radius: 6px; }
-.sv { color: var(--route); font-weight: 700; text-decoration: none; }
-.sv:hover { text-decoration: underline; }
+/* junction card */
+.jc { background: var(--surface); border: 1px solid var(--rule); border-radius: 14px; overflow: hidden; display: grid; gap: 14px; padding-bottom: 16px; }
+.jc > :not(.jh) { margin-inline: 16px; }
+.jh { display: grid; grid-template-columns: auto minmax(0, 1fr) auto; gap: 12px; align-items: center; background: var(--sign); color: #ffffff; padding: 12px 16px; }
+.jn { min-width: 2.6rem; height: 2.6rem; padding: 0 6px; border-radius: 1.3rem; background: #ffffff; color: var(--sign); font-family: var(--font-display); font-weight: 700; font-size: 1.35rem; display: grid; place-items: center; }
+.jh h3 { font-size: 1.5rem; color: #ffffff; }
+.jh p { font-size: 0.85rem; opacity: 0.92; }
+.mph { display: inline-grid; place-items: center; width: 2.6rem; height: 2.6rem; border-radius: 50%; border: 0.3rem solid #d4211b; background: #ffffff; color: #111111; font-family: var(--font-display); font-weight: 700; font-size: 1.1rem; }
+.instr { font-size: 1.15rem; font-weight: 700; line-height: 1.4; background: var(--tint); border-left: 5px solid var(--c-route); padding: 10px 12px; border-radius: 6px; }
+.lv svg, .dv svg { width: 100%; height: auto; display: block; border-radius: 10px; margin: 0 auto; }
+.dv svg { max-width: 560px; border: 1px solid var(--rule); cursor: zoom-in; }
+.lv svg { max-width: 560px; }
+.opts { list-style: none; padding: 0; display: grid; gap: 8px; }
+.opt { display: flex; gap: 12px; align-items: flex-start; padding: 8px 10px; border-radius: 8px; }
+.opt.primary { background: var(--tint); }
+.opt div { display: grid; gap: 2px; min-width: 0; }
+.opt span { font-size: 0.93rem; color: var(--muted); }
+.sw { flex: none; width: 30px; height: 8px; border-radius: 4px; margin-top: 8px; background: var(--sw); }
+.sw.dash { background: repeating-linear-gradient(90deg, var(--sw) 0 8px, transparent 8px 12px); }
+.trap { background: var(--trap-bg); color: var(--trap-ink); font-weight: 700; padding: 10px 12px; border-radius: 8px; font-size: 0.95rem; }
+.meta { display: flex; flex-wrap: wrap; gap: 10px 16px; align-items: center; font-size: 0.9rem; }
+.meta details { flex: 1 1 100%; order: 3; }
+.meta summary { cursor: pointer; color: var(--route); font-weight: 700; display: inline-block; }
+.meta details img { margin-top: 8px; cursor: zoom-in; }
+.dist { font-family: var(--font-data); font-weight: 600; background: var(--bg); border: 1px solid var(--rule); padding: 2px 8px; border-radius: 6px; }
+.sv { color: var(--muted); }
+
+/* diagram parts */
+.d-bg { fill: var(--d-bg); }
+.d-road { fill: none; stroke: var(--d-road); stroke-linecap: round; stroke-linejoin: round; }
+.d-island { fill: var(--d-island); stroke: var(--d-road); stroke-width: 4; }
+.d-case { fill: none; stroke: var(--d-bg); stroke-linecap: round; stroke-linejoin: round; }
+.d-line { fill: none; stroke-linecap: round; stroke-linejoin: round; }
+.d-head { stroke: var(--d-bg); stroke-width: 3; }
+.d-lights rect { fill: #141414; stroke: #ffffff; stroke-width: 3; }
+.d-leader { stroke: var(--fg); stroke-width: 3; opacity: 0.55; }
+.d-dot { fill: var(--d-label); stroke-width: 4; }
+.d-lab { stroke-width: 3; }
+.d-text { font-family: var(--font-body); font-weight: 700; }
+.d-north text { fill: var(--muted); font-family: var(--font-data); }
+/* lane view parts */
+.l-sky { fill: var(--l-sky); }
+.l-road { fill: #3b4045; }
+.l-on { fill: #1d5fd1; opacity: 0.6; }
+.l-on-b { fill: #e0741a; opacity: 0.6; }
+.l-edge, .l-dash { stroke: #ffffff; stroke-width: 3; fill: none; }
+.l-gw { stroke: #ffffff; stroke-width: 2.5; }
+.l-stop { stroke: #ffffff; stroke-width: 5; }
+.l-arrow { fill: none; stroke: #ffffff; stroke-width: 7; stroke-linecap: round; stroke-linejoin: round; }
+.l-head { fill: #ffffff; }
+.l-word { fill: #ffffff; font-family: var(--font-body); font-weight: 700; }
+.l-q { fill: #ffffff; font-family: var(--font-body); font-weight: 700; font-size: 40px; }
+.l-tag { fill: #1d5fd1; }
+.l-tag-b { fill: #e0741a; }
+.l-tagt { fill: #ffffff; font-family: var(--font-body); font-weight: 700; font-size: 15px; }
+.l-tick { fill: none; stroke: #1d5fd1; stroke-width: 3; }
+.l-tick.l-tag-b { stroke: #e0741a; }
+.l-gwt { fill: var(--fg); font-family: var(--font-data); font-weight: 600; font-size: 13px; }
+
 .stretch { background: var(--stretch-bg); border-radius: 8px; padding: 10px 14px; font-size: 0.95rem; display: flex; gap: 10px; align-items: baseline; }
 .stretch b.k { font-family: var(--font-data); font-size: 0.74rem; letter-spacing: 0.05em; text-transform: uppercase; color: var(--muted); white-space: nowrap; }
 .endnote { border: 1.5px dashed var(--rule); border-radius: 8px; padding: 12px 14px; font-size: 0.95rem; }
-
 .tablebox { overflow-x: auto; border: 1px solid var(--rule); border-radius: 8px; background: var(--surface); }
 table { border-collapse: collapse; width: 100%; font-size: 0.93rem; }
 th, td { text-align: left; vertical-align: top; padding: 8px 10px; border-bottom: 1px solid var(--rule); }
@@ -100,37 +166,38 @@ td.k { font-weight: 700; white-space: nowrap; }
 .sources { font-size: 0.9rem; color: var(--muted); display: grid; gap: 8px; }
 .sources ul { margin: 0; padding-left: 1.1em; display: grid; gap: 4px; }
 .sources h2 { color: var(--fg); }
-.card figure img { cursor: zoom-in; }
-.lb { position: fixed; inset: 0; z-index: 50; background: rgba(8, 12, 10, 0.94); overflow: auto; -webkit-overflow-scrolling: touch;
-  padding: calc(env(safe-area-inset-top, 0px) + 56px) max(12px, env(safe-area-inset-right, 0px)) calc(env(safe-area-inset-bottom, 0px) + 24px) max(12px, env(safe-area-inset-left, 0px)); }
-.lb img { display: block; width: auto; max-width: none; height: auto; margin: 0 auto; border-radius: 8px; }
-.lb button { position: fixed; top: calc(env(safe-area-inset-top, 0px) + 10px); right: max(12px, env(safe-area-inset-right, 0px)); font: 700 1rem var(--font-body);
-  background: #ffffff; color: #111111; border: 0; border-radius: 999px; padding: 8px 16px; cursor: pointer; }
-.hint { font-size: 0.85rem; color: var(--muted); }
+.lb { position: fixed; inset: 0; z-index: 50; background: var(--bg); overflow: auto; -webkit-overflow-scrolling: touch;
+  padding: calc(env(safe-area-inset-top, 0px) + 58px) max(12px, env(safe-area-inset-right, 0px)) calc(env(safe-area-inset-bottom, 0px) + 24px) max(12px, env(safe-area-inset-left, 0px)); }
+.lb .inner { width: max(100%, 960px); margin: 0 auto; }
+.lb .inner svg, .lb .inner img { width: 100%; height: auto; display: block; border-radius: 8px; }
+.lb button { position: fixed; top: calc(env(safe-area-inset-top, 0px) + 10px); right: max(12px, env(safe-area-inset-right, 0px)); font-family: var(--font-body); font-weight: 700; font-size: 1rem;
+  background: var(--fg); color: var(--bg); border: 0; border-radius: 999px; padding: 8px 16px; cursor: pointer; }
 </style>
 
 <div class="wrap">
 
-<header class="top">
-  <div class="eyebrow">Bishopbriggs driving test centre · Crosshill Road <span class="rn b">B819</span> · G64 2QA · v0.2</div>
+<header style="display:grid;gap:10px">
+  <div class="eyebrow">Bishopbriggs driving test centre · Crosshill Road <span class="rn b">B819</span> · G64 2QA · v0.3</div>
   <h1>Bishopbriggs Test Route</h1>
-  <p class="sub">Every junction is one picture: a real aerial photo with your lane, the painted lane arrows, the lights and the point where you signal drawn on it. Start to Cadder Roundabout, then two extensions: <span class="rn a">A803</span> south to Springburn and <span class="rn a">A803</span> north to Kirkintilloch.</p>
+  <p class="sub">One card per junction, in driving order. Each shows the lanes as you see them from the driver's seat, then the junction from above with your direction of travel pointing up the page. Start to Cadder Roundabout, then <span class="rn a">A803</span> south to Springburn or <span class="rn a">A803</span> north to Kirkintilloch.</p>
 </header>
 
-<div class="key" aria-label="How to read the pictures">
-  <span><i class="sw" aria-hidden="true"></i>Your route</span>
-  <span><i class="sw dash" aria-hidden="true"></i>Other choices at that junction</span>
-  <span><b class="pill">←</b><b class="pill on">↑</b>Lane arrows on the road; blue = your lane</span>
-  <span><b class="amb">◀ SIGNAL</b>Signal here</span>
-  <span><span class="tl" aria-hidden="true"><i style="background:#e6281e"></i><i style="background:#faaf00"></i><i style="background:#28be46"></i></span>Traffic lights</span>
+<div class="howto">
+  <b>How to read a card</b>
+  <ul>
+    <li><span class="ic road" aria-hidden="true">↑</span>Dark road = the lanes on approach. White arrows = arrows painted on the road.</li>
+    <li><span class="ic you" aria-hidden="true">YOU</span>Your lane, highlighted. At Cadder, A and B mark the two extensions.</li>
+    <li><span class="ic line" aria-hidden="true"></span>Your route on the junction drawing. You always drive up the page.</li>
+    <li><span class="ic dash" aria-hidden="true"></span>What to do if the examiner sends you another way.</li>
+    <li><span class="ic amb" aria-hidden="true">◀</span>Where to signal.</li>
+  </ul>
+  <p class="muted" style="font-size:0.88rem">Tap a junction drawing to see it full size.</p>
 </div>
 
 <figure>
-  <img src="img/overview-full.jpg" alt="Map of the whole route: from the start on Crosshill Road to Cadder Roundabout, then extension A south along the A803 through Bishopbriggs to Colston Road, and extension B north to Torrance Roundabout and east into Kirkintilloch." width="1400" height="1657">
-  <figcaption>Black: start leg. Blue: extension A (south). Orange: extension B (north). Labels match the cards below.</figcaption>
+  <img src="img/overview-full.jpg" alt="Map of the whole route: the start on Crosshill Road to Cadder Roundabout, extension A south on the A803 to Colston Road, and extension B north to Torrance Roundabout and east into Kirkintilloch." width="1400" height="1657">
+  <figcaption>Black: start leg. Blue: extension A (south). Orange: extension B (north). Map © OpenStreetMap contributors.</figcaption>
 </figure>
-
-<p class="hint">Tap any junction picture to see it full size.</p>
 
 <nav class="jump" aria-label="Jump to">
   <a href="#start">Start · 0.85 km</a>
@@ -138,121 +205,935 @@ td.k { font-weight: 700; white-space: nowrap; }
   <a class="b" href="#ext-b">B · north · 4.5 km</a>
 </nav>
 
-<!-- ================= START ================= -->
 <section class="leg" id="start" aria-labelledby="start-h">
   <div class="leghead">
     <h2 id="start-h">Start: test centre to Cadder Roundabout</h2>
     <p class="muted">0.85 km on Crosshill Road, 40 mph. Three roundabouts and one set of lights.</p>
   </div>
-
-  <div class="card">
-    <figure><img src="img/j01-gate-cole.jpg" alt="Gate and Cole Road roundabout. Turn left out of the centre, signal left again at once, take the first exit. Second exit is Cole Road, signal right." width="897" height="1319"></figure>
-    <div class="meta"><span class="dist">0 → 57 m</span><a class="sv" href="https://www.google.com/maps/@?api=1&amp;map_action=pano&amp;viewpoint=55.924483,-4.199844&amp;heading=261&amp;pitch=0&amp;fov=90" target="_blank" rel="noopener">Check on Street View ↗</a></div>
-  </div>
-
-  <div class="card">
-    <figure><img src="img/j02-retail-lights.jpg" alt="Retail park traffic lights. Straight on in the single lane, no signal. Left turn into the retail park needs a left signal." width="837" height="1318"></figure>
-    <div class="meta"><span class="dist">≈330 m</span><a class="sv" href="https://www.google.com/maps/@?api=1&amp;map_action=pano&amp;viewpoint=55.923455,-4.203695&amp;heading=238&amp;pitch=0&amp;fov=90" target="_blank" rel="noopener">Check on Street View ↗</a></div>
-  </div>
-
-  <div class="card">
-    <figure><img src="img/j03-lowmoss.jpg" alt="Lowmoss Roundabout. Ahead is the second exit: use the right lane, no signal on approach, signal left after the retail-park exit. The left lane is left only." width="1025" height="1589"></figure>
-    <div class="meta"><span class="dist">≈630 m</span><a class="sv" href="https://www.google.com/maps/@?api=1&amp;map_action=pano&amp;viewpoint=55.922302,-4.207978&amp;heading=215&amp;pitch=0&amp;fov=90" target="_blank" rel="noopener">Check on Street View ↗</a></div>
-  </div>
-
-  <div class="card">
-    <figure><img src="img/j04-cadder.jpg" alt="Cadder Roundabout on the A803. Extension A: left lane, signal left, first exit south. Extension B: right lane, signal right, second exit north, signal left after passing the south exit." width="956" height="1593"></figure>
-    <div class="meta"><span class="dist">≈850 m</span><a class="sv" href="https://www.google.com/maps/@?api=1&amp;map_action=pano&amp;viewpoint=55.921281,-4.209868&amp;heading=235&amp;pitch=0&amp;fov=90" target="_blank" rel="noopener">Check on Street View ↗</a></div>
-  </div>
+<article class="jc" id="j01-gate-cole">
+  <div class="jh"><span class="jn">0·1</span><div><h3>Gate + Cole Road Roundabout</h3><p>B819 Crosshill Road  ·  3 arms  ·  no lane markings</p></div><span class="mph" title="Speed limit 40 mph">40</span></div>
+  <p class="instr">YOUR ROUTE: turn LEFT out of the centre, then FIRST EXIT at the roundabout 57 m later. Signal left twice.</p>
+  <figure class="lv"><svg viewBox="0 0 400 250" class="lane" role="img" aria-label="Lanes on the approach to Gate + Cole Road Roundabout">
+<rect width="400" height="250" class="l-sky"/>
+<polygon points="14.0,236.0 386.0,236.0 259.0,46.0 141.0,46.0" class="l-road"/>
+<polygon points="14.0,236.0 386.0,236.0 259.0,46.0 141.0,46.0" class="l-on"/>
+<polyline points="19.6,236.0 142.8,46.0" class="l-edge"/><polyline points="380.4,236.0 257.2,46.0" class="l-edge"/>
+<polyline points="136.6,54.6 141.8,54.6" class="l-gw"/>
+<polyline points="145.8,54.6 151.0,54.6" class="l-gw"/>
+<polyline points="155.1,54.6 160.2,54.6" class="l-gw"/>
+<polyline points="164.3,54.6 169.5,54.6" class="l-gw"/>
+<polyline points="173.6,54.6 178.7,54.6" class="l-gw"/>
+<polyline points="182.8,54.6 188.0,54.6" class="l-gw"/>
+<polyline points="192.0,54.6 197.2,54.6" class="l-gw"/>
+<polyline points="201.3,54.6 206.5,54.6" class="l-gw"/>
+<polyline points="210.5,54.6 215.7,54.6" class="l-gw"/>
+<polyline points="219.8,54.6 225.0,54.6" class="l-gw"/>
+<polyline points="229.0,54.6 234.2,54.6" class="l-gw"/>
+<polyline points="238.3,54.6 243.5,54.6" class="l-gw"/>
+<polyline points="247.5,54.6 252.7,54.6" class="l-gw"/>
+<polyline points="256.8,54.6 261.9,54.6" class="l-gw"/>
+<polyline points="140.3,48.8 145.2,48.8" class="l-gw"/>
+<polyline points="149.0,48.8 153.9,48.8" class="l-gw"/>
+<polyline points="157.7,48.8 162.6,48.8" class="l-gw"/>
+<polyline points="166.4,48.8 171.3,48.8" class="l-gw"/>
+<polyline points="175.1,48.8 180.0,48.8" class="l-gw"/>
+<polyline points="183.8,48.8 188.7,48.8" class="l-gw"/>
+<polyline points="192.5,48.8 197.4,48.8" class="l-gw"/>
+<polyline points="201.2,48.8 206.1,48.8" class="l-gw"/>
+<polyline points="209.9,48.8 214.8,48.8" class="l-gw"/>
+<polyline points="218.6,48.8 223.5,48.8" class="l-gw"/>
+<polyline points="227.3,48.8 232.2,48.8" class="l-gw"/>
+<polyline points="236.0,48.8 240.9,48.8" class="l-gw"/>
+<polyline points="244.7,48.8 249.6,48.8" class="l-gw"/>
+<polyline points="253.4,48.8 258.3,48.8" class="l-gw"/>
+<text x="200.0" y="228.0" text-anchor="middle" font-size="17" class="l-word">ONE LANE</text>
+<rect x="174.5" y="10" width="51" height="26" rx="13" class="l-tag"/><text x="200.0" y="29" text-anchor="middle" class="l-tagt">YOU</text>
+<polyline points="200.0,36 200.0,44" class="l-tick l-tag"/>
+<text x="390" y="28" text-anchor="end" class="l-gwt">GIVE WAY ⟲</text>
+</svg><figcaption>One lane on the approach: keep to your normal position.</figcaption></figure>
+  <figure class="dv"><svg viewBox="127 0 769 747" role="img" aria-label="Gate + Cole Road Roundabout" class="diag">
+<rect x="122" y="-5" width="779" height="757" class="d-bg"/>
+<polyline points="614.1,700.2 626.9,705.9 618.8,406.7 618.4,388.7 611.7,376.0 602.5,372.1 594.1,366.6 586.9,359.7 580.9,351.6 576.6,342.7 573.8,333.0 572.8,323.1 573.6,313.1 576.2,303.4 580.4,294.4 586.2,286.2 593.3,279.2 601.5,273.5 610.7,269.4 620.4,267.0 630.4,266.4 640.3,267.5 649.9,270.3 658.8,274.9 666.8,280.9 673.6,288.2 678.9,296.7 682.7,305.9 684.8,315.7 692.2,320.4 710.2,322.4 764.3,328.2 932.8,330.7" class="d-road" stroke-width="59.8"/>
+<polyline points="351.3,753.1 615.7,709.7 614.1,700.2 626.9,705.9 618.8,406.7 618.4,388.7 612.1,396.0 599.6,391.9 588.0,385.7 577.7,377.7 568.9,367.9 561.9,356.8 557.0,344.6 554.3,331.7 553.8,318.6 555.6,305.6 559.7,293.1 565.9,281.5 572.9,279.5 564.2,262.4 499.5,136.4 429.9,-31.4" class="d-road" stroke-width="59.8"/>
+<circle cx="629.0" cy="322.6" r="38.9" class="d-island"/>
+<polyline points="614.1,700.2 626.9,705.9 618.8,406.7 618.4,388.7 611.7,376.0 602.5,372.1 594.1,366.6 586.9,359.7 580.9,351.6 576.6,342.7 573.8,333.0 572.8,323.1 573.6,313.1 576.2,303.4 580.4,294.4 586.2,286.2 593.3,279.2 601.5,273.5 610.7,269.4 620.4,267.0 630.4,266.4 640.3,267.5 649.9,270.3 658.8,274.9 666.8,280.9 673.6,288.2 678.9,296.7 682.7,305.9 684.8,315.7 692.2,320.4 710.2,322.4 764.3,328.2 932.8,330.7" class="d-case" stroke-width="15.6" stroke-dasharray="9 6"/>
+<polyline points="614.1,700.2 626.9,705.9 618.8,406.7 618.4,388.7 611.7,376.0 602.5,372.1 594.1,366.6 586.9,359.7 580.9,351.6 576.6,342.7 573.8,333.0 572.8,323.1 573.6,313.1 576.2,303.4 580.4,294.4 586.2,286.2 593.3,279.2 601.5,273.5 610.7,269.4 620.4,267.0 630.4,266.4 640.3,267.5 649.9,270.3 658.8,274.9 666.8,280.9 673.6,288.2 678.9,296.7 682.7,305.9 684.8,315.7 692.2,320.4 710.2,322.4 764.3,328.2 932.8,330.7" style="stroke:var(--c-org)" class="d-line" stroke-width="13" stroke-dasharray="9 6"/>
+<polygon points="964.0,331.1 933.1,309.9 932.5,351.5" style="fill:var(--c-org)" class="d-head"/>
+<polyline points="351.3,753.1 615.7,709.7 614.1,700.2 626.9,705.9 618.8,406.7 618.4,388.7 612.1,396.0 599.6,391.9 588.0,385.7 577.7,377.7 568.9,367.9 561.9,356.8 557.0,344.6 554.3,331.7 553.8,318.6 555.6,305.6 559.7,293.1 565.9,281.5 572.9,279.5 564.2,262.4 499.5,136.4 429.9,-31.4" class="d-case" stroke-width="21.6"/>
+<polyline points="351.3,753.1 615.7,709.7 614.1,700.2 626.9,705.9 618.8,406.7 618.4,388.7 612.1,396.0 599.6,391.9 588.0,385.7 577.7,377.7 568.9,367.9 561.9,356.8 557.0,344.6 554.3,331.7 553.8,318.6 555.6,305.6 559.7,293.1 565.9,281.5 572.9,279.5 564.2,262.4 499.5,136.4 429.9,-31.4" style="stroke:var(--c-route)" class="d-line" stroke-width="19"/>
+<polygon points="412.4,-73.5 401.8,-19.8 458.0,-43.0" style="fill:var(--c-route)" class="d-head"/>
+<line x1="615.7" y1="709.7" x2="615.7" y2="709.7" class="d-leader"/> <circle cx="615.7" cy="709.7" r="7" class="d-dot" style="stroke:#111111"/>
+<rect x="382.3" y="644.4" width="357.5" height="99.6" rx="9" style="fill:var(--c-amber);stroke:#111111" class="d-lab"/>
+<text x="391.3" y="684.7" font-size="34" style="fill:#111111" class="d-text">◀ SIGNAL LEFT</text>
+<text x="391.3" y="725.5" font-size="34" style="fill:#111111" class="d-text">to leave the centre</text>
+<line x1="628.4" y1="406.5" x2="577.4" y2="406.5" class="d-leader"/> <circle cx="628.4" cy="406.5" r="7" class="d-dot" style="stroke:#111111"/>
+<rect x="176.5" y="376.7" width="400.9" height="99.6" rx="9" style="fill:var(--c-amber);stroke:#111111" class="d-lab"/>
+<text x="185.5" y="416.9" font-size="34" style="fill:#111111" class="d-text">◀ SIGNAL LEFT again</text>
+<text x="185.5" y="457.7" font-size="34" style="fill:#111111" class="d-text">(1st exit) 57 m ahead</text>
+<rect x="374.2" y="3.0" width="518.8" height="58.8" rx="9" style="fill:var(--d-label);stroke:var(--c-route)" class="d-lab"/>
+<text x="383.2" y="43.3" font-size="34" style="fill:var(--c-route)" class="d-text">1  Crosshill Rd to retail park</text>
+<rect x="479.7" y="313.3" width="413.3" height="58.8" rx="9" style="fill:var(--d-label);stroke:var(--c-org)" class="d-lab"/>
+<text x="488.7" y="353.5" font-size="34" style="fill:var(--c-org)" class="d-text">2  Cole Road (60 mph)</text>
+</svg><figcaption>From above, with you driving up the page. Your route in solid blue, other choices dashed, amber = signal here.</figcaption></figure>
+  <ul class="opts"><li class="opt primary"><i class="sw" style="--sw:var(--c-route)" aria-hidden="true"></i><div><b>First exit  ·  YOUR ROUTE</b><span>Keep left. ◀ Signal left on approach and keep it on as you leave.</span></div></li><li class="opt"><i class="sw dash" style="--sw:var(--c-org)" aria-hidden="true"></i><div><b>Second exit, right: Cole Road</b><span>Signal right ▶ on approach, keep right, ◀ signal left once past exit 1.</span></div></li></ul>
+  <p class="trap">The first exit bends only ~20° left and looks like straight on. It is still the first exit: signal left.</p>
+  <div class="meta"><span class="dist">0 → 57 m</span><details><summary>Aerial photo</summary><img src="img/j01-gate-cole.jpg" alt="Aerial photo of Gate + Cole Road Roundabout with the route drawn on." loading="lazy"></details><a class="sv" href="https://www.google.com/maps/@?api=1&amp;map_action=pano&amp;viewpoint=55.924483,-4.199844&amp;heading=261&amp;pitch=0&amp;fov=90" target="_blank" rel="noopener">Street View ↗</a></div>
+</article>
+<article class="jc" id="j02-retail-lights">
+  <div class="jh"><span class="jn">2</span><div><h3>Retail Park Traffic Lights</h3><p>B819 Crosshill Road  ·  T-junction  ·  ≈270 m after the roundabout</p></div><span class="mph" title="Speed limit 40 mph">40</span></div>
+  <p class="instr">YOUR ROUTE: STRAIGHT ON. One lane. No signal. Stop on red, go on green when clear.</p>
+  <figure class="lv"><svg viewBox="0 0 400 250" class="lane" role="img" aria-label="Lanes on the approach to Retail Park Traffic Lights">
+<rect width="400" height="250" class="l-sky"/>
+<polygon points="14.0,236.0 386.0,236.0 259.0,46.0 141.0,46.0" class="l-road"/>
+<polygon points="14.0,236.0 386.0,236.0 259.0,46.0 141.0,46.0" class="l-on"/>
+<polyline points="19.6,236.0 142.8,46.0" class="l-edge"/><polyline points="380.4,236.0 257.2,46.0" class="l-edge"/>
+<polyline points="138.4,51.7 261.6,51.7" class="l-stop"/>
+<polyline points="200.0,201.8 200.0,118.2" class="l-arrow"/>
+<polygon points="200.0,84.0 162.7,122.0 237.3,122.0" class="l-head"/>
+<polyline points="200.0,160.0 179.1,159.0 160.3,155.9 145.2,151.1 135.0,144.8 130.4,137.5 131.1,129.6" class="l-arrow"/>
+<polygon points="94.3,129.6 142.8,110.6 128.6,148.6" class="l-head"/>
+<text x="200.0" y="228.0" text-anchor="middle" font-size="17" class="l-word">AHEAD + LEFT</text>
+<rect x="174.5" y="10" width="51" height="26" rx="13" class="l-tag"/><text x="200.0" y="29" text-anchor="middle" class="l-tagt">YOU</text>
+<polyline points="200.0,36 200.0,44" class="l-tick l-tag"/>
+<g><rect x="112.0" y="6" width="18" height="40" rx="4" fill="#141414" stroke="#ffffff" stroke-width="1.5"/><circle cx="121.0" cy="15" r="4.5" fill="#e6281e"/><circle cx="121.0" cy="26" r="4.5" fill="#faaf00"/><circle cx="121.0" cy="37" r="4.5" fill="#28be46"/></g>
+</svg><figcaption>What you see on the approach: the lanes and their painted arrows.</figcaption></figure>
+  <figure class="dv"><svg viewBox="159 0 678 717" role="img" aria-label="Retail Park Traffic Lights" class="diag">
+<rect x="154" y="-5" width="688" height="727" class="d-bg"/>
+<polyline points="445.8,1713.5 443.0,1694.5 422.9,1554.4 411.7,1372.4 425.1,1103.7 428.5,699.0 426.9,387.6 428.7,302.8 418.2,272.5 208.9,272.5" class="d-road" stroke-width="59.8"/>
+<polyline points="445.8,1713.5 443.0,1694.5 422.9,1554.4 411.7,1372.4 425.1,1103.7 428.5,699.0 426.9,387.6 428.7,302.8 419.1,302.6 420.5,235.1 422.3,147.8 429.5,-154.0 439.0,-153.9 478.4,-1241.8 470.5,-1330.4 446.7,-1378.4" class="d-road" stroke-width="59.8"/>
+<polyline points="445.8,1713.5 443.0,1694.5 422.9,1554.4 411.7,1372.4 425.1,1103.7 428.5,699.0 426.9,387.6 428.7,302.8 418.2,272.5 208.9,272.5" class="d-case" stroke-width="15.6" stroke-dasharray="9 6"/>
+<polyline points="445.8,1713.5 443.0,1694.5 422.9,1554.4 411.7,1372.4 425.1,1103.7 428.5,699.0 426.9,387.6 428.7,302.8 418.2,272.5 208.9,272.5" style="stroke:var(--c-mag)" class="d-line" stroke-width="13" stroke-dasharray="9 6"/>
+<polygon points="177.7,272.5 208.9,293.3 208.9,251.7" style="fill:var(--c-mag)" class="d-head"/>
+<polyline points="445.8,1713.5 443.0,1694.5 422.9,1554.4 411.7,1372.4 425.1,1103.7 428.5,699.0 426.9,387.6 428.7,302.8 419.1,302.6 420.5,235.1 422.3,147.8 429.5,-154.0 439.0,-153.9 478.4,-1241.8 470.5,-1330.4 446.7,-1378.4" class="d-case" stroke-width="21.6"/>
+<polyline points="445.8,1713.5 443.0,1694.5 422.9,1554.4 411.7,1372.4 425.1,1103.7 428.5,699.0 426.9,387.6 428.7,302.8 419.1,302.6 420.5,235.1 422.3,147.8 429.5,-154.0 439.0,-153.9 478.4,-1241.8 470.5,-1330.4 446.7,-1378.4" style="stroke:var(--c-route)" class="d-line" stroke-width="19"/>
+<polygon points="426.4,-1419.2 419.4,-1364.9 473.9,-1391.9" style="fill:var(--c-route)" class="d-head"/>
+<g class="d-lights"><rect x="447.1" y="313.6" width="26" height="66" rx="6"/><circle cx="460.1" cy="326.6" r="7.5" fill="#e6281e"/><circle cx="460.1" cy="346.6" r="7.5" fill="#faaf00"/><circle cx="460.1" cy="366.6" r="7.5" fill="#28be46"/></g>
+<rect x="219.9" y="253.5" width="423.8" height="58.8" rx="9" style="fill:var(--d-label);stroke:var(--c-mag)" class="d-lab"/>
+<text x="228.9" y="293.8" font-size="34" style="fill:var(--c-mag)" class="d-text">Retail park (Aldi, B&amp;Q)</text>
+<rect x="374.5" y="3.0" width="459.5" height="58.8" rx="9" style="fill:var(--d-label);stroke:var(--c-route)" class="d-lab"/>
+<text x="383.5" y="43.3" font-size="34" style="fill:var(--c-route)" class="d-text">To Lowmoss Roundabout</text>
+</svg><figcaption>From above, with you driving up the page. Your route in solid blue, other choices dashed, amber = signal here.</figcaption></figure>
+  <ul class="opts"><li class="opt primary"><i class="sw" style="--sw:var(--c-route)" aria-hidden="true"></i><div><b>Straight on  ·  YOUR ROUTE</b><span>Single lane. No signal. Watch for cars pulling out of the car park.</span></div></li><li class="opt"><i class="sw dash" style="--sw:var(--c-mag)" aria-hidden="true"></i><div><b>Left into the retail park</b><span>◀ Signal left on approach, slow down, check the left mirror for cyclists.</span></div></li></ul>
+  <p class="trap">Coming back east: the road has two lanes here. Left lane = straight on to the centre, right lane = right into the retail park.</p>
+  <div class="meta"><span class="dist">≈330 m</span><details><summary>Aerial photo</summary><img src="img/j02-retail-lights.jpg" alt="Aerial photo of Retail Park Traffic Lights with the route drawn on." loading="lazy"></details><a class="sv" href="https://www.google.com/maps/@?api=1&amp;map_action=pano&amp;viewpoint=55.923455,-4.203695&amp;heading=238&amp;pitch=0&amp;fov=90" target="_blank" rel="noopener">Street View ↗</a></div>
+</article>
+<article class="jc" id="j03-lowmoss">
+  <div class="jh"><span class="jn">3</span><div><h3>Lowmoss Roundabout</h3><p>B819 Crosshill Road  ·  4 exits  ·  ≈300 m after the lights</p></div><span class="mph" title="Speed limit 40 mph">40</span></div>
+  <p class="instr">YOUR ROUTE: AHEAD, 2nd exit. Get in the RIGHT lane. No signal on approach. ◀ Signal left once you pass the retail-park exit.</p>
+  <figure class="lv"><svg viewBox="0 0 400 250" class="lane" role="img" aria-label="Lanes on the approach to Lowmoss Roundabout">
+<rect width="400" height="250" class="l-sky"/>
+<polygon points="14.0,236.0 386.0,236.0 259.0,46.0 141.0,46.0" class="l-road"/>
+<polygon points="200.0,236.0 386.0,236.0 259.0,46.0 200.0,46.0" class="l-on"/>
+<polyline points="19.6,236.0 142.8,46.0" class="l-edge"/><polyline points="380.4,236.0 257.2,46.0" class="l-edge"/>
+<polyline points="200.0,236.0 200.0,224.6" class="l-dash"/>
+<polyline points="200.0,214.9 200.0,203.5" class="l-dash"/>
+<polyline points="200.0,193.8 200.0,182.4" class="l-dash"/>
+<polyline points="200.0,172.7 200.0,161.3" class="l-dash"/>
+<polyline points="200.0,151.6 200.0,140.2" class="l-dash"/>
+<polyline points="200.0,130.4 200.0,119.0" class="l-dash"/>
+<polyline points="200.0,109.3 200.0,97.9" class="l-dash"/>
+<polyline points="200.0,88.2 200.0,76.8" class="l-dash"/>
+<polyline points="200.0,67.1 200.0,55.7" class="l-dash"/>
+<polyline points="136.6,54.6 141.8,54.6" class="l-gw"/>
+<polyline points="145.8,54.6 151.0,54.6" class="l-gw"/>
+<polyline points="155.1,54.6 160.2,54.6" class="l-gw"/>
+<polyline points="164.3,54.6 169.5,54.6" class="l-gw"/>
+<polyline points="173.6,54.6 178.7,54.6" class="l-gw"/>
+<polyline points="182.8,54.6 188.0,54.6" class="l-gw"/>
+<polyline points="192.0,54.6 197.2,54.6" class="l-gw"/>
+<polyline points="201.3,54.6 206.5,54.6" class="l-gw"/>
+<polyline points="210.5,54.6 215.7,54.6" class="l-gw"/>
+<polyline points="219.8,54.6 225.0,54.6" class="l-gw"/>
+<polyline points="229.0,54.6 234.2,54.6" class="l-gw"/>
+<polyline points="238.3,54.6 243.5,54.6" class="l-gw"/>
+<polyline points="247.5,54.6 252.7,54.6" class="l-gw"/>
+<polyline points="256.8,54.6 261.9,54.6" class="l-gw"/>
+<polyline points="140.3,48.8 145.2,48.8" class="l-gw"/>
+<polyline points="149.0,48.8 153.9,48.8" class="l-gw"/>
+<polyline points="157.7,48.8 162.6,48.8" class="l-gw"/>
+<polyline points="166.4,48.8 171.3,48.8" class="l-gw"/>
+<polyline points="175.1,48.8 180.0,48.8" class="l-gw"/>
+<polyline points="183.8,48.8 188.7,48.8" class="l-gw"/>
+<polyline points="192.5,48.8 197.4,48.8" class="l-gw"/>
+<polyline points="201.2,48.8 206.1,48.8" class="l-gw"/>
+<polyline points="209.9,48.8 214.8,48.8" class="l-gw"/>
+<polyline points="218.6,48.8 223.5,48.8" class="l-gw"/>
+<polyline points="227.3,48.8 232.2,48.8" class="l-gw"/>
+<polyline points="236.0,48.8 240.9,48.8" class="l-gw"/>
+<polyline points="244.7,48.8 249.6,48.8" class="l-gw"/>
+<polyline points="253.4,48.8 258.3,48.8" class="l-gw"/>
+<polyline points="118.4,201.8 137.5,144.8" class="l-arrow"/>
+<polyline points="132.4,160.0 122.3,159.0 113.9,155.9 108.0,151.1 105.0,144.8 105.1,137.5 108.1,129.6" class="l-arrow"/>
+<polygon points="89.7,129.6 120.3,110.6 100.5,148.6" class="l-head"/>
+<polyline points="281.6,201.8 253.6,118.2" class="l-arrow"/>
+<polygon points="242.2,84.0 236.2,122.0 273.6,122.0" class="l-head"/>
+<polyline points="267.6,160.0 277.7,159.0 286.1,155.9 292.0,151.1 295.0,144.8 294.9,137.5 291.9,129.6" class="l-arrow"/>
+<polygon points="310.3,129.6 279.7,110.6 299.5,148.6" class="l-head"/>
+<text x="109.2" y="228.0" text-anchor="middle" font-size="17" class="l-word">LEFT ONLY</text>
+<text x="290.8" y="228.0" text-anchor="middle" font-size="17" class="l-word">AHEAD + RIGHT</text>
+<rect x="204.0" y="10" width="51" height="26" rx="13" class="l-tag"/><text x="229.5" y="29" text-anchor="middle" class="l-tagt">YOU</text>
+<polyline points="229.5,36 229.5,44" class="l-tick l-tag"/>
+<text x="390" y="28" text-anchor="end" class="l-gwt">GIVE WAY ⟲</text>
+</svg><figcaption>What you see on the approach: the lanes and their painted arrows.</figcaption></figure>
+  <figure class="dv"><svg viewBox="273 0 752 753" role="img" aria-label="Lowmoss Roundabout" class="diag">
+<rect x="268" y="-5" width="762" height="763" class="d-bg"/>
+<polyline points="529.2,702.6 531.0,646.9 531.3,649.5 509.7,557.2 498.6,530.3 492.4,532.0 484.5,525.3 477.9,517.3 472.8,508.2 469.5,498.3 468.0,488.0 456.9,494.2 323.1,455.4" class="d-road" stroke-width="59.8"/>
+<polyline points="529.2,702.6 531.0,646.9 551.1,644.9 529.3,551.8 517.4,522.6 498.3,512.0 493.9,506.9 490.6,501.0 488.3,494.7 487.2,488.1 487.2,481.3 488.5,474.7 490.8,468.4 494.3,462.6 498.7,457.5 503.9,453.3 509.8,450.0 516.2,447.8 522.9,446.8 529.6,447.0 536.2,448.3 542.5,450.8 548.2,454.3 553.2,458.8 557.4,464.1 560.6,470.0 602.3,453.6 615.4,448.9 661.0,432.9 694.3,410.9 729.7,355.5 916.9,25.0 934.9,-6.7" class="d-road" stroke-width="59.8"/>
+<polyline points="529.2,702.6 531.0,646.9 551.1,644.9 529.3,551.8 517.4,522.6 498.3,512.0 493.9,506.9 490.6,501.0 488.3,494.6 487.2,487.9 487.2,481.2 488.5,474.5 490.9,468.2 494.4,462.4 498.9,457.3 504.2,453.1 510.1,449.9 516.5,447.7 523.2,446.8 530.0,447.0 536.7,392.6 572.7,329.5 616.1,127.6" class="d-road" stroke-width="59.8"/>
+<circle cx="525.3" cy="485.0" r="25.1" class="d-island"/>
+<polyline points="529.2,702.6 531.0,646.9 531.3,649.5 509.7,557.2 498.6,530.3 492.4,532.0 484.5,525.3 477.9,517.3 472.8,508.2 469.5,498.3 468.0,488.0 456.9,494.2 323.1,455.4" class="d-case" stroke-width="15.6" stroke-dasharray="9 6"/>
+<polyline points="529.2,702.6 531.0,646.9 531.3,649.5 509.7,557.2 498.6,530.3 492.4,532.0 484.5,525.3 477.9,517.3 472.8,508.2 469.5,498.3 468.0,488.0 456.9,494.2 323.1,455.4" style="stroke:var(--c-mag)" class="d-line" stroke-width="13" stroke-dasharray="9 6"/>
+<polygon points="293.1,446.7 317.3,475.4 328.9,435.4" style="fill:var(--c-mag)" class="d-head"/>
+<polyline points="529.2,702.6 531.0,646.9 551.1,644.9 529.3,551.8 517.4,522.6 498.3,512.0 493.9,506.9 490.6,501.0 488.3,494.7 487.2,488.1 487.2,481.3 488.5,474.7 490.8,468.4 494.3,462.6 498.7,457.5 503.9,453.3 509.8,450.0 516.2,447.8 522.9,446.8 529.6,447.0 536.2,448.3 542.5,450.8 548.2,454.3 553.2,458.8 557.4,464.1 560.6,470.0 602.3,453.6 615.4,448.9 661.0,432.9 694.3,410.9 729.7,355.5 916.9,25.0 934.9,-6.7" class="d-case" stroke-width="15.6" stroke-dasharray="9 6"/>
+<polyline points="529.2,702.6 531.0,646.9 551.1,644.9 529.3,551.8 517.4,522.6 498.3,512.0 493.9,506.9 490.6,501.0 488.3,494.7 487.2,488.1 487.2,481.3 488.5,474.7 490.8,468.4 494.3,462.6 498.7,457.5 503.9,453.3 509.8,450.0 516.2,447.8 522.9,446.8 529.6,447.0 536.2,448.3 542.5,450.8 548.2,454.3 553.2,458.8 557.4,464.1 560.6,470.0 602.3,453.6 615.4,448.9 661.0,432.9 694.3,410.9 729.7,355.5 916.9,25.0 934.9,-6.7" style="stroke:var(--c-org)" class="d-line" stroke-width="13" stroke-dasharray="9 6"/>
+<polygon points="950.2,-33.9 916.8,-17.0 953.0,3.5" style="fill:var(--c-org)" class="d-head"/>
+<polyline points="529.2,702.6 531.0,646.9 551.1,644.9 529.3,551.8 517.4,522.6 498.3,512.0 493.9,506.9 490.6,501.0 488.3,494.6 487.2,487.9 487.2,481.2 488.5,474.5 490.9,468.2 494.4,462.4 498.9,457.3 504.2,453.1 510.1,449.9 516.5,447.7 523.2,446.8 530.0,447.0 536.7,392.6 572.7,329.5 616.1,127.6" class="d-case" stroke-width="21.6"/>
+<polyline points="529.2,702.6 531.0,646.9 551.1,644.9 529.3,551.8 517.4,522.6 498.3,512.0 493.9,506.9 490.6,501.0 488.3,494.6 487.2,487.9 487.2,481.2 488.5,474.5 490.9,468.2 494.4,462.4 498.9,457.3 504.2,453.1 510.1,449.9 516.5,447.7 523.2,446.8 530.0,447.0 536.7,392.6 572.7,329.5 616.1,127.6" style="stroke:var(--c-route)" class="d-line" stroke-width="19"/>
+<polygon points="625.7,83.0 586.4,121.2 645.9,134.0" style="fill:var(--c-route)" class="d-head"/>
+<line x1="492.2" y1="465.9" x2="492.2" y2="586.1" class="d-leader"/> <circle cx="492.2" cy="465.9" r="7" class="d-dot" style="stroke:#111111"/>
+<rect x="380.6" y="586.1" width="303.1" height="99.6" rx="9" style="fill:var(--c-amber);stroke:#111111" class="d-lab"/>
+<text x="389.6" y="626.3" font-size="34" style="fill:#111111" class="d-text">◀ SIGNAL LEFT</text>
+<text x="389.6" y="667.1" font-size="34" style="fill:#111111" class="d-text">once past exit 1</text>
+<rect x="335.0" y="404.5" width="257.5" height="58.8" rx="9" style="fill:var(--d-label);stroke:var(--c-mag)" class="d-lab"/>
+<text x="344.0" y="444.8" font-size="34" style="fill:var(--c-mag)" class="d-text">1  Retail park</text>
+<rect x="579.5" y="158.2" width="442.5" height="58.8" rx="9" style="fill:var(--d-label);stroke:var(--c-route)" class="d-lab"/>
+<text x="588.5" y="198.5" font-size="34" style="fill:var(--c-route)" class="d-text">2  To Cadder Rbt (A803)</text>
+<rect x="746.6" y="3.0" width="275.4" height="58.8" rx="9" style="fill:var(--d-label);stroke:var(--c-org)" class="d-lab"/>
+<text x="755.6" y="43.3" font-size="34" style="fill:var(--c-org)" class="d-text">3  Burger King</text>
+</svg><figcaption>From above, with you driving up the page. Your route in solid blue, other choices dashed, amber = signal here.</figcaption></figure>
+  <ul class="opts"><li class="opt primary"><i class="sw" style="--sw:var(--c-route)" aria-hidden="true"></i><div><b>Ahead (2nd exit)  ·  YOUR ROUTE</b><span>Lane RIGHT · Approach: no signal · Leave: ◀ after exit 1</span></div></li><li class="opt"><i class="sw dash" style="--sw:var(--c-mag)" aria-hidden="true"></i><div><b>First exit, left (retail park)</b><span>Lane LEFT · Approach: ◀ left · Leave: keep ◀ on</span></div></li><li class="opt"><i class="sw dash" style="--sw:var(--c-org)" aria-hidden="true"></i><div><b>Third exit, right (Burger King)</b><span>Lane RIGHT · Approach: right ▶ · Leave: ◀ after exit 2</span></div></li></ul>
+  <p class="trap">Trap: the left lane is LEFT ONLY. Sitting in it by habit takes you into the car park.</p>
+  <div class="meta"><span class="dist">≈630 m</span><details><summary>Aerial photo</summary><img src="img/j03-lowmoss.jpg" alt="Aerial photo of Lowmoss Roundabout with the route drawn on." loading="lazy"></details><a class="sv" href="https://www.google.com/maps/@?api=1&amp;map_action=pano&amp;viewpoint=55.922302,-4.207978&amp;heading=215&amp;pitch=0&amp;fov=90" target="_blank" rel="noopener">Street View ↗</a></div>
+</article>
+<article class="jc" id="j04-cadder">
+  <div class="jh"><span class="jn">4</span><div><h3>Cadder Roundabout  ·  A803</h3><p>End of Crosshill Road  ·  your route splits here</p></div><span class="mph" title="Speed limit 40 mph">40</span></div>
+  <p class="instr">Pick your lane where the road opens into two lanes. A (south) = LEFT lane, first exit. B (north) = RIGHT lane, second exit.</p>
+  <figure class="lv"><svg viewBox="0 0 400 250" class="lane" role="img" aria-label="Lanes on the approach to Cadder Roundabout  ·  A803">
+<rect width="400" height="250" class="l-sky"/>
+<polygon points="14.0,236.0 386.0,236.0 259.0,46.0 141.0,46.0" class="l-road"/>
+<polygon points="14.0,236.0 200.0,236.0 200.0,46.0 141.0,46.0" class="l-on"/>
+<polygon points="200.0,236.0 386.0,236.0 259.0,46.0 200.0,46.0" class="l-on-b"/>
+<polyline points="19.6,236.0 142.8,46.0" class="l-edge"/><polyline points="380.4,236.0 257.2,46.0" class="l-edge"/>
+<polyline points="200.0,236.0 200.0,224.6" class="l-dash"/>
+<polyline points="200.0,214.9 200.0,203.5" class="l-dash"/>
+<polyline points="200.0,193.8 200.0,182.4" class="l-dash"/>
+<polyline points="200.0,172.7 200.0,161.3" class="l-dash"/>
+<polyline points="200.0,151.6 200.0,140.2" class="l-dash"/>
+<polyline points="200.0,130.4 200.0,119.0" class="l-dash"/>
+<polyline points="200.0,109.3 200.0,97.9" class="l-dash"/>
+<polyline points="200.0,88.2 200.0,76.8" class="l-dash"/>
+<polyline points="200.0,67.1 200.0,55.7" class="l-dash"/>
+<polyline points="136.6,54.6 141.8,54.6" class="l-gw"/>
+<polyline points="145.8,54.6 151.0,54.6" class="l-gw"/>
+<polyline points="155.1,54.6 160.2,54.6" class="l-gw"/>
+<polyline points="164.3,54.6 169.5,54.6" class="l-gw"/>
+<polyline points="173.6,54.6 178.7,54.6" class="l-gw"/>
+<polyline points="182.8,54.6 188.0,54.6" class="l-gw"/>
+<polyline points="192.0,54.6 197.2,54.6" class="l-gw"/>
+<polyline points="201.3,54.6 206.5,54.6" class="l-gw"/>
+<polyline points="210.5,54.6 215.7,54.6" class="l-gw"/>
+<polyline points="219.8,54.6 225.0,54.6" class="l-gw"/>
+<polyline points="229.0,54.6 234.2,54.6" class="l-gw"/>
+<polyline points="238.3,54.6 243.5,54.6" class="l-gw"/>
+<polyline points="247.5,54.6 252.7,54.6" class="l-gw"/>
+<polyline points="256.8,54.6 261.9,54.6" class="l-gw"/>
+<polyline points="140.3,48.8 145.2,48.8" class="l-gw"/>
+<polyline points="149.0,48.8 153.9,48.8" class="l-gw"/>
+<polyline points="157.7,48.8 162.6,48.8" class="l-gw"/>
+<polyline points="166.4,48.8 171.3,48.8" class="l-gw"/>
+<polyline points="175.1,48.8 180.0,48.8" class="l-gw"/>
+<polyline points="183.8,48.8 188.7,48.8" class="l-gw"/>
+<polyline points="192.5,48.8 197.4,48.8" class="l-gw"/>
+<polyline points="201.2,48.8 206.1,48.8" class="l-gw"/>
+<polyline points="209.9,48.8 214.8,48.8" class="l-gw"/>
+<polyline points="218.6,48.8 223.5,48.8" class="l-gw"/>
+<polyline points="227.3,48.8 232.2,48.8" class="l-gw"/>
+<polyline points="236.0,48.8 240.9,48.8" class="l-gw"/>
+<polyline points="244.7,48.8 249.6,48.8" class="l-gw"/>
+<polyline points="253.4,48.8 258.3,48.8" class="l-gw"/>
+<polyline points="118.4,201.8 146.4,118.2" class="l-arrow"/>
+<polygon points="157.8,84.0 126.4,122.0 163.8,122.0" class="l-head"/>
+<polyline points="281.6,201.8 262.5,144.8" class="l-arrow"/>
+<polyline points="267.6,160.0 277.7,159.0 286.1,155.9 292.0,151.1 295.0,144.8 294.9,137.5 291.9,129.6" class="l-arrow"/>
+<polygon points="310.3,129.6 279.7,110.6 299.5,148.6" class="l-head"/>
+<text x="109.2" y="228.0" text-anchor="middle" font-size="17" class="l-word">AHEAD</text>
+<text x="290.8" y="228.0" text-anchor="middle" font-size="17" class="l-word">RIGHT ONLY</text>
+<rect x="156.0" y="10" width="29" height="26" rx="13" class="l-tag"/><text x="170.5" y="29" text-anchor="middle" class="l-tagt">A</text>
+<polyline points="170.5,36 170.5,44" class="l-tick l-tag"/>
+<rect x="215.0" y="10" width="29" height="26" rx="13" class="l-tag-b"/><text x="229.5" y="29" text-anchor="middle" class="l-tagt">B</text>
+<polyline points="229.5,36 229.5,44" class="l-tick l-tag-b"/>
+<text x="390" y="28" text-anchor="end" class="l-gwt">GIVE WAY ⟲</text>
+</svg><figcaption>Two lanes open up just before the give-way line. A = left lane, B = right lane.</figcaption></figure>
+  <figure class="dv"><svg viewBox="317 0 639 986" role="img" aria-label="Cadder Roundabout  ·  A803" class="diag">
+<rect x="312" y="-5" width="649" height="996" class="d-bg"/>
+<polyline points="391.2,1083.4 404.0,863.9 466.1,603.1 484.8,603.8 471.7,522.0 473.8,493.3 467.4,472.3 464.9,456.5 465.2,440.5 468.4,424.9 474.2,410.0 482.5,396.3 493.1,384.3 505.7,374.4 519.7,366.8 534.9,361.8 550.8,359.6 566.8,360.1 582.4,363.5 597.2,369.5 610.7,378.1 622.5,388.9 632.3,401.5 639.7,415.7 644.4,431.0 646.4,446.9 645.6,462.8 642.1,478.4 634.3,488.2 663.1,563.2 679.0,644.1 687.8,640.2 731.3,737.4 768.1,835.3 793.1,915.8 815.9,1008.6 831.5,1078.1" class="d-road" stroke-width="59.8"/>
+<polyline points="391.2,1083.4 404.0,863.9 466.1,603.1 466.0,606.8 452.6,523.9 454.7,492.0 444.5,474.0 442.0,453.7 443.3,433.4 448.1,413.6 456.4,395.0 467.8,378.2 482.1,363.7 498.8,351.9 519.5,364.6 571.3,269.2 612.9,153.6 563.0,-25.3 522.0,-168.0 512.4,-166.8 480.1,-326.8 460.4,-444.1" class="d-road" stroke-width="59.8"/>
+<circle cx="555.6" cy="450.3" r="74.8" class="d-island"/>
+<polyline points="391.2,1083.4 404.0,863.9 466.1,603.1 484.8,603.8 471.7,522.0 473.8,493.3 467.4,472.3 464.9,456.5 465.2,440.5 468.4,424.9 474.2,410.0 482.5,396.3 493.1,384.3 505.7,374.4 519.7,366.8 534.9,361.8 550.8,359.6 566.8,360.1 582.4,363.5 597.2,369.5 610.7,378.1 622.5,388.9 632.3,401.5 639.7,415.7 644.4,431.0 646.4,446.9 645.6,462.8 642.1,478.4 634.3,488.2 663.1,563.2 679.0,644.1 687.8,640.2 731.3,737.4 768.1,835.3 793.1,915.8 815.9,1008.6 831.5,1078.1" class="d-case" stroke-width="21.6"/>
+<polyline points="391.2,1083.4 404.0,863.9 466.1,603.1 484.8,603.8 471.7,522.0 473.8,493.3 467.4,472.3 464.9,456.5 465.2,440.5 468.4,424.9 474.2,410.0 482.5,396.3 493.1,384.3 505.7,374.4 519.7,366.8 534.9,361.8 550.8,359.6 566.8,360.1 582.4,363.5 597.2,369.5 610.7,378.1 622.5,388.9 632.3,401.5 639.7,415.7 644.4,431.0 646.4,446.9 645.6,462.8 642.1,478.4 634.3,488.2 663.1,563.2 679.0,644.1 687.8,640.2 731.3,737.4 768.1,835.3 793.1,915.8 815.9,1008.6 831.5,1078.1" style="stroke:var(--c-org)" class="d-line" stroke-width="19"/>
+<polygon points="841.5,1122.6 861.2,1071.5 801.9,1084.8" style="fill:var(--c-org)" class="d-head"/>
+<polyline points="391.2,1083.4 404.0,863.9 466.1,603.1 466.0,606.8 452.6,523.9 454.7,492.0 444.5,474.0 442.0,453.7 443.3,433.4 448.1,413.6 456.4,395.0 467.8,378.2 482.1,363.7 498.8,351.9 519.5,364.6 571.3,269.2 612.9,153.6 563.0,-25.3 522.0,-168.0 512.4,-166.8 480.1,-326.8 460.4,-444.1" class="d-case" stroke-width="21.6"/>
+<polyline points="391.2,1083.4 404.0,863.9 466.1,603.1 466.0,606.8 452.6,523.9 454.7,492.0 444.5,474.0 442.0,453.7 443.3,433.4 448.1,413.6 456.4,395.0 467.8,378.2 482.1,363.7 498.8,351.9 519.5,364.6 571.3,269.2 612.9,153.6 563.0,-25.3 522.0,-168.0 512.4,-166.8 480.1,-326.8 460.4,-444.1" style="stroke:var(--c-route)" class="d-line" stroke-width="19"/>
+<polygon points="452.9,-489.0 430.4,-439.0 490.4,-449.1" style="fill:var(--c-route)" class="d-head"/>
+<line x1="591.1" y1="366.7" x2="591.1" y2="276.5" class="d-leader"/> <circle cx="591.1" cy="366.7" r="7" class="d-dot" style="stroke:#111111"/>
+<rect x="366.8" y="176.9" width="328.6" height="99.6" rx="9" style="fill:var(--c-amber);stroke:#111111" class="d-lab"/>
+<text x="375.8" y="217.2" font-size="34" style="fill:#111111" class="d-text">B: ◀ SIGNAL LEFT</text>
+<text x="375.8" y="258.0" font-size="34" style="fill:#111111" class="d-text">once past exit A</text>
+<rect x="471.4" y="3.0" width="279.3" height="99.6" rx="9" style="fill:var(--d-label);stroke:var(--c-route)" class="d-lab"/>
+<text x="480.4" y="43.3" font-size="34" style="fill:var(--c-route)" class="d-text">A  A803 south:</text>
+<text x="480.4" y="84.1" font-size="34" style="fill:var(--c-route)" class="d-text">Bishopbriggs</text>
+<rect x="677.3" y="883.4" width="275.7" height="99.6" rx="9" style="fill:var(--d-label);stroke:var(--c-org)" class="d-lab"/>
+<text x="686.3" y="923.7" font-size="34" style="fill:var(--c-org)" class="d-text">B  A803 north:</text>
+<text x="686.3" y="964.5" font-size="34" style="fill:var(--c-org)" class="d-text">Torrance</text>
+</svg><figcaption>From above, with you driving up the page. Your route in solid blue, other choices dashed, amber = signal here.</figcaption></figure>
+  <ul class="opts"><li class="opt primary"><i class="sw" style="--sw:var(--c-route)" aria-hidden="true"></i><div><b>A: First exit, A803 south (Bishopbriggs)</b><span>LEFT lane (arrow ahead). ◀ Signal left on approach, keep it on.</span></div></li><li class="opt primary"><i class="sw" style="--sw:var(--c-org)" aria-hidden="true"></i><div><b>B: Second exit, A803 north (Torrance)</b><span>RIGHT lane. Signal right ▶ on approach, keep right, ◀ signal left after exit A.</span></div></li></ul>
+  <p class="trap">Both exits are single lane. On B, check the left mirror and blind spot before you move left to leave.</p>
+  <div class="meta"><span class="dist">≈850 m</span><details><summary>Aerial photo</summary><img src="img/j04-cadder.jpg" alt="Aerial photo of Cadder Roundabout  ·  A803 with the route drawn on." loading="lazy"></details><a class="sv" href="https://www.google.com/maps/@?api=1&amp;map_action=pano&amp;viewpoint=55.921281,-4.209868&amp;heading=235&amp;pitch=0&amp;fov=90" target="_blank" rel="noopener">Street View ↗</a></div>
+</article>
 </section>
 
-<!-- ================= EXTENSION A ================= -->
 <section class="leg" id="ext-a" aria-labelledby="a-h">
   <div class="leghead a">
     <h2 id="a-h">Extension A: <span class="rn a">A803</span> south to Springburn</h2>
-    <p class="muted">From Cadder Roundabout, first exit. 3.1 km to Colston Road. 40 mph, then 30 mph from just after Hilton Road. Distances below are from Cadder Roundabout.</p>
+    <p class="muted">Cadder Roundabout, first exit. 3.1 km to Colston Road. Distances are from Cadder Roundabout.</p>
   </div>
-
-  <div class="card">
-    <figure><img src="img/a1-cadder-road.jpg" alt="Side road by Shell Lowmoss. Straight on: stay in the left lane; the right lane is for the right turn." width="777" height="1362"></figure>
-    <div class="meta"><span class="dist">70 m</span><a class="sv" href="https://www.google.com/maps/@?api=1&amp;map_action=pano&amp;viewpoint=55.920805,-4.211227&amp;heading=208&amp;pitch=0&amp;fov=90" target="_blank" rel="noopener">Check on Street View ↗</a></div>
-  </div>
-
-  <div class="card">
-    <figure><img src="img/a2-westerhill-lights.jpg" alt="Westerhill Road lights. Straight on: right lane. The left lane is left only into Westerhill Road. No signal." width="777" height="1503"></figure>
-    <div class="meta"><span class="dist">310 m</span><a class="sv" href="https://www.google.com/maps/@?api=1&amp;map_action=pano&amp;viewpoint=55.918923,-4.213124&amp;heading=208&amp;pitch=0&amp;fov=90" target="_blank" rel="noopener">Check on Street View ↗</a></div>
-  </div>
-
-  <div class="card">
-    <figure><img src="img/a3-meadowburn.jpg" alt="Meadowburn junction, no lights. Straight on: left lane. Right lane is for turning right into Meadowburn." width="717" height="1367"></figure>
-    <div class="meta"><span class="dist">610 m</span><a class="sv" href="https://www.google.com/maps/@?api=1&amp;map_action=pano&amp;viewpoint=55.916574,-4.215451&amp;heading=209&amp;pitch=0&amp;fov=90" target="_blank" rel="noopener">Check on Street View ↗</a></div>
-  </div>
-
-  <div class="card">
-    <figure><img src="img/a45-asda-hilton.jpg" alt="Asda and Hilton Road lights, about 110 m apart. Straight on: left lane through both. Rightmost lane turns right at each." width="897" height="1962"></figure>
-    <div class="meta"><span class="dist">0.9–1.0 km</span><a class="sv" href="https://www.google.com/maps/@?api=1&amp;map_action=pano&amp;viewpoint=55.914499,-4.217505&amp;heading=209&amp;pitch=0&amp;fov=90" target="_blank" rel="noopener">Check on Street View ↗</a></div>
-  </div>
-
-  <p class="stretch"><b class="k">1.1–1.8 km</b><span>The limit drops to <b>30 mph</b> about 110 m after Hilton Road. Side roads at Wester Cleddens join with no lights and no lane choice: keep straight on and watch for cars pulling out.</span></p>
-
-  <div class="card">
-    <figure><img src="img/a7-crosshill-lights.jpg" alt="South Crosshill Road lights. Single lane, straight on, no signal, 30 mph." width="717" height="1423"></figure>
-    <div class="meta"><span class="dist">1.8 km</span><a class="sv" href="https://www.google.com/maps/@?api=1&amp;map_action=pano&amp;viewpoint=55.907041,-4.224121&amp;heading=184&amp;pitch=0&amp;fov=90" target="_blank" rel="noopener">Check on Street View ↗</a></div>
-  </div>
-
-  <p class="stretch"><b class="k">≈1.95 km</b><span>Springfield Road (Morrisons) lights on your left, by the Triangle shopping centre. Straight on. Lane arrows are not mapped here.</span></p>
-
-  <div class="card">
-    <figure><img src="img/a89-bishopbriggs-cross.jpg" alt="Bishopbriggs Cross lights. Straight on: middle lane. Left lane is Crowhill Road only, right lane is Kenmure Avenue." width="956" height="1921"></figure>
-    <div class="meta"><span class="dist">2.1 km</span><a class="sv" href="https://www.google.com/maps/@?api=1&amp;map_action=pano&amp;viewpoint=55.904651,-4.224603&amp;heading=205&amp;pitch=0&amp;fov=90" target="_blank" rel="noopener">Check on Street View ↗</a></div>
-  </div>
-
-  <p class="stretch"><b class="k">2.1–3.1 km</b><span>Over the railway bridge at Bishopbriggs station and through Auchinairn. Mostly one lane each way, 30 mph.</span></p>
-
-  <div class="card">
-    <figure><img src="img/a11-colston-road.jpg" alt="Colston Road crossroads with lights. Straight on in the left lane, no signal. Lane arrows not mapped." width="777" height="1571"></figure>
-    <div class="meta"><span class="dist">3.1 km</span><a class="sv" href="https://www.google.com/maps/@?api=1&amp;map_action=pano&amp;viewpoint=55.896696,-4.231501&amp;heading=180&amp;pitch=0&amp;fov=90" target="_blank" rel="noopener">Check on Street View ↗</a></div>
-  </div>
-
-  <p class="endnote">The guide stops here, about 2.5 miles from the test centre. Beyond Colston Road the <span class="rn a">A803</span> is Springburn Road, and about 0.8 km further it becomes a dual carriageway. If your route goes on into Springburn, tell me and I'll add it.</p>
+<article class="jc" id="a1-cadder-road">
+  <div class="jh"><span class="jn">A1</span><div><h3>Side Road By Shell Lowmoss</h3><p>A803 Kirkintilloch Road  ·  ≈70 m after Cadder Roundabout</p></div><span class="mph" title="Speed limit 40 mph">40</span></div>
+  <p class="instr">STRAIGHT ON: stay in the LEFT lane. The right lane opens up for the right turn only.</p>
+  <figure class="lv"><svg viewBox="0 0 400 250" class="lane" role="img" aria-label="Lanes on the approach to Side Road By Shell Lowmoss">
+<rect width="400" height="250" class="l-sky"/>
+<polygon points="14.0,236.0 386.0,236.0 259.0,46.0 141.0,46.0" class="l-road"/>
+<polygon points="14.0,236.0 200.0,236.0 200.0,46.0 141.0,46.0" class="l-on"/>
+<polyline points="19.6,236.0 142.8,46.0" class="l-edge"/><polyline points="380.4,236.0 257.2,46.0" class="l-edge"/>
+<polyline points="200.0,236.0 200.0,224.6" class="l-dash"/>
+<polyline points="200.0,214.9 200.0,203.5" class="l-dash"/>
+<polyline points="200.0,193.8 200.0,182.4" class="l-dash"/>
+<polyline points="200.0,172.7 200.0,161.3" class="l-dash"/>
+<polyline points="200.0,151.6 200.0,140.2" class="l-dash"/>
+<polyline points="200.0,130.4 200.0,119.0" class="l-dash"/>
+<polyline points="200.0,109.3 200.0,97.9" class="l-dash"/>
+<polyline points="200.0,88.2 200.0,76.8" class="l-dash"/>
+<polyline points="200.0,67.1 200.0,55.7" class="l-dash"/>
+<polyline points="118.4,201.8 146.4,118.2" class="l-arrow"/>
+<polygon points="157.8,84.0 126.4,122.0 163.8,122.0" class="l-head"/>
+<polyline points="281.6,201.8 262.5,144.8" class="l-arrow"/>
+<polyline points="267.6,160.0 277.7,159.0 286.1,155.9 292.0,151.1 295.0,144.8 294.9,137.5 291.9,129.6" class="l-arrow"/>
+<polygon points="310.3,129.6 279.7,110.6 299.5,148.6" class="l-head"/>
+<text x="109.2" y="228.0" text-anchor="middle" font-size="17" class="l-word">AHEAD</text>
+<text x="290.8" y="228.0" text-anchor="middle" font-size="17" class="l-word">RIGHT ONLY</text>
+<rect x="145.0" y="10" width="51" height="26" rx="13" class="l-tag"/><text x="170.5" y="29" text-anchor="middle" class="l-tagt">YOU</text>
+<polyline points="170.5,36 170.5,44" class="l-tick l-tag"/>
+</svg><figcaption>What you see on the approach: the lanes and their painted arrows.</figcaption></figure>
+  <figure class="dv"><svg viewBox="222 0 485 716" role="img" aria-label="Side Road By Shell Lowmoss" class="diag">
+<rect x="217" y="-5" width="495" height="726" class="d-bg"/>
+<polyline points="272.0,665.9 345.4,585.8 413.7,483.7 413.7,483.7 418.1,297.7 417.8,288.1 656.9,279.8" class="d-road" stroke-width="59.8"/>
+<polyline points="272.0,665.9 345.4,585.8 413.7,483.7 394.5,483.3 399.0,297.2 408.6,298.0 403.3,149.7 393.7,148.5 401.1,-14.5 410.3,-133.1" class="d-road" stroke-width="59.8"/>
+<polyline points="272.0,665.9 345.4,585.8 413.7,483.7 413.7,483.7 418.1,297.7 417.8,288.1 656.9,279.8" class="d-case" stroke-width="15.6" stroke-dasharray="9 6"/>
+<polyline points="272.0,665.9 345.4,585.8 413.7,483.7 413.7,483.7 418.1,297.7 417.8,288.1 656.9,279.8" style="stroke:var(--c-mag)" class="d-line" stroke-width="13" stroke-dasharray="9 6"/>
+<polygon points="688.0,278.7 656.1,259.0 657.6,300.6" style="fill:var(--c-mag)" class="d-head"/>
+<polyline points="272.0,665.9 345.4,585.8 413.7,483.7 394.5,483.3 399.0,297.2 408.6,298.0 403.3,149.7 393.7,148.5 401.1,-14.5 410.3,-133.1" class="d-case" stroke-width="21.6"/>
+<polyline points="272.0,665.9 345.4,585.8 413.7,483.7 394.5,483.3 399.0,297.2 408.6,298.0 403.3,149.7 393.7,148.5 401.1,-14.5 410.3,-133.1" style="stroke:var(--c-route)" class="d-line" stroke-width="19"/>
+<polygon points="413.9,-178.5 380.0,-135.5 440.7,-130.7" style="fill:var(--c-route)" class="d-head"/>
+<rect x="285.2" y="220.0" width="361.0" height="58.8" rx="9" style="fill:var(--d-label);stroke:var(--c-mag)" class="d-lab"/>
+<text x="294.2" y="260.2" font-size="34" style="fill:var(--c-mag)" class="d-text">Side road (20 mph)</text>
+<rect x="421.3" y="3.0" width="220.2" height="58.8" rx="9" style="fill:var(--d-label);stroke:var(--c-route)" class="d-lab"/>
+<text x="430.3" y="43.3" font-size="34" style="fill:var(--c-route)" class="d-text">A803 south</text>
+</svg><figcaption>From above, with you driving up the page. Your route in solid blue, other choices dashed, amber = signal here.</figcaption></figure>
+  <ul class="opts"><li class="opt primary"><i class="sw" style="--sw:var(--c-route)" aria-hidden="true"></i><div><b>Straight on  ·  YOUR ROUTE</b><span>LEFT lane. No signal. Watch for cars turning into Shell on your left.</span></div></li><li class="opt"><i class="sw dash" style="--sw:var(--c-mag)" aria-hidden="true"></i><div><b>Right into the side road</b><span>Signal right ▶, move into the right lane, wait for a gap in oncoming traffic.</span></div></li></ul>
+  
+  <div class="meta"><span class="dist">70 m</span><details><summary>Aerial photo</summary><img src="img/a1-cadder-road.jpg" alt="Aerial photo of Side Road By Shell Lowmoss with the route drawn on." loading="lazy"></details><a class="sv" href="https://www.google.com/maps/@?api=1&amp;map_action=pano&amp;viewpoint=55.920805,-4.211227&amp;heading=208&amp;pitch=0&amp;fov=90" target="_blank" rel="noopener">Street View ↗</a></div>
+</article>
+<article class="jc" id="a2-westerhill-lights">
+  <div class="jh"><span class="jn">A2</span><div><h3>Westerhill Road Lights</h3><p>A803 Kirkintilloch Road  ·  T-junction  ·  ≈300 m after Cadder</p></div><span class="mph" title="Speed limit 40 mph">40</span></div>
+  <p class="instr">STRAIGHT ON: use the RIGHT lane. The left lane is LEFT ONLY into Westerhill Road. No signal. Go on green.</p>
+  <figure class="lv"><svg viewBox="0 0 400 250" class="lane" role="img" aria-label="Lanes on the approach to Westerhill Road Lights">
+<rect width="400" height="250" class="l-sky"/>
+<polygon points="14.0,236.0 386.0,236.0 259.0,46.0 141.0,46.0" class="l-road"/>
+<polygon points="200.0,236.0 386.0,236.0 259.0,46.0 200.0,46.0" class="l-on"/>
+<polyline points="19.6,236.0 142.8,46.0" class="l-edge"/><polyline points="380.4,236.0 257.2,46.0" class="l-edge"/>
+<polyline points="200.0,236.0 200.0,224.6" class="l-dash"/>
+<polyline points="200.0,214.9 200.0,203.5" class="l-dash"/>
+<polyline points="200.0,193.8 200.0,182.4" class="l-dash"/>
+<polyline points="200.0,172.7 200.0,161.3" class="l-dash"/>
+<polyline points="200.0,151.6 200.0,140.2" class="l-dash"/>
+<polyline points="200.0,130.4 200.0,119.0" class="l-dash"/>
+<polyline points="200.0,109.3 200.0,97.9" class="l-dash"/>
+<polyline points="200.0,88.2 200.0,76.8" class="l-dash"/>
+<polyline points="200.0,67.1 200.0,55.7" class="l-dash"/>
+<polyline points="138.4,51.7 261.6,51.7" class="l-stop"/>
+<polyline points="118.4,201.8 137.5,144.8" class="l-arrow"/>
+<polyline points="132.4,160.0 122.3,159.0 113.9,155.9 108.0,151.1 105.0,144.8 105.1,137.5 108.1,129.6" class="l-arrow"/>
+<polygon points="89.7,129.6 120.3,110.6 100.5,148.6" class="l-head"/>
+<polyline points="281.6,201.8 253.6,118.2" class="l-arrow"/>
+<polygon points="242.2,84.0 236.2,122.0 273.6,122.0" class="l-head"/>
+<text x="109.2" y="228.0" text-anchor="middle" font-size="17" class="l-word">LEFT ONLY</text>
+<text x="290.8" y="228.0" text-anchor="middle" font-size="17" class="l-word">AHEAD</text>
+<rect x="204.0" y="10" width="51" height="26" rx="13" class="l-tag"/><text x="229.5" y="29" text-anchor="middle" class="l-tagt">YOU</text>
+<polyline points="229.5,36 229.5,44" class="l-tick l-tag"/>
+<g><rect x="112.0" y="6" width="18" height="40" rx="4" fill="#141414" stroke="#ffffff" stroke-width="1.5"/><circle cx="121.0" cy="15" r="4.5" fill="#e6281e"/><circle cx="121.0" cy="26" r="4.5" fill="#faaf00"/><circle cx="121.0" cy="37" r="4.5" fill="#28be46"/></g>
+</svg><figcaption>What you see on the approach: the lanes and their painted arrows.</figcaption></figure>
+  <figure class="dv"><svg viewBox="96 0 601 897" role="img" aria-label="Westerhill Road Lights" class="diag">
+<rect x="91" y="-5" width="611" height="907" class="d-bg"/>
+<polyline points="343.1,1281.1 362.4,643.8 362.4,643.8 367.8,466.0 364.3,387.2 364.7,353.3 365.6,259.3 384.7,269.0 145.5,269.0" class="d-road" stroke-width="59.8"/>
+<polyline points="362.2,1281.7 381.5,644.4 381.5,644.4 386.9,466.2 383.5,386.6 383.8,353.5 384.7,259.4 365.6,259.3 366.5,163.0 367.1,101.9 375.7,-174.4 385.3,-174.1 409.5,-986.7 415.2,-1312.0" class="d-road" stroke-width="59.8"/>
+<polyline points="343.1,1281.1 362.4,643.8 362.4,643.8 367.8,466.0 364.3,387.2 364.7,353.3 365.6,259.3 384.7,269.0 145.5,269.0" class="d-case" stroke-width="15.6" stroke-dasharray="9 6"/>
+<polyline points="343.1,1281.1 362.4,643.8 362.4,643.8 367.8,466.0 364.3,387.2 364.7,353.3 365.6,259.3 384.7,269.0 145.5,269.0" style="stroke:var(--c-mag)" class="d-line" stroke-width="13" stroke-dasharray="9 6"/>
+<polygon points="114.3,269.0 145.5,289.8 145.5,248.2" style="fill:var(--c-mag)" class="d-head"/>
+<polyline points="362.2,1281.7 381.5,644.4 381.5,644.4 386.9,466.2 383.5,386.6 383.8,353.5 384.7,259.4 365.6,259.3 366.5,163.0 367.1,101.9 375.7,-174.4 385.3,-174.1 409.5,-986.7 415.2,-1312.0" class="d-case" stroke-width="21.6"/>
+<polyline points="362.2,1281.7 381.5,644.4 381.5,644.4 386.9,466.2 383.5,386.6 383.8,353.5 384.7,259.4 365.6,259.3 366.5,163.0 367.1,101.9 375.7,-174.4 385.3,-174.1 409.5,-986.7 415.2,-1312.0" style="stroke:var(--c-route)" class="d-line" stroke-width="19"/>
+<polygon points="416.0,-1357.6 384.8,-1312.5 445.6,-1311.5" style="fill:var(--c-route)" class="d-head"/>
+<g class="d-lights"><rect x="311.5" y="255.9" width="26" height="66" rx="6"/><circle cx="324.5" cy="268.9" r="7.5" fill="#e6281e"/><circle cx="324.5" cy="288.9" r="7.5" fill="#faaf00"/><circle cx="324.5" cy="308.9" r="7.5" fill="#28be46"/></g>
+<rect x="146.5" y="334.0" width="300.2" height="58.8" rx="9" style="fill:var(--d-label);stroke:var(--c-mag)" class="d-lab"/>
+<text x="155.5" y="374.3" font-size="34" style="fill:var(--c-mag)" class="d-text">Westerhill Road</text>
+<rect x="426.2" y="3.0" width="220.2" height="58.8" rx="9" style="fill:var(--d-label);stroke:var(--c-route)" class="d-lab"/>
+<text x="435.2" y="43.3" font-size="34" style="fill:var(--c-route)" class="d-text">A803 south</text>
+</svg><figcaption>From above, with you driving up the page. Your route in solid blue, other choices dashed, amber = signal here.</figcaption></figure>
+  <ul class="opts"><li class="opt primary"><i class="sw" style="--sw:var(--c-route)" aria-hidden="true"></i><div><b>Straight on  ·  YOUR ROUTE</b><span>RIGHT lane. No signal. After the lights the road narrows back to one lane.</span></div></li><li class="opt"><i class="sw dash" style="--sw:var(--c-mag)" aria-hidden="true"></i><div><b>Left into Westerhill Road</b><span>LEFT lane. ◀ Signal left on approach.</span></div></li></ul>
+  <p class="trap">Trap: as at Lowmoss, the left lane does not go straight on here.</p>
+  <div class="meta"><span class="dist">310 m</span><details><summary>Aerial photo</summary><img src="img/a2-westerhill-lights.jpg" alt="Aerial photo of Westerhill Road Lights with the route drawn on." loading="lazy"></details><a class="sv" href="https://www.google.com/maps/@?api=1&amp;map_action=pano&amp;viewpoint=55.918923,-4.213124&amp;heading=208&amp;pitch=0&amp;fov=90" target="_blank" rel="noopener">Street View ↗</a></div>
+</article>
+<article class="jc" id="a3-meadowburn">
+  <div class="jh"><span class="jn">A3</span><div><h3>Meadowburn Junction</h3><p>A803 Kirkintilloch Road  ·  no lights  ·  ≈300 m after A2</p></div><span class="mph" title="Speed limit 40 mph">40</span></div>
+  <p class="instr">STRAIGHT ON: stay in the LEFT lane. The right lane is only for turning right into Meadowburn.</p>
+  <figure class="lv"><svg viewBox="0 0 400 250" class="lane" role="img" aria-label="Lanes on the approach to Meadowburn Junction">
+<rect width="400" height="250" class="l-sky"/>
+<polygon points="14.0,236.0 386.0,236.0 259.0,46.0 141.0,46.0" class="l-road"/>
+<polygon points="14.0,236.0 200.0,236.0 200.0,46.0 141.0,46.0" class="l-on"/>
+<polyline points="19.6,236.0 142.8,46.0" class="l-edge"/><polyline points="380.4,236.0 257.2,46.0" class="l-edge"/>
+<polyline points="200.0,236.0 200.0,224.6" class="l-dash"/>
+<polyline points="200.0,214.9 200.0,203.5" class="l-dash"/>
+<polyline points="200.0,193.8 200.0,182.4" class="l-dash"/>
+<polyline points="200.0,172.7 200.0,161.3" class="l-dash"/>
+<polyline points="200.0,151.6 200.0,140.2" class="l-dash"/>
+<polyline points="200.0,130.4 200.0,119.0" class="l-dash"/>
+<polyline points="200.0,109.3 200.0,97.9" class="l-dash"/>
+<polyline points="200.0,88.2 200.0,76.8" class="l-dash"/>
+<polyline points="200.0,67.1 200.0,55.7" class="l-dash"/>
+<polyline points="118.4,201.8 146.4,118.2" class="l-arrow"/>
+<polygon points="157.8,84.0 126.4,122.0 163.8,122.0" class="l-head"/>
+<polyline points="281.6,201.8 262.5,144.8" class="l-arrow"/>
+<polyline points="267.6,160.0 277.7,159.0 286.1,155.9 292.0,151.1 295.0,144.8 294.9,137.5 291.9,129.6" class="l-arrow"/>
+<polygon points="310.3,129.6 279.7,110.6 299.5,148.6" class="l-head"/>
+<text x="109.2" y="228.0" text-anchor="middle" font-size="17" class="l-word">AHEAD</text>
+<text x="290.8" y="228.0" text-anchor="middle" font-size="17" class="l-word">RIGHT ONLY</text>
+<rect x="145.0" y="10" width="51" height="26" rx="13" class="l-tag"/><text x="170.5" y="29" text-anchor="middle" class="l-tagt">YOU</text>
+<polyline points="170.5,36 170.5,44" class="l-tick l-tag"/>
+</svg><figcaption>What you see on the approach: the lanes and their painted arrows.</figcaption></figure>
+  <figure class="dv"><svg viewBox="184 0 519 837" role="img" aria-label="Meadowburn Junction" class="diag">
+<rect x="179" y="-5" width="529" height="847" class="d-bg"/>
+<polyline points="314.2,1626.7 324.2,813.8 324.2,488.4 333.8,488.4 334.0,422.5 334.6,282.0 334.1,272.4 572.9,259.9" class="d-road" stroke-width="59.8"/>
+<polyline points="314.2,1626.7 324.2,813.8 324.2,488.4 314.7,488.4 314.9,422.4 315.4,281.9 325.0,281.9 337.1,-904.8" class="d-road" stroke-width="59.8"/>
+<polyline points="314.2,1626.7 324.2,813.8 324.2,488.4 333.8,488.4 334.0,422.5 334.6,282.0 334.1,272.4 572.9,259.9" class="d-case" stroke-width="15.6" stroke-dasharray="9 6"/>
+<polyline points="314.2,1626.7 324.2,813.8 324.2,488.4 333.8,488.4 334.0,422.5 334.6,282.0 334.1,272.4 572.9,259.9" style="stroke:var(--c-mag)" class="d-line" stroke-width="13" stroke-dasharray="9 6"/>
+<polygon points="604.1,258.3 571.8,239.1 574.0,280.7" style="fill:var(--c-mag)" class="d-head"/>
+<polyline points="314.2,1626.7 324.2,813.8 324.2,488.4 314.7,488.4 314.9,422.4 315.4,281.9 325.0,281.9 337.1,-904.8" class="d-case" stroke-width="21.6"/>
+<polyline points="314.2,1626.7 324.2,813.8 324.2,488.4 314.7,488.4 314.9,422.4 315.4,281.9 325.0,281.9 337.1,-904.8" style="stroke:var(--c-route)" class="d-line" stroke-width="19"/>
+<polygon points="337.5,-950.4 306.7,-905.1 367.5,-904.4" style="fill:var(--c-route)" class="d-head"/>
+<rect x="323.4" y="200.1" width="249.1" height="58.8" rx="9" style="fill:var(--d-label);stroke:var(--c-mag)" class="d-lab"/>
+<text x="332.4" y="240.3" font-size="34" style="fill:var(--c-mag)" class="d-text">Meadowburn</text>
+<rect x="348.1" y="3.0" width="220.2" height="58.8" rx="9" style="fill:var(--d-label);stroke:var(--c-route)" class="d-lab"/>
+<text x="357.1" y="43.3" font-size="34" style="fill:var(--c-route)" class="d-text">A803 south</text>
+</svg><figcaption>From above, with you driving up the page. Your route in solid blue, other choices dashed, amber = signal here.</figcaption></figure>
+  <ul class="opts"><li class="opt primary"><i class="sw" style="--sw:var(--c-route)" aria-hidden="true"></i><div><b>Straight on  ·  YOUR ROUTE</b><span>LEFT lane. No signal.</span></div></li><li class="opt"><i class="sw dash" style="--sw:var(--c-mag)" aria-hidden="true"></i><div><b>Right into Meadowburn</b><span>Signal right ▶, right lane, give way to oncoming traffic.</span></div></li></ul>
+  
+  <div class="meta"><span class="dist">610 m</span><details><summary>Aerial photo</summary><img src="img/a3-meadowburn.jpg" alt="Aerial photo of Meadowburn Junction with the route drawn on." loading="lazy"></details><a class="sv" href="https://www.google.com/maps/@?api=1&amp;map_action=pano&amp;viewpoint=55.916574,-4.215451&amp;heading=209&amp;pitch=0&amp;fov=90" target="_blank" rel="noopener">Street View ↗</a></div>
+</article>
+<article class="jc" id="a45-asda-hilton">
+  <div class="jh"><span class="jn">A4</span><div><h3>Asda + Hilton Road Lights</h3><p>A803  ·  two sets of lights ≈110 m apart  ·  Asda on your left</p></div><span class="mph" title="Speed limit 40 mph">40</span></div>
+  <p class="instr">STRAIGHT ON: LEFT lane through both sets of lights. The rightmost lane turns right at each one. No signal.</p>
+  <figure class="lv"><svg viewBox="0 0 400 250" class="lane" role="img" aria-label="Lanes on the approach to Asda + Hilton Road Lights">
+<rect width="400" height="250" class="l-sky"/>
+<polygon points="14.0,236.0 386.0,236.0 259.0,46.0 141.0,46.0" class="l-road"/>
+<polygon points="14.0,236.0 138.0,236.0 180.3,46.0 141.0,46.0" class="l-on"/>
+<polyline points="19.6,236.0 142.8,46.0" class="l-edge"/><polyline points="380.4,236.0 257.2,46.0" class="l-edge"/>
+<polyline points="138.0,236.0 140.5,224.6" class="l-dash"/>
+<polyline points="142.7,214.9 145.2,203.5" class="l-dash"/>
+<polyline points="147.4,193.8 149.9,182.4" class="l-dash"/>
+<polyline points="152.1,172.7 154.7,161.3" class="l-dash"/>
+<polyline points="156.8,151.6 159.4,140.2" class="l-dash"/>
+<polyline points="161.5,130.4 164.1,119.0" class="l-dash"/>
+<polyline points="166.2,109.3 168.8,97.9" class="l-dash"/>
+<polyline points="170.9,88.2 173.5,76.8" class="l-dash"/>
+<polyline points="175.6,67.1 178.2,55.7" class="l-dash"/>
+<polyline points="262.0,236.0 259.5,224.6" class="l-dash"/>
+<polyline points="257.3,214.9 254.8,203.5" class="l-dash"/>
+<polyline points="252.6,193.8 250.1,182.4" class="l-dash"/>
+<polyline points="247.9,172.7 245.3,161.3" class="l-dash"/>
+<polyline points="243.2,151.6 240.6,140.2" class="l-dash"/>
+<polyline points="238.5,130.4 235.9,119.0" class="l-dash"/>
+<polyline points="233.8,109.3 231.2,97.9" class="l-dash"/>
+<polyline points="229.1,88.2 226.5,76.8" class="l-dash"/>
+<polyline points="224.4,67.1 221.8,55.7" class="l-dash"/>
+<polyline points="138.4,51.7 261.6,51.7" class="l-stop"/>
+<polyline points="91.2,201.8 128.5,118.2" class="l-arrow"/>
+<polygon points="143.7,84.0 114.4,122.0 139.2,122.0" class="l-head"/>
+<polyline points="109.9,160.0 103.4,159.0 98.4,155.9 95.6,151.1 95.0,144.8 96.7,137.5 100.4,129.6" class="l-arrow"/>
+<polygon points="88.2,129.6 112.8,110.6 91.1,148.6" class="l-head"/>
+<polyline points="200.0,201.8 200.0,118.2" class="l-arrow"/>
+<polygon points="200.0,84.0 187.6,122.0 212.4,122.0" class="l-head"/>
+<polyline points="308.8,201.8 283.4,144.8" class="l-arrow"/>
+<polyline points="290.1,160.0 296.6,159.0 301.6,155.9 304.4,151.1 305.0,144.8 303.3,137.5 299.6,129.6" class="l-arrow"/>
+<polygon points="311.8,129.6 287.2,110.6 308.9,148.6" class="l-head"/>
+<text x="79.0" y="228.0" text-anchor="middle" font-size="15" class="l-word">AHEAD + LEFT</text>
+<text x="200.0" y="228.0" text-anchor="middle" font-size="15" class="l-word">AHEAD</text>
+<text x="321.0" y="228.0" text-anchor="middle" font-size="15" class="l-word">RIGHT ONLY</text>
+<rect x="135.2" y="10" width="51" height="26" rx="13" class="l-tag"/><text x="160.7" y="29" text-anchor="middle" class="l-tagt">YOU</text>
+<polyline points="160.7,36 160.7,44" class="l-tick l-tag"/>
+<g><rect x="112.0" y="6" width="18" height="40" rx="4" fill="#141414" stroke="#ffffff" stroke-width="1.5"/><circle cx="121.0" cy="15" r="4.5" fill="#e6281e"/><circle cx="121.0" cy="26" r="4.5" fill="#faaf00"/><circle cx="121.0" cy="37" r="4.5" fill="#28be46"/></g>
+</svg><figcaption>Lanes at the first lights (Asda). At Hilton Road, 110 m on, they are ahead | ahead | right only: stay in the left lane.</figcaption></figure>
+  <figure class="dv"><svg viewBox="-11 0 852 1375" role="img" aria-label="Asda + Hilton Road Lights" class="diag">
+<rect x="-16" y="-5" width="862" height="1385" class="d-bg"/>
+<polyline points="385.0,1423.6 377.3,1245.1 367.7,1244.1 368.7,1097.0 369.3,1069.8 370.0,978.7 399.5,988.5 161.3,1009.3" class="d-road" stroke-width="59.8"/>
+<polyline points="404.1,1422.7 396.4,1244.3 406.0,1244.3 407.0,1097.4 407.5,1070.3 408.3,979.0 396.2,969.7 627.3,907.8" class="d-road" stroke-width="59.8"/>
+<polyline points="379.6,979.0 379.3,882.9 378.7,850.6 380.6,574.9 399.7,575.1 401.1,279.1 400.8,257.4 401.2,232.9 400.2,151.0 400.0,141.4 669.1,136.7" class="d-road" stroke-width="59.8"/>
+<polyline points="382.4,2609.3 394.5,1422.6 385.0,1423.6 377.3,1245.1 367.7,1244.1 368.7,1097.0 369.3,1069.8 370.0,978.7 360.4,979.1 360.2,883.0 359.6,850.5 361.4,574.8 361.4,574.9 362.8,278.9 362.5,257.3 362.9,233.1 361.9,151.5 381.1,150.8 382.3,59.0 382.8,34.8 383.9,-192.1 383.9,-192.9 394.5,-437.1 395.3,-494.6" class="d-road" stroke-width="59.8"/>
+<polyline points="385.0,1423.6 377.3,1245.1 367.7,1244.1 368.7,1097.0 369.3,1069.8 370.0,978.7 399.5,988.5 161.3,1009.3" class="d-case" stroke-width="15.6" stroke-dasharray="9 6"/>
+<polyline points="385.0,1423.6 377.3,1245.1 367.7,1244.1 368.7,1097.0 369.3,1069.8 370.0,978.7 399.5,988.5 161.3,1009.3" style="stroke:var(--c-org)" class="d-line" stroke-width="13" stroke-dasharray="9 6"/>
+<polygon points="130.2,1012.1 163.1,1030.1 159.4,988.6" style="fill:var(--c-org)" class="d-head"/>
+<polyline points="404.1,1422.7 396.4,1244.3 406.0,1244.3 407.0,1097.4 407.5,1070.3 408.3,979.0 396.2,969.7 627.3,907.8" class="d-case" stroke-width="15.6" stroke-dasharray="9 6"/>
+<polyline points="404.1,1422.7 396.4,1244.3 406.0,1244.3 407.0,1097.4 407.5,1070.3 408.3,979.0 396.2,969.7 627.3,907.8" style="stroke:var(--c-mag)" class="d-line" stroke-width="13" stroke-dasharray="9 6"/>
+<polygon points="657.4,899.7 621.9,887.7 632.7,927.9" style="fill:var(--c-mag)" class="d-head"/>
+<polyline points="379.6,979.0 379.3,882.9 378.7,850.6 380.6,574.9 399.7,575.1 401.1,279.1 400.8,257.4 401.2,232.9 400.2,151.0 400.0,141.4 669.1,136.7" class="d-case" stroke-width="15.6" stroke-dasharray="9 6"/>
+<polyline points="379.6,979.0 379.3,882.9 378.7,850.6 380.6,574.9 399.7,575.1 401.1,279.1 400.8,257.4 401.2,232.9 400.2,151.0 400.0,141.4 669.1,136.7" style="stroke:var(--c-mag)" class="d-line" stroke-width="13" stroke-dasharray="9 6"/>
+<polygon points="700.3,136.2 668.7,116.0 669.5,157.5" style="fill:var(--c-mag)" class="d-head"/>
+<polyline points="382.4,2609.3 394.5,1422.6 385.0,1423.6 377.3,1245.1 367.7,1244.1 368.7,1097.0 369.3,1069.8 370.0,978.7 360.4,979.1 360.2,883.0 359.6,850.5 361.4,574.8 361.4,574.9 362.8,278.9 362.5,257.3 362.9,233.1 361.9,151.5 381.1,150.8 382.3,59.0 382.8,34.8 383.9,-192.1 383.9,-192.9 394.5,-437.1 395.3,-494.6" class="d-case" stroke-width="21.6"/>
+<polyline points="382.4,2609.3 394.5,1422.6 385.0,1423.6 377.3,1245.1 367.7,1244.1 368.7,1097.0 369.3,1069.8 370.0,978.7 360.4,979.1 360.2,883.0 359.6,850.5 361.4,574.8 361.4,574.9 362.8,278.9 362.5,257.3 362.9,233.1 361.9,151.5 381.1,150.8 382.3,59.0 382.8,34.8 383.9,-192.1 383.9,-192.9 394.5,-437.1 395.3,-494.6" style="stroke:var(--c-route)" class="d-line" stroke-width="19"/>
+<polygon points="395.9,-540.1 364.9,-495.0 425.6,-494.1" style="fill:var(--c-route)" class="d-head"/>
+<g class="d-lights"><rect x="310.6" y="969.5" width="26" height="66" rx="6"/><circle cx="323.6" cy="982.5" r="7.5" fill="#e6281e"/><circle cx="323.6" cy="1002.5" r="7.5" fill="#faaf00"/><circle cx="323.6" cy="1022.5" r="7.5" fill="#28be46"/></g>
+<g class="d-lights"><rect x="314.1" y="141.1" width="26" height="66" rx="6"/><circle cx="327.1" cy="154.1" r="7.5" fill="#e6281e"/><circle cx="327.1" cy="174.1" r="7.5" fill="#faaf00"/><circle cx="327.1" cy="194.1" r="7.5" fill="#28be46"/></g>
+<rect x="161.4" y="980.4" width="105.3" height="58.8" rx="9" style="fill:var(--d-label);stroke:var(--c-org)" class="d-lab"/>
+<text x="170.4" y="1020.7" font-size="34" style="fill:var(--c-org)" class="d-text">Asda</text>
+<rect x="440.8" y="867.7" width="188.0" height="58.8" rx="9" style="fill:var(--d-label);stroke:var(--c-mag)" class="d-lab"/>
+<text x="449.8" y="907.9" font-size="34" style="fill:var(--c-mag)" class="d-text">Side road</text>
+<rect x="441.7" y="96.9" width="226.5" height="58.8" rx="9" style="fill:var(--d-label);stroke:var(--c-mag)" class="d-lab"/>
+<text x="450.7" y="137.2" font-size="34" style="fill:var(--c-mag)" class="d-text">Hilton Road</text>
+<rect x="406.3" y="3.0" width="220.2" height="58.8" rx="9" style="fill:var(--d-label);stroke:var(--c-route)" class="d-lab"/>
+<text x="415.3" y="43.3" font-size="34" style="fill:var(--c-route)" class="d-text">A803 south</text>
+</svg><figcaption>From above, with you driving up the page. Your route in solid blue, other choices dashed, amber = signal here.</figcaption></figure>
+  <ul class="opts"><li class="opt primary"><i class="sw" style="--sw:var(--c-route)" aria-hidden="true"></i><div><b>Straight on  ·  YOUR ROUTE</b><span>LEFT lane (arrows ahead / ahead+left). The middle lane also goes ahead. No signal.</span></div></li><li class="opt"><i class="sw dash" style="--sw:var(--c-org)" aria-hidden="true"></i><div><b>Left at the first lights (into Asda)</b><span>LEFT lane. ◀ Signal left.</span></div></li><li class="opt"><i class="sw dash" style="--sw:var(--c-mag)" aria-hidden="true"></i><div><b>Right at either set of lights</b><span>RIGHT lane. Signal right ▶. Hilton Road is the second one.</span></div></li></ul>
+  
+  <div class="meta"><span class="dist">0.9–1.0 km</span><details><summary>Aerial photo</summary><img src="img/a45-asda-hilton.jpg" alt="Aerial photo of Asda + Hilton Road Lights with the route drawn on." loading="lazy"></details><a class="sv" href="https://www.google.com/maps/@?api=1&amp;map_action=pano&amp;viewpoint=55.914499,-4.217505&amp;heading=209&amp;pitch=0&amp;fov=90" target="_blank" rel="noopener">Street View ↗</a></div>
+</article>
+<p class="stretch"><b class="k">1.1–1.8 km</b><span>Speed limit drops to <b>30 mph</b> about 110 m after Hilton Road. Side roads at Wester Cleddens join with no lights and no lane choice: keep straight on and watch for cars pulling out.</span></p>
+<article class="jc" id="a7-crosshill-lights">
+  <div class="jh"><span class="jn">A5</span><div><h3>South Crosshill Road Lights</h3><p>A803  ·  30 mph from here  ·  T-junction</p></div><span class="mph" title="Speed limit 30 mph">30</span></div>
+  <p class="instr">STRAIGHT ON: one lane. No signal. The limit is now 30 mph: check your speed.</p>
+  <figure class="lv"><svg viewBox="0 0 400 250" class="lane" role="img" aria-label="Lanes on the approach to South Crosshill Road Lights">
+<rect width="400" height="250" class="l-sky"/>
+<polygon points="14.0,236.0 386.0,236.0 259.0,46.0 141.0,46.0" class="l-road"/>
+<polygon points="14.0,236.0 386.0,236.0 259.0,46.0 141.0,46.0" class="l-on"/>
+<polyline points="19.6,236.0 142.8,46.0" class="l-edge"/><polyline points="380.4,236.0 257.2,46.0" class="l-edge"/>
+<polyline points="138.4,51.7 261.6,51.7" class="l-stop"/>
+<text x="200.0" y="228.0" text-anchor="middle" font-size="17" class="l-word">ONE LANE</text>
+<rect x="174.5" y="10" width="51" height="26" rx="13" class="l-tag"/><text x="200.0" y="29" text-anchor="middle" class="l-tagt">YOU</text>
+<polyline points="200.0,36 200.0,44" class="l-tick l-tag"/>
+<g><rect x="112.0" y="6" width="18" height="40" rx="4" fill="#141414" stroke="#ffffff" stroke-width="1.5"/><circle cx="121.0" cy="15" r="4.5" fill="#e6281e"/><circle cx="121.0" cy="26" r="4.5" fill="#faaf00"/><circle cx="121.0" cy="37" r="4.5" fill="#28be46"/></g>
+</svg><figcaption>One lane on the approach: keep to your normal position.</figcaption></figure>
+  <figure class="dv"><svg viewBox="0 0 620 956" role="img" aria-label="South Crosshill Road Lights" class="diag">
+<rect x="-5" y="-5" width="630" height="966" class="d-bg"/>
+<polyline points="188.7,1537.4 263.3,1363.5 287.3,1300.4 306.9,1245.2 318.3,1197.8 327.9,1133.4 335.5,1070.6 341.6,965.2 343.9,857.5 344.6,571.4 344.6,571.5 343.8,448.2 343.9,427.2 344.6,360.9 354.0,370.5 114.8,366.3" class="d-road" stroke-width="59.8"/>
+<polyline points="-1021.9,4089.6 -718.6,3455.5 -708.6,3434.5 -696.2,3406.9 -663.0,3337.2 -615.6,3239.0 -609.5,3226.3 -598.8,3203.2 -432.6,2858.7 -234.7,2432.2 99.8,1731.2 99.7,1731.4 188.7,1537.2 188.7,1537.4 263.3,1363.5 287.3,1300.4 306.9,1245.2 318.3,1197.8 327.9,1133.4 335.5,1070.6 341.6,965.2 343.9,857.5 344.6,571.4 344.6,571.5 343.8,448.2 343.9,427.2 344.6,360.9 335.0,361.0 334.6,288.2 334.9,255.6 338.5,-158.6" class="d-road" stroke-width="59.8"/>
+<polyline points="188.7,1537.4 263.3,1363.5 287.3,1300.4 306.9,1245.2 318.3,1197.8 327.9,1133.4 335.5,1070.6 341.6,965.2 343.9,857.5 344.6,571.4 344.6,571.5 343.8,448.2 343.9,427.2 344.6,360.9 354.0,370.5 114.8,366.3" class="d-case" stroke-width="15.6" stroke-dasharray="9 6"/>
+<polyline points="188.7,1537.4 263.3,1363.5 287.3,1300.4 306.9,1245.2 318.3,1197.8 327.9,1133.4 335.5,1070.6 341.6,965.2 343.9,857.5 344.6,571.4 344.6,571.5 343.8,448.2 343.9,427.2 344.6,360.9 354.0,370.5 114.8,366.3" style="stroke:var(--c-mag)" class="d-line" stroke-width="13" stroke-dasharray="9 6"/>
+<polygon points="83.6,365.8 114.4,387.1 115.2,345.5" style="fill:var(--c-mag)" class="d-head"/>
+<polyline points="-1021.9,4089.6 -718.6,3455.5 -708.6,3434.5 -696.2,3406.9 -663.0,3337.2 -615.6,3239.0 -609.5,3226.3 -598.8,3203.2 -432.6,2858.7 -234.7,2432.2 99.8,1731.2 99.7,1731.4 188.7,1537.2 188.7,1537.4 263.3,1363.5 287.3,1300.4 306.9,1245.2 318.3,1197.8 327.9,1133.4 335.5,1070.6 341.6,965.2 343.9,857.5 344.6,571.4 344.6,571.5 343.8,448.2 343.9,427.2 344.6,360.9 335.0,361.0 334.6,288.2 334.9,255.6 338.5,-158.6" class="d-case" stroke-width="21.6"/>
+<polyline points="-1021.9,4089.6 -718.6,3455.5 -708.6,3434.5 -696.2,3406.9 -663.0,3337.2 -615.6,3239.0 -609.5,3226.3 -598.8,3203.2 -432.6,2858.7 -234.7,2432.2 99.8,1731.2 99.7,1731.4 188.7,1537.2 188.7,1537.4 263.3,1363.5 287.3,1300.4 306.9,1245.2 318.3,1197.8 327.9,1133.4 335.5,1070.6 341.6,965.2 343.9,857.5 344.6,571.4 344.6,571.5 343.8,448.2 343.9,427.2 344.6,360.9 335.0,361.0 334.6,288.2 334.9,255.6 338.5,-158.6" style="stroke:var(--c-route)" class="d-line" stroke-width="19"/>
+<polygon points="339.0,-204.2 308.1,-158.9 368.9,-158.4" style="fill:var(--c-route)" class="d-head"/>
+<g class="d-lights"><rect x="293.3" y="321.5" width="26" height="66" rx="6"/><circle cx="306.3" cy="334.5" r="7.5" fill="#e6281e"/><circle cx="306.3" cy="354.5" r="7.5" fill="#faaf00"/><circle cx="306.3" cy="374.5" r="7.5" fill="#28be46"/></g>
+<rect x="116.0" y="399.4" width="387.9" height="58.8" rx="9" style="fill:var(--d-label);stroke:var(--c-mag)" class="d-lab"/>
+<text x="125.0" y="439.7" font-size="34" style="fill:var(--c-mag)" class="d-text">South Crosshill Road</text>
+<rect x="349.5" y="3.0" width="220.2" height="58.8" rx="9" style="fill:var(--d-label);stroke:var(--c-route)" class="d-lab"/>
+<text x="358.5" y="43.3" font-size="34" style="fill:var(--c-route)" class="d-text">A803 south</text>
+</svg><figcaption>From above, with you driving up the page. Your route in solid blue, other choices dashed, amber = signal here.</figcaption></figure>
+  <ul class="opts"><li class="opt primary"><i class="sw" style="--sw:var(--c-route)" aria-hidden="true"></i><div><b>Straight on  ·  YOUR ROUTE</b><span>Single lane. No signal. Stop on red.</span></div></li><li class="opt"><i class="sw dash" style="--sw:var(--c-mag)" aria-hidden="true"></i><div><b>Left into South Crosshill Road</b><span>◀ Signal left, check the left mirror for cyclists.</span></div></li></ul>
+  
+  <div class="meta"><span class="dist">1.8 km</span><details><summary>Aerial photo</summary><img src="img/a7-crosshill-lights.jpg" alt="Aerial photo of South Crosshill Road Lights with the route drawn on." loading="lazy"></details><a class="sv" href="https://www.google.com/maps/@?api=1&amp;map_action=pano&amp;viewpoint=55.907041,-4.224121&amp;heading=184&amp;pitch=0&amp;fov=90" target="_blank" rel="noopener">Street View ↗</a></div>
+</article>
+<p class="stretch"><b class="k">≈1.95 km</b><span>Springfield Road (Morrisons) lights on your left, by the Triangle shopping centre. Straight on. Lane arrows are not mapped here.</span></p>
+<article class="jc" id="a89-bishopbriggs-cross">
+  <div class="jh"><span class="jn">A6</span><div><h3>Bishopbriggs Cross</h3><p>A803 at the station  ·  lights  ·  3 lanes on approach</p></div><span class="mph" title="Speed limit 30 mph">30</span></div>
+  <p class="instr">STRAIGHT ON: MIDDLE lane (arrow ahead). Left lane = Crowhill Road only. Right lane = Kenmure Avenue. No signal.</p>
+  <figure class="lv"><svg viewBox="0 0 400 250" class="lane" role="img" aria-label="Lanes on the approach to Bishopbriggs Cross">
+<rect width="400" height="250" class="l-sky"/>
+<polygon points="14.0,236.0 386.0,236.0 259.0,46.0 141.0,46.0" class="l-road"/>
+<polygon points="138.0,236.0 262.0,236.0 219.7,46.0 180.3,46.0" class="l-on"/>
+<polyline points="19.6,236.0 142.8,46.0" class="l-edge"/><polyline points="380.4,236.0 257.2,46.0" class="l-edge"/>
+<polyline points="138.0,236.0 140.5,224.6" class="l-dash"/>
+<polyline points="142.7,214.9 145.2,203.5" class="l-dash"/>
+<polyline points="147.4,193.8 149.9,182.4" class="l-dash"/>
+<polyline points="152.1,172.7 154.7,161.3" class="l-dash"/>
+<polyline points="156.8,151.6 159.4,140.2" class="l-dash"/>
+<polyline points="161.5,130.4 164.1,119.0" class="l-dash"/>
+<polyline points="166.2,109.3 168.8,97.9" class="l-dash"/>
+<polyline points="170.9,88.2 173.5,76.8" class="l-dash"/>
+<polyline points="175.6,67.1 178.2,55.7" class="l-dash"/>
+<polyline points="262.0,236.0 259.5,224.6" class="l-dash"/>
+<polyline points="257.3,214.9 254.8,203.5" class="l-dash"/>
+<polyline points="252.6,193.8 250.1,182.4" class="l-dash"/>
+<polyline points="247.9,172.7 245.3,161.3" class="l-dash"/>
+<polyline points="243.2,151.6 240.6,140.2" class="l-dash"/>
+<polyline points="238.5,130.4 235.9,119.0" class="l-dash"/>
+<polyline points="233.8,109.3 231.2,97.9" class="l-dash"/>
+<polyline points="229.1,88.2 226.5,76.8" class="l-dash"/>
+<polyline points="224.4,67.1 221.8,55.7" class="l-dash"/>
+<polyline points="138.4,51.7 261.6,51.7" class="l-stop"/>
+<polyline points="91.2,201.8 116.6,144.8" class="l-arrow"/>
+<polyline points="109.9,160.0 103.4,159.0 98.4,155.9 95.6,151.1 95.0,144.8 96.7,137.5 100.4,129.6" class="l-arrow"/>
+<polygon points="88.2,129.6 112.8,110.6 91.1,148.6" class="l-head"/>
+<polyline points="200.0,201.8 200.0,118.2" class="l-arrow"/>
+<polygon points="200.0,84.0 187.6,122.0 212.4,122.0" class="l-head"/>
+<polyline points="308.8,201.8 283.4,144.8" class="l-arrow"/>
+<polyline points="290.1,160.0 296.6,159.0 301.6,155.9 304.4,151.1 305.0,144.8 303.3,137.5 299.6,129.6" class="l-arrow"/>
+<polygon points="311.8,129.6 287.2,110.6 308.9,148.6" class="l-head"/>
+<text x="79.0" y="228.0" text-anchor="middle" font-size="15" class="l-word">LEFT ONLY</text>
+<text x="200.0" y="228.0" text-anchor="middle" font-size="15" class="l-word">AHEAD</text>
+<text x="321.0" y="228.0" text-anchor="middle" font-size="15" class="l-word">RIGHT ONLY</text>
+<rect x="174.5" y="10" width="51" height="26" rx="13" class="l-tag"/><text x="200.0" y="29" text-anchor="middle" class="l-tagt">YOU</text>
+<polyline points="200.0,36 200.0,44" class="l-tick l-tag"/>
+<g><rect x="112.0" y="6" width="18" height="40" rx="4" fill="#141414" stroke="#ffffff" stroke-width="1.5"/><circle cx="121.0" cy="15" r="4.5" fill="#e6281e"/><circle cx="121.0" cy="26" r="4.5" fill="#faaf00"/><circle cx="121.0" cy="37" r="4.5" fill="#28be46"/></g>
+</svg><figcaption>What you see on the approach: the lanes and their painted arrows.</figcaption></figure>
+  <figure class="dv"><svg viewBox="138 0 818 1255" role="img" aria-label="Bishopbriggs Cross" class="diag">
+<rect x="133" y="-5" width="828" height="1265" class="d-bg"/>
+<polyline points="570.3,1370.2 474.0,1219.9 440.1,1141.4 425.1,1074.2 401.6,967.9 397.3,881.7 325.7,647.7 319.5,570.4 318.6,547.1 326.3,468.7 357.6,479.2 188.5,310.1" class="d-road" stroke-width="59.8"/>
+<polyline points="586.4,1359.9 490.6,1210.4 458.2,1135.4 443.8,1070.1 420.5,965.1 416.5,880.7 363.9,644.6 357.7,567.5 356.7,549.8 364.4,472.5 363.6,462.9 601.9,442.1" class="d-road" stroke-width="59.8"/>
+<polyline points="775.1,1963.0 748.6,1895.2 737.2,1864.7 592.2,1476.6 591.8,1475.6 570.0,1406.1 560.0,1370.2 586.4,1359.9 490.6,1210.4 458.2,1135.4 443.8,1070.1 420.5,965.1 416.5,880.7 344.8,646.1 338.6,568.9 337.6,548.4 345.4,470.6 345.9,467.7 354.9,432.6 378.6,368.5 378.4,368.9 389.4,336.9 398.7,311.7 430.3,215.0 464.2,115.5 490.9,51.0 523.8,-23.5 558.0,-92.3 600.1,-172.1 690.5,-325.0 772.6,-462.9 851.7,-585.7 934.4,-705.9 993.7,-788.9 1070.4,-896.1 1075.4,-903.1 1145.2,-1000.9 1182.6,-1053.3 1240.1,-1134.7 1289.3,-1212.4 1338.6,-1302.0 1389.5,-1403.0 1451.2,-1566.6 1455.8,-1580.5 1465.4,-1612.4 1485.8,-1689.7 1507.1,-1782.1 1519.1,-1858.0 1522.2,-1884.5 1524.5,-1902.0 1555.2,-2164.3 1560.6,-2242.7 1562.5,-2326.7 1555.6,-2406.0 1547.4,-2484.4 1528.4,-2594.7" class="d-road" stroke-width="59.8"/>
+<polyline points="570.3,1370.2 474.0,1219.9 440.1,1141.4 425.1,1074.2 401.6,967.9 397.3,881.7 325.7,647.7 319.5,570.4 318.6,547.1 326.3,468.7 357.6,479.2 188.5,310.1" class="d-case" stroke-width="15.6" stroke-dasharray="9 6"/>
+<polyline points="570.3,1370.2 474.0,1219.9 440.1,1141.4 425.1,1074.2 401.6,967.9 397.3,881.7 325.7,647.7 319.5,570.4 318.6,547.1 326.3,468.7 357.6,479.2 188.5,310.1" style="stroke:var(--c-org)" class="d-line" stroke-width="13" stroke-dasharray="9 6"/>
+<polygon points="166.4,288.0 173.8,324.8 203.2,295.4" style="fill:var(--c-org)" class="d-head"/>
+<polyline points="586.4,1359.9 490.6,1210.4 458.2,1135.4 443.8,1070.1 420.5,965.1 416.5,880.7 363.9,644.6 357.7,567.5 356.7,549.8 364.4,472.5 363.6,462.9 601.9,442.1" class="d-case" stroke-width="15.6" stroke-dasharray="9 6"/>
+<polyline points="586.4,1359.9 490.6,1210.4 458.2,1135.4 443.8,1070.1 420.5,965.1 416.5,880.7 363.9,644.6 357.7,567.5 356.7,549.8 364.4,472.5 363.6,462.9 601.9,442.1" style="stroke:var(--c-mag)" class="d-line" stroke-width="13" stroke-dasharray="9 6"/>
+<polygon points="632.9,439.4 600.0,421.4 603.7,462.8" style="fill:var(--c-mag)" class="d-head"/>
+<polyline points="775.1,1963.0 748.6,1895.2 737.2,1864.7 592.2,1476.6 591.8,1475.6 570.0,1406.1 560.0,1370.2 586.4,1359.9 490.6,1210.4 458.2,1135.4 443.8,1070.1 420.5,965.1 416.5,880.7 344.8,646.1 338.6,568.9 337.6,548.4 345.4,470.6 345.9,467.7 354.9,432.6 378.6,368.5 378.4,368.9 389.4,336.9 398.7,311.7 430.3,215.0 464.2,115.5 490.9,51.0 523.8,-23.5 558.0,-92.3 600.1,-172.1 690.5,-325.0 772.6,-462.9 851.7,-585.7 934.4,-705.9 993.7,-788.9 1070.4,-896.1 1075.4,-903.1 1145.2,-1000.9 1182.6,-1053.3 1240.1,-1134.7 1289.3,-1212.4 1338.6,-1302.0 1389.5,-1403.0 1451.2,-1566.6 1455.8,-1580.5 1465.4,-1612.4 1485.8,-1689.7 1507.1,-1782.1 1519.1,-1858.0 1522.2,-1884.5 1524.5,-1902.0 1555.2,-2164.3 1560.6,-2242.7 1562.5,-2326.7 1555.6,-2406.0 1547.4,-2484.4 1528.4,-2594.7" class="d-case" stroke-width="21.6"/>
+<polyline points="775.1,1963.0 748.6,1895.2 737.2,1864.7 592.2,1476.6 591.8,1475.6 570.0,1406.1 560.0,1370.2 586.4,1359.9 490.6,1210.4 458.2,1135.4 443.8,1070.1 420.5,965.1 416.5,880.7 344.8,646.1 338.6,568.9 337.6,548.4 345.4,470.6 345.9,467.7 354.9,432.6 378.6,368.5 378.4,368.9 389.4,336.9 398.7,311.7 430.3,215.0 464.2,115.5 490.9,51.0 523.8,-23.5 558.0,-92.3 600.1,-172.1 690.5,-325.0 772.6,-462.9 851.7,-585.7 934.4,-705.9 993.7,-788.9 1070.4,-896.1 1075.4,-903.1 1145.2,-1000.9 1182.6,-1053.3 1240.1,-1134.7 1289.3,-1212.4 1338.6,-1302.0 1389.5,-1403.0 1451.2,-1566.6 1455.8,-1580.5 1465.4,-1612.4 1485.8,-1689.7 1507.1,-1782.1 1519.1,-1858.0 1522.2,-1884.5 1524.5,-1902.0 1555.2,-2164.3 1560.6,-2242.7 1562.5,-2326.7 1555.6,-2406.0 1547.4,-2484.4 1528.4,-2594.7" style="stroke:var(--c-route)" class="d-line" stroke-width="19"/>
+<polygon points="1520.7,-2639.7 1498.4,-2589.6 1558.4,-2599.9" style="fill:var(--c-route)" class="d-head"/>
+<g class="d-lights"><rect x="272.1" y="449.9" width="26" height="66" rx="6"/><circle cx="285.1" cy="462.9" r="7.5" fill="#e6281e"/><circle cx="285.1" cy="482.9" r="7.5" fill="#faaf00"/><circle cx="285.1" cy="502.9" r="7.5" fill="#28be46"/></g>
+<rect x="196.3" y="303.9" width="263.8" height="58.8" rx="9" style="fill:var(--d-label);stroke:var(--c-org)" class="d-lab"/>
+<text x="205.3" y="344.2" font-size="34" style="fill:var(--c-org)" class="d-text">Crowhill Road</text>
+<rect x="280.4" y="376.2" width="321.3" height="58.8" rx="9" style="fill:var(--d-label);stroke:var(--c-mag)" class="d-lab"/>
+<text x="289.4" y="416.5" font-size="34" style="fill:var(--c-mag)" class="d-text">Kenmure Avenue</text>
+<rect x="517.3" y="3.0" width="435.7" height="58.8" rx="9" style="fill:var(--d-label);stroke:var(--c-route)" class="d-lab"/>
+<text x="526.3" y="43.3" font-size="34" style="fill:var(--c-route)" class="d-text">A803 south: Auchinairn</text>
+</svg><figcaption>From above, with you driving up the page. Your route in solid blue, other choices dashed, amber = signal here.</figcaption></figure>
+  <ul class="opts"><li class="opt primary"><i class="sw" style="--sw:var(--c-route)" aria-hidden="true"></i><div><b>Straight on  ·  YOUR ROUTE</b><span>MIDDLE lane. No signal. The road bears slightly left over the railway.</span></div></li><li class="opt"><i class="sw dash" style="--sw:var(--c-org)" aria-hidden="true"></i><div><b>Left into Crowhill Road</b><span>LEFT lane. ◀ Signal left.</span></div></li><li class="opt"><i class="sw dash" style="--sw:var(--c-mag)" aria-hidden="true"></i><div><b>Right into Kenmure Avenue</b><span>RIGHT lane. Signal right ▶.</span></div></li></ul>
+  <p class="trap">Just before this, Springfield Road (Morrisons) joins on your left at its own lights. Keep going straight.</p>
+  <div class="meta"><span class="dist">2.1 km</span><details><summary>Aerial photo</summary><img src="img/a89-bishopbriggs-cross.jpg" alt="Aerial photo of Bishopbriggs Cross with the route drawn on." loading="lazy"></details><a class="sv" href="https://www.google.com/maps/@?api=1&amp;map_action=pano&amp;viewpoint=55.904651,-4.224603&amp;heading=205&amp;pitch=0&amp;fov=90" target="_blank" rel="noopener">Street View ↗</a></div>
+</article>
+<p class="stretch"><b class="k">2.1–3.1 km</b><span>Over the railway bridge at Bishopbriggs station and through Auchinairn. Mostly one lane each way, 30 mph.</span></p>
+<article class="jc" id="a11-colston-road">
+  <div class="jh"><span class="jn">A7</span><div><h3>Colston Road Crossroads</h3><p>A803 becomes Springburn Road  ·  lights</p></div><span class="mph" title="Speed limit 30 mph">30</span></div>
+  <p class="instr">STRAIGHT ON: left lane. No signal. Go on green when the box is clear.</p>
+  <figure class="lv"><svg viewBox="0 0 400 250" class="lane" role="img" aria-label="Lanes on the approach to Colston Road Crossroads">
+<rect width="400" height="250" class="l-sky"/>
+<polygon points="14.0,236.0 386.0,236.0 259.0,46.0 141.0,46.0" class="l-road"/>
+<polygon points="14.0,236.0 386.0,236.0 259.0,46.0 141.0,46.0" class="l-on"/>
+<polyline points="19.6,236.0 142.8,46.0" class="l-edge"/><polyline points="380.4,236.0 257.2,46.0" class="l-edge"/>
+<polyline points="138.4,51.7 261.6,51.7" class="l-stop"/>
+<text x="200.0" y="150.5" class="l-q" text-anchor="middle">?</text>
+<text x="200.0" y="228.0" text-anchor="middle" font-size="17" class="l-word">NOT MAPPED</text>
+<rect x="174.5" y="10" width="51" height="26" rx="13" class="l-tag"/><text x="200.0" y="29" text-anchor="middle" class="l-tagt">YOU</text>
+<polyline points="200.0,36 200.0,44" class="l-tick l-tag"/>
+<g><rect x="112.0" y="6" width="18" height="40" rx="4" fill="#141414" stroke="#ffffff" stroke-width="1.5"/><circle cx="121.0" cy="15" r="4.5" fill="#e6281e"/><circle cx="121.0" cy="26" r="4.5" fill="#faaf00"/><circle cx="121.0" cy="37" r="4.5" fill="#28be46"/></g>
+</svg><figcaption>Lane arrows are not mapped here: read the road markings on the day.</figcaption></figure>
+  <figure class="dv"><svg viewBox="119 0 658 1016" role="img" aria-label="Colston Road Crossroads" class="diag">
+<rect x="114" y="-5" width="668" height="1026" class="d-bg"/>
+<polyline points="398.0,373.0 398.3,333.3 398.3,286.4 407.0,296.0 168.7,275.1" class="d-road" stroke-width="59.8"/>
+<polyline points="398.0,373.0 398.3,333.3 398.3,286.4 407.8,276.9 647.0,276.9" class="d-road" stroke-width="59.8"/>
+<polyline points="273.1,3075.1 280.2,3018.4 300.5,2690.6 319.0,2437.9 320.8,2412.1 322.7,2384.7 340.0,2137.2 349.6,2137.7 378.1,1805.4 387.6,1611.5 391.0,1531.8 394.7,1416.4 398.3,1253.1 398.8,1230.7 399.0,1210.6 399.6,954.9 398.0,373.1 398.3,333.3 398.3,286.4 379.1,286.7 378.2,200.8 377.9,183.7 375.7,-34.8 373.9,-248.6 372.2,-460.4 371.1,-679.8 373.9,-909.5 374.9,-932.4 375.9,-958.1 378.0,-1004.2 384.8,-1099.4 395.2,-1211.7 405.9,-1305.1 418.2,-1395.3 430.3,-1484.2 443.8,-1557.7 478.2,-1723.4 495.8,-1789.9 524.0,-1889.9 545.1,-1960.6 564.2,-2018.9 583.9,-2074.1 597.2,-2107.6 630.7,-2188.9 642.6,-2214.3 650.9,-2233.5 762.4,-2486.2 837.1,-2652.1 869.1,-2728.2 875.2,-2744.6 900.0,-2804.8 916.9,-2848.8 934.5,-2906.3 947.1,-2948.6 959.6,-2998.5 967.3,-3034.7 975.6,-3073.3 982.0,-3112.5 989.8,-3172.1 995.0,-3222.2 1003.5,-3309.5 1007.2,-3389.0 1015.0,-3622.9 1019.9,-3767.1 1022.6,-3846.7 1027.0,-4188.0" class="d-road" stroke-width="59.8"/>
+<polyline points="398.0,373.0 398.3,333.3 398.3,286.4 407.0,296.0 168.7,275.1" class="d-case" stroke-width="15.6" stroke-dasharray="9 6"/>
+<polyline points="398.0,373.0 398.3,333.3 398.3,286.4 407.0,296.0 168.7,275.1" style="stroke:var(--c-org)" class="d-line" stroke-width="13" stroke-dasharray="9 6"/>
+<polygon points="137.6,272.4 166.9,295.8 170.5,254.4" style="fill:var(--c-org)" class="d-head"/>
+<polyline points="398.0,373.0 398.3,333.3 398.3,286.4 407.8,276.9 647.0,276.9" class="d-case" stroke-width="15.6" stroke-dasharray="9 6"/>
+<polyline points="398.0,373.0 398.3,333.3 398.3,286.4 407.8,276.9 647.0,276.9" style="stroke:var(--c-mag)" class="d-line" stroke-width="13" stroke-dasharray="9 6"/>
+<polygon points="678.2,276.9 647.0,256.1 647.0,297.7" style="fill:var(--c-mag)" class="d-head"/>
+<polyline points="273.1,3075.1 280.2,3018.4 300.5,2690.6 319.0,2437.9 320.8,2412.1 322.7,2384.7 340.0,2137.2 349.6,2137.7 378.1,1805.4 387.6,1611.5 391.0,1531.8 394.7,1416.4 398.3,1253.1 398.8,1230.7 399.0,1210.6 399.6,954.9 398.0,373.1 398.3,333.3 398.3,286.4 379.1,286.7 378.2,200.8 377.9,183.7 375.7,-34.8 373.9,-248.6 372.2,-460.4 371.1,-679.8 373.9,-909.5 374.9,-932.4 375.9,-958.1 378.0,-1004.2 384.8,-1099.4 395.2,-1211.7 405.9,-1305.1 418.2,-1395.3 430.3,-1484.2 443.8,-1557.7 478.2,-1723.4 495.8,-1789.9 524.0,-1889.9 545.1,-1960.6 564.2,-2018.9 583.9,-2074.1 597.2,-2107.6 630.7,-2188.9 642.6,-2214.3 650.9,-2233.5 762.4,-2486.2 837.1,-2652.1 869.1,-2728.2 875.2,-2744.6 900.0,-2804.8 916.9,-2848.8 934.5,-2906.3 947.1,-2948.6 959.6,-2998.5 967.3,-3034.7 975.6,-3073.3 982.0,-3112.5 989.8,-3172.1 995.0,-3222.2 1003.5,-3309.5 1007.2,-3389.0 1015.0,-3622.9 1019.9,-3767.1 1022.6,-3846.7 1027.0,-4188.0" class="d-case" stroke-width="21.6"/>
+<polyline points="273.1,3075.1 280.2,3018.4 300.5,2690.6 319.0,2437.9 320.8,2412.1 322.7,2384.7 340.0,2137.2 349.6,2137.7 378.1,1805.4 387.6,1611.5 391.0,1531.8 394.7,1416.4 398.3,1253.1 398.8,1230.7 399.0,1210.6 399.6,954.9 398.0,373.1 398.3,333.3 398.3,286.4 379.1,286.7 378.2,200.8 377.9,183.7 375.7,-34.8 373.9,-248.6 372.2,-460.4 371.1,-679.8 373.9,-909.5 374.9,-932.4 375.9,-958.1 378.0,-1004.2 384.8,-1099.4 395.2,-1211.7 405.9,-1305.1 418.2,-1395.3 430.3,-1484.2 443.8,-1557.7 478.2,-1723.4 495.8,-1789.9 524.0,-1889.9 545.1,-1960.6 564.2,-2018.9 583.9,-2074.1 597.2,-2107.6 630.7,-2188.9 642.6,-2214.3 650.9,-2233.5 762.4,-2486.2 837.1,-2652.1 869.1,-2728.2 875.2,-2744.6 900.0,-2804.8 916.9,-2848.8 934.5,-2906.3 947.1,-2948.6 959.6,-2998.5 967.3,-3034.7 975.6,-3073.3 982.0,-3112.5 989.8,-3172.1 995.0,-3222.2 1003.5,-3309.5 1007.2,-3389.0 1015.0,-3622.9 1019.9,-3767.1 1022.6,-3846.7 1027.0,-4188.0" style="stroke:var(--c-route)" class="d-line" stroke-width="19"/>
+<polygon points="1027.6,-4233.6 996.6,-4188.4 1057.4,-4187.6" style="fill:var(--c-route)" class="d-head"/>
+<g class="d-lights"><rect x="347.2" y="288.9" width="26" height="66" rx="6"/><circle cx="360.2" cy="301.9" r="7.5" fill="#e6281e"/><circle cx="360.2" cy="321.9" r="7.5" fill="#faaf00"/><circle cx="360.2" cy="341.9" r="7.5" fill="#28be46"/></g>
+<rect x="170.5" y="218.2" width="383.0" height="58.8" rx="9" style="fill:var(--d-label);stroke:var(--c-org)" class="d-lab"/>
+<text x="179.5" y="258.5" font-size="34" style="fill:var(--c-org)" class="d-text">Colston Road (B812)</text>
+<rect x="393.0" y="281.0" width="253.0" height="58.8" rx="9" style="fill:var(--d-label);stroke:var(--c-mag)" class="d-lab"/>
+<text x="402.0" y="321.3" font-size="34" style="fill:var(--c-mag)" class="d-text">Colston Road</text>
+<rect x="454.7" y="3.0" width="319.3" height="58.8" rx="9" style="fill:var(--d-label);stroke:var(--c-route)" class="d-lab"/>
+<text x="463.7" y="43.3" font-size="34" style="fill:var(--c-route)" class="d-text">Springburn Road</text>
+</svg><figcaption>From above, with you driving up the page. Your route in solid blue, other choices dashed, amber = signal here.</figcaption></figure>
+  <ul class="opts"><li class="opt primary"><i class="sw" style="--sw:var(--c-route)" aria-hidden="true"></i><div><b>Straight on  ·  YOUR ROUTE</b><span>Left lane. No signal.</span></div></li><li class="opt"><i class="sw dash" style="--sw:var(--c-org)" aria-hidden="true"></i><div><b>Left: Colston Road (B812)</b><span>◀ Signal left.</span></div></li><li class="opt"><i class="sw dash" style="--sw:var(--c-mag)" aria-hidden="true"></i><div><b>Right: Colston Road</b><span>Signal right ▶, wait in the junction for a gap.</span></div></li></ul>
+  
+  <div class="meta"><span class="dist">3.1 km</span><details><summary>Aerial photo</summary><img src="img/a11-colston-road.jpg" alt="Aerial photo of Colston Road Crossroads with the route drawn on." loading="lazy"></details><a class="sv" href="https://www.google.com/maps/@?api=1&amp;map_action=pano&amp;viewpoint=55.896696,-4.231501&amp;heading=180&amp;pitch=0&amp;fov=90" target="_blank" rel="noopener">Street View ↗</a></div>
+</article>
+  <p class="endnote">The guide stops here, about 2.5 miles from the test centre. Beyond Colston Road the <span class="rn a">A803</span> is Springburn Road, and about 0.8 km further it becomes a dual carriageway. Tell me if your route goes on.</p>
 </section>
 
-<!-- ================= EXTENSION B ================= -->
 <section class="leg" id="ext-b" aria-labelledby="b-h">
   <div class="leghead b">
     <h2 id="b-h">Extension B: <span class="rn a">A803</span> north to Kirkintilloch</h2>
-    <p class="muted">From Cadder Roundabout, second exit. 4.5 km to Kirkintilloch town centre. Distances below are from Cadder Roundabout.</p>
+    <p class="muted">Cadder Roundabout, second exit. 4.5 km to Kirkintilloch town centre. Distances are from Cadder Roundabout.</p>
   </div>
-
-  <p class="stretch"><b class="k">0–0.9 km</b><span>Shortly after Cadder the limit rises to <b>60 mph</b> (national speed limit, single carriageway). Build up speed smoothly and only as conditions allow.</span></p>
-
-  <div class="card">
-    <figure><img src="img/b1-torrance.jpg" alt="Torrance Roundabout. Ahead to Kirkintilloch is the second exit: right lane, no signal on approach, signal left after Torrance Road. Left lane is left only." width="837" height="1712"></figure>
-    <div class="meta"><span class="dist">0.9 km</span><a class="sv" href="https://www.google.com/maps/@?api=1&amp;map_action=pano&amp;viewpoint=55.927768,-4.204240&amp;heading=25&amp;pitch=0&amp;fov=90" target="_blank" rel="noopener">Check on Street View ↗</a></div>
-  </div>
-
-  <p class="stretch"><b class="k">0.9–3.9 km</b><span>About 2 km of 60 mph road across open country and over the Forth and Clyde Canal. At about 2.9 km it becomes Glasgow Road and the limit drops to <b>30 mph</b>: be at 30 by the signs.</span></p>
-
-  <div class="card">
-    <figure><img src="img/b2-peel-park.jpg" alt="Peel Park Roundabout. Take the first exit, A803 Glasgow Road, which looks like straight on. Keep left and signal left. Second exit is West High Street." width="837" height="1503"></figure>
-    <div class="meta"><span class="dist">3.9 km</span><a class="sv" href="https://www.google.com/maps/@?api=1&amp;map_action=pano&amp;viewpoint=55.940180,-4.164240&amp;heading=45&amp;pitch=0&amp;fov=90" target="_blank" rel="noopener">Check on Street View ↗</a></div>
-  </div>
-
-  <div class="card">
-    <figure><img src="img/b3-new-lairdsland.jpg" alt="New Lairdsland Road lights. Straight on: left lane. Right lane turns right into the A806." width="897" height="1379"></figure>
-    <div class="meta"><span class="dist">4.2 km</span><a class="sv" href="https://www.google.com/maps/@?api=1&amp;map_action=pano&amp;viewpoint=55.942650,-4.160067&amp;heading=49&amp;pitch=0&amp;fov=90" target="_blank" rel="noopener">Check on Street View ↗</a></div>
-  </div>
-
-  <div class="card">
-    <figure><img src="img/b4-milton-road.jpg" alt="Milton Road lights in Kirkintilloch town centre. Straight on: left lane, which is also for left into Milton Road. Right lane is Ledgate only." width="837" height="1392"></figure>
-    <div class="meta"><span class="dist">4.5 km</span><a class="sv" href="https://www.google.com/maps/@?api=1&amp;map_action=pano&amp;viewpoint=55.943044,-4.154919&amp;heading=96&amp;pitch=0&amp;fov=90" target="_blank" rel="noopener">Check on Street View ↗</a></div>
-  </div>
-
-  <p class="endnote">The guide stops here, about 3.3 miles from the test centre. The <span class="rn a">A803</span> continues east through Kirkintilloch towards Kilsyth. Tell me if your route goes further or turns off.</p>
+<p class="stretch"><b class="k">0–0.9 km</b><span>Shortly after Cadder the limit rises to <b>60 mph</b> (national speed limit, single carriageway). Build up speed smoothly and only as conditions allow.</span></p>
+<article class="jc" id="b1-torrance">
+  <div class="jh"><span class="jn">B1</span><div><h3>Torrance Roundabout</h3><p>A803 Kirkintilloch Road  ·  60 mph road  ·  ≈850 m after Cadder</p></div><span class="mph" title="Speed limit 60 mph">60</span></div>
+  <p class="instr">YOUR ROUTE: AHEAD, 2nd exit, A803 to Kirkintilloch. RIGHT lane. No signal on approach. ◀ Signal left once past Torrance Road.</p>
+  <figure class="lv"><svg viewBox="0 0 400 250" class="lane" role="img" aria-label="Lanes on the approach to Torrance Roundabout">
+<rect width="400" height="250" class="l-sky"/>
+<polygon points="14.0,236.0 386.0,236.0 259.0,46.0 141.0,46.0" class="l-road"/>
+<polygon points="200.0,236.0 386.0,236.0 259.0,46.0 200.0,46.0" class="l-on"/>
+<polyline points="19.6,236.0 142.8,46.0" class="l-edge"/><polyline points="380.4,236.0 257.2,46.0" class="l-edge"/>
+<polyline points="200.0,236.0 200.0,224.6" class="l-dash"/>
+<polyline points="200.0,214.9 200.0,203.5" class="l-dash"/>
+<polyline points="200.0,193.8 200.0,182.4" class="l-dash"/>
+<polyline points="200.0,172.7 200.0,161.3" class="l-dash"/>
+<polyline points="200.0,151.6 200.0,140.2" class="l-dash"/>
+<polyline points="200.0,130.4 200.0,119.0" class="l-dash"/>
+<polyline points="200.0,109.3 200.0,97.9" class="l-dash"/>
+<polyline points="200.0,88.2 200.0,76.8" class="l-dash"/>
+<polyline points="200.0,67.1 200.0,55.7" class="l-dash"/>
+<polyline points="136.6,54.6 141.8,54.6" class="l-gw"/>
+<polyline points="145.8,54.6 151.0,54.6" class="l-gw"/>
+<polyline points="155.1,54.6 160.2,54.6" class="l-gw"/>
+<polyline points="164.3,54.6 169.5,54.6" class="l-gw"/>
+<polyline points="173.6,54.6 178.7,54.6" class="l-gw"/>
+<polyline points="182.8,54.6 188.0,54.6" class="l-gw"/>
+<polyline points="192.0,54.6 197.2,54.6" class="l-gw"/>
+<polyline points="201.3,54.6 206.5,54.6" class="l-gw"/>
+<polyline points="210.5,54.6 215.7,54.6" class="l-gw"/>
+<polyline points="219.8,54.6 225.0,54.6" class="l-gw"/>
+<polyline points="229.0,54.6 234.2,54.6" class="l-gw"/>
+<polyline points="238.3,54.6 243.5,54.6" class="l-gw"/>
+<polyline points="247.5,54.6 252.7,54.6" class="l-gw"/>
+<polyline points="256.8,54.6 261.9,54.6" class="l-gw"/>
+<polyline points="140.3,48.8 145.2,48.8" class="l-gw"/>
+<polyline points="149.0,48.8 153.9,48.8" class="l-gw"/>
+<polyline points="157.7,48.8 162.6,48.8" class="l-gw"/>
+<polyline points="166.4,48.8 171.3,48.8" class="l-gw"/>
+<polyline points="175.1,48.8 180.0,48.8" class="l-gw"/>
+<polyline points="183.8,48.8 188.7,48.8" class="l-gw"/>
+<polyline points="192.5,48.8 197.4,48.8" class="l-gw"/>
+<polyline points="201.2,48.8 206.1,48.8" class="l-gw"/>
+<polyline points="209.9,48.8 214.8,48.8" class="l-gw"/>
+<polyline points="218.6,48.8 223.5,48.8" class="l-gw"/>
+<polyline points="227.3,48.8 232.2,48.8" class="l-gw"/>
+<polyline points="236.0,48.8 240.9,48.8" class="l-gw"/>
+<polyline points="244.7,48.8 249.6,48.8" class="l-gw"/>
+<polyline points="253.4,48.8 258.3,48.8" class="l-gw"/>
+<polyline points="118.4,201.8 137.5,144.8" class="l-arrow"/>
+<polyline points="132.4,160.0 122.3,159.0 113.9,155.9 108.0,151.1 105.0,144.8 105.1,137.5 108.1,129.6" class="l-arrow"/>
+<polygon points="89.7,129.6 120.3,110.6 100.5,148.6" class="l-head"/>
+<polyline points="281.6,201.8 253.6,118.2" class="l-arrow"/>
+<polygon points="242.2,84.0 236.2,122.0 273.6,122.0" class="l-head"/>
+<polyline points="267.6,160.0 277.7,159.0 286.1,155.9 292.0,151.1 295.0,144.8 294.9,137.5 291.9,129.6" class="l-arrow"/>
+<polygon points="310.3,129.6 279.7,110.6 299.5,148.6" class="l-head"/>
+<text x="109.2" y="228.0" text-anchor="middle" font-size="17" class="l-word">LEFT ONLY</text>
+<text x="290.8" y="228.0" text-anchor="middle" font-size="17" class="l-word">AHEAD + RIGHT</text>
+<rect x="204.0" y="10" width="51" height="26" rx="13" class="l-tag"/><text x="229.5" y="29" text-anchor="middle" class="l-tagt">YOU</text>
+<polyline points="229.5,36 229.5,44" class="l-tick l-tag"/>
+<text x="390" y="28" text-anchor="end" class="l-gwt">GIVE WAY ⟲</text>
+</svg><figcaption>What you see on the approach: the lanes and their painted arrows.</figcaption></figure>
+  <figure class="dv"><svg viewBox="0 0 837 1046" role="img" aria-label="Torrance Roundabout" class="diag">
+<rect x="-5" y="-5" width="847" height="1056" class="d-bg"/>
+<polyline points="291.2,1097.8 333.2,503.2 343.2,507.5 316.2,423.4 304.5,374.1 299.1,351.6 288.4,344.6 278.9,330.9 272.1,315.7 268.1,299.5 267.1,282.9 269.2,266.3 274.3,250.4 268.9,251.1 89.5,109.6" class="d-road" stroke-width="59.8"/>
+<polyline points="361.4,501.6 334.6,418.1 323.1,369.7 317.8,347.2 303.1,332.3 295.9,322.0 290.6,310.7 287.3,298.6 286.2,286.1 287.3,273.6 290.5,261.5 295.8,250.1 303.0,239.8 311.9,231.0 322.1,223.8 333.5,218.5 345.6,215.2 358.1,214.1 370.6,215.2 382.7,218.4 394.1,223.7 404.3,230.9 413.2,239.8 420.4,250.0 425.7,261.4 429.0,273.5 430.1,286.0 429.0,298.5 454.0,302.5 641.5,438.6" class="d-road" stroke-width="59.8"/>
+<polyline points="-3.3,4829.1 73.4,3926.4 210.0,2143.3 272.2,1322.8 300.8,1097.9 310.3,1099.1 352.3,504.6 361.4,501.6 334.6,418.1 323.1,369.7 317.8,347.2 303.1,332.3 295.4,321.2 289.9,308.8 286.8,295.6 286.3,282.0 288.4,268.6 292.9,255.8 299.7,244.1 308.6,233.9 319.2,225.5 331.3,219.3 344.3,215.4 353.9,203.9 405.6,126.0 487.2,54.4 480.5,47.6 527.6,1.0 585.7,-44.9 659.8,-96.7 1501.9,-646.6 2325.6,-1177.9 3244.9,-1778.8 3423.0,-1894.8 3541.4,-1977.3 3663.5,-2075.2 3842.0,-2225.8 4241.6,-2561.7 4759.9,-3001.7 4848.5,-3082.9 4923.5,-3158.3 4991.1,-3242.5 5026.7,-3290.7 5056.1,-3335.0 5085.5,-3383.8 5113.6,-3435.1 5138.9,-3485.7 5184.7,-3591.8 5221.0,-3696.7 5257.9,-3844.4 5274.5,-3925.1" class="d-road" stroke-width="59.8"/>
+<circle cx="358.1" cy="286.0" r="54.6" class="d-island"/>
+<polyline points="291.2,1097.8 333.2,503.2 343.2,507.5 316.2,423.4 304.5,374.1 299.1,351.6 288.4,344.6 278.9,330.9 272.1,315.7 268.1,299.5 267.1,282.9 269.2,266.3 274.3,250.4 268.9,251.1 89.5,109.6" class="d-case" stroke-width="15.6" stroke-dasharray="9 6"/>
+<polyline points="291.2,1097.8 333.2,503.2 343.2,507.5 316.2,423.4 304.5,374.1 299.1,351.6 288.4,344.6 278.9,330.9 272.1,315.7 268.1,299.5 267.1,282.9 269.2,266.3 274.3,250.4 268.9,251.1 89.5,109.6" style="stroke:var(--c-mag)" class="d-line" stroke-width="13" stroke-dasharray="9 6"/>
+<polygon points="65.0,90.3 76.6,125.9 102.4,93.3" style="fill:var(--c-mag)" class="d-head"/>
+<polyline points="361.4,501.6 334.6,418.1 323.1,369.7 317.8,347.2 303.1,332.3 295.9,322.0 290.6,310.7 287.3,298.6 286.2,286.1 287.3,273.6 290.5,261.5 295.8,250.1 303.0,239.8 311.9,231.0 322.1,223.8 333.5,218.5 345.6,215.2 358.1,214.1 370.6,215.2 382.7,218.4 394.1,223.7 404.3,230.9 413.2,239.8 420.4,250.0 425.7,261.4 429.0,273.5 430.1,286.0 429.0,298.5 454.0,302.5 641.5,438.6" class="d-case" stroke-width="15.6" stroke-dasharray="9 6"/>
+<polyline points="361.4,501.6 334.6,418.1 323.1,369.7 317.8,347.2 303.1,332.3 295.9,322.0 290.6,310.7 287.3,298.6 286.2,286.1 287.3,273.6 290.5,261.5 295.8,250.1 303.0,239.8 311.9,231.0 322.1,223.8 333.5,218.5 345.6,215.2 358.1,214.1 370.6,215.2 382.7,218.4 394.1,223.7 404.3,230.9 413.2,239.8 420.4,250.0 425.7,261.4 429.0,273.5 430.1,286.0 429.0,298.5 454.0,302.5 641.5,438.6" style="stroke:var(--c-grey)" class="d-line" stroke-width="13" stroke-dasharray="9 6"/>
+<polygon points="666.7,457.0 653.7,421.8 629.3,455.4" style="fill:var(--c-grey)" class="d-head"/>
+<polyline points="-3.3,4829.1 73.4,3926.4 210.0,2143.3 272.2,1322.8 300.8,1097.9 310.3,1099.1 352.3,504.6 361.4,501.6 334.6,418.1 323.1,369.7 317.8,347.2 303.1,332.3 295.4,321.2 289.9,308.8 286.8,295.6 286.3,282.0 288.4,268.6 292.9,255.8 299.7,244.1 308.6,233.9 319.2,225.5 331.3,219.3 344.3,215.4 353.9,203.9 405.6,126.0 487.2,54.4 480.5,47.6 527.6,1.0 585.7,-44.9 659.8,-96.7 1501.9,-646.6 2325.6,-1177.9 3244.9,-1778.8 3423.0,-1894.8 3541.4,-1977.3 3663.5,-2075.2 3842.0,-2225.8 4241.6,-2561.7 4759.9,-3001.7 4848.5,-3082.9 4923.5,-3158.3 4991.1,-3242.5 5026.7,-3290.7 5056.1,-3335.0 5085.5,-3383.8 5113.6,-3435.1 5138.9,-3485.7 5184.7,-3591.8 5221.0,-3696.7 5257.9,-3844.4 5274.5,-3925.1" class="d-case" stroke-width="21.6"/>
+<polyline points="-3.3,4829.1 73.4,3926.4 210.0,2143.3 272.2,1322.8 300.8,1097.9 310.3,1099.1 352.3,504.6 361.4,501.6 334.6,418.1 323.1,369.7 317.8,347.2 303.1,332.3 295.4,321.2 289.9,308.8 286.8,295.6 286.3,282.0 288.4,268.6 292.9,255.8 299.7,244.1 308.6,233.9 319.2,225.5 331.3,219.3 344.3,215.4 353.9,203.9 405.6,126.0 487.2,54.4 480.5,47.6 527.6,1.0 585.7,-44.9 659.8,-96.7 1501.9,-646.6 2325.6,-1177.9 3244.9,-1778.8 3423.0,-1894.8 3541.4,-1977.3 3663.5,-2075.2 3842.0,-2225.8 4241.6,-2561.7 4759.9,-3001.7 4848.5,-3082.9 4923.5,-3158.3 4991.1,-3242.5 5026.7,-3290.7 5056.1,-3335.0 5085.5,-3383.8 5113.6,-3435.1 5138.9,-3485.7 5184.7,-3591.8 5221.0,-3696.7 5257.9,-3844.4 5274.5,-3925.1" style="stroke:var(--c-route)" class="d-line" stroke-width="19"/>
+<polygon points="5283.6,-3969.8 5244.7,-3931.2 5304.2,-3919.0" style="fill:var(--c-route)" class="d-head"/>
+<line x1="311.9" y1="230.9" x2="311.9" y2="160.7" class="d-leader"/> <circle cx="311.9" cy="230.9" r="7" class="d-dot" style="stroke:#111111"/>
+<rect x="64.6" y="61.1" width="414.7" height="99.6" rx="9" style="fill:var(--c-amber);stroke:#111111" class="d-lab"/>
+<text x="73.6" y="101.4" font-size="34" style="fill:#111111" class="d-text">◀ SIGNAL LEFT</text>
+<text x="73.6" y="142.2" font-size="34" style="fill:#111111" class="d-text">once past Torrance Rd</text>
+<rect x="3.0" y="164.7" width="317.4" height="58.8" rx="9" style="fill:var(--d-label);stroke:var(--c-mag)" class="d-lab"/>
+<text x="12.0" y="205.0" font-size="34" style="fill:var(--c-mag)" class="d-text">1  Torrance Road</text>
+<rect x="406.7" y="163.0" width="427.3" height="58.8" rx="9" style="fill:var(--d-label);stroke:var(--c-route)" class="d-lab"/>
+<text x="415.7" y="203.3" font-size="34" style="fill:var(--c-route)" class="d-text">2  A803 to Kirkintilloch</text>
+<rect x="593.7" y="437.0" width="240.3" height="58.8" rx="9" style="fill:var(--d-label);stroke:var(--c-grey)" class="d-lab"/>
+<text x="602.7" y="477.2" font-size="34" style="fill:var(--c-grey)" class="d-text">3  Cole Road</text>
+</svg><figcaption>From above, with you driving up the page. Your route in solid blue, other choices dashed, amber = signal here.</figcaption></figure>
+  <ul class="opts"><li class="opt primary"><i class="sw" style="--sw:var(--c-route)" aria-hidden="true"></i><div><b>Ahead (2nd exit)  ·  YOUR ROUTE</b><span>RIGHT lane. No signal on approach. ◀ Signal left after exit 1.</span></div></li><li class="opt"><i class="sw dash" style="--sw:var(--c-mag)" aria-hidden="true"></i><div><b>First exit, left: Torrance Road</b><span>LEFT lane. ◀ Signal left on approach, keep it on.</span></div></li><li class="opt"><i class="sw dash" style="--sw:var(--c-grey)" aria-hidden="true"></i><div><b>Third exit, right: Cole Road</b><span>RIGHT lane. Signal right ▶, ◀ signal left after exit 2.</span></div></li></ul>
+  <p class="trap">Trap again: the left lane is LEFT ONLY. National speed limit roads meet here, so traffic arrives fast from your right.</p>
+  <div class="meta"><span class="dist">0.9 km</span><details><summary>Aerial photo</summary><img src="img/b1-torrance.jpg" alt="Aerial photo of Torrance Roundabout with the route drawn on." loading="lazy"></details><a class="sv" href="https://www.google.com/maps/@?api=1&amp;map_action=pano&amp;viewpoint=55.927768,-4.20424&amp;heading=25&amp;pitch=0&amp;fov=90" target="_blank" rel="noopener">Street View ↗</a></div>
+</article>
+<p class="stretch"><b class="k">0.9–3.9 km</b><span>About 2 km of 60 mph road across open country and over the Forth and Clyde Canal. At about 2.9 km it becomes Glasgow Road and the limit drops to <b>30 mph</b>: be at 30 by the signs.</span></p>
+<article class="jc" id="b2-peel-park">
+  <div class="jh"><span class="jn">B2</span><div><h3>Peel Park Roundabout</h3><p>A803 Glasgow Road, Kirkintilloch  ·  no lane markings</p></div><span class="mph" title="Speed limit 30 mph">30</span></div>
+  <p class="instr">YOUR ROUTE: FIRST EXIT, A803 Glasgow Road (it looks like straight on). Keep left. ◀ Signal left on approach and keep it on.</p>
+  <figure class="lv"><svg viewBox="0 0 400 250" class="lane" role="img" aria-label="Lanes on the approach to Peel Park Roundabout">
+<rect width="400" height="250" class="l-sky"/>
+<polygon points="14.0,236.0 386.0,236.0 259.0,46.0 141.0,46.0" class="l-road"/>
+<polygon points="14.0,236.0 386.0,236.0 259.0,46.0 141.0,46.0" class="l-on"/>
+<polyline points="19.6,236.0 142.8,46.0" class="l-edge"/><polyline points="380.4,236.0 257.2,46.0" class="l-edge"/>
+<polyline points="136.6,54.6 141.8,54.6" class="l-gw"/>
+<polyline points="145.8,54.6 151.0,54.6" class="l-gw"/>
+<polyline points="155.1,54.6 160.2,54.6" class="l-gw"/>
+<polyline points="164.3,54.6 169.5,54.6" class="l-gw"/>
+<polyline points="173.6,54.6 178.7,54.6" class="l-gw"/>
+<polyline points="182.8,54.6 188.0,54.6" class="l-gw"/>
+<polyline points="192.0,54.6 197.2,54.6" class="l-gw"/>
+<polyline points="201.3,54.6 206.5,54.6" class="l-gw"/>
+<polyline points="210.5,54.6 215.7,54.6" class="l-gw"/>
+<polyline points="219.8,54.6 225.0,54.6" class="l-gw"/>
+<polyline points="229.0,54.6 234.2,54.6" class="l-gw"/>
+<polyline points="238.3,54.6 243.5,54.6" class="l-gw"/>
+<polyline points="247.5,54.6 252.7,54.6" class="l-gw"/>
+<polyline points="256.8,54.6 261.9,54.6" class="l-gw"/>
+<polyline points="140.3,48.8 145.2,48.8" class="l-gw"/>
+<polyline points="149.0,48.8 153.9,48.8" class="l-gw"/>
+<polyline points="157.7,48.8 162.6,48.8" class="l-gw"/>
+<polyline points="166.4,48.8 171.3,48.8" class="l-gw"/>
+<polyline points="175.1,48.8 180.0,48.8" class="l-gw"/>
+<polyline points="183.8,48.8 188.7,48.8" class="l-gw"/>
+<polyline points="192.5,48.8 197.4,48.8" class="l-gw"/>
+<polyline points="201.2,48.8 206.1,48.8" class="l-gw"/>
+<polyline points="209.9,48.8 214.8,48.8" class="l-gw"/>
+<polyline points="218.6,48.8 223.5,48.8" class="l-gw"/>
+<polyline points="227.3,48.8 232.2,48.8" class="l-gw"/>
+<polyline points="236.0,48.8 240.9,48.8" class="l-gw"/>
+<polyline points="244.7,48.8 249.6,48.8" class="l-gw"/>
+<polyline points="253.4,48.8 258.3,48.8" class="l-gw"/>
+<text x="200.0" y="228.0" text-anchor="middle" font-size="17" class="l-word">ONE LANE</text>
+<rect x="174.5" y="10" width="51" height="26" rx="13" class="l-tag"/><text x="200.0" y="29" text-anchor="middle" class="l-tagt">YOU</text>
+<polyline points="200.0,36 200.0,44" class="l-tick l-tag"/>
+<text x="390" y="28" text-anchor="end" class="l-gwt">GIVE WAY ⟲</text>
+</svg><figcaption>One lane on the approach: keep to your normal position.</figcaption></figure>
+  <figure class="dv"><svg viewBox="0 0 837 897" role="img" aria-label="Peel Park Roundabout" class="diag">
+<rect x="-5" y="-5" width="847" height="907" class="d-bg"/>
+<polyline points="182.0,1574.2 338.2,1018.1 406.2,771.6 421.3,708.0 430.3,660.6 440.4,605.3 447.1,535.0 447.4,474.3 443.5,378.4 433.6,376.2 424.3,372.2 415.8,366.7 408.5,359.7 402.5,351.5 398.2,342.3 395.5,332.5 394.6,322.4 395.6,312.4 398.3,302.6 402.8,293.5 408.8,285.3 416.2,278.4 424.7,272.9 434.0,269.0 443.9,266.9 454.1,266.5 464.1,268.0 473.7,271.3 482.6,276.2 490.4,282.7 496.9,290.4 511.3,275.2 743.0,163.1" class="d-road" stroke-width="59.8"/>
+<polyline points="182.0,1574.2 338.2,1018.1 406.2,771.6 421.3,708.0 430.3,660.6 440.4,605.3 447.1,535.0 447.4,474.3 441.6,392.7 429.0,389.8 417.2,384.7 406.4,377.5 397.2,368.5 389.7,358.0 384.3,346.3 381.1,333.7 380.3,320.9 381.8,308.0 385.6,295.7 391.6,284.3 399.6,274.1 343.5,209.7 331.8,143.1 330.4,111.1 332.9,55.1 347.4,-283.5 361.9,-699.4" class="d-road" stroke-width="59.8"/>
+<circle cx="450.8" cy="322.7" r="38.3" class="d-island"/>
+<polyline points="182.0,1574.2 338.2,1018.1 406.2,771.6 421.3,708.0 430.3,660.6 440.4,605.3 447.1,535.0 447.4,474.3 443.5,378.4 433.6,376.2 424.3,372.2 415.8,366.7 408.5,359.7 402.5,351.5 398.2,342.3 395.5,332.5 394.6,322.4 395.6,312.4 398.3,302.6 402.8,293.5 408.8,285.3 416.2,278.4 424.7,272.9 434.0,269.0 443.9,266.9 454.1,266.5 464.1,268.0 473.7,271.3 482.6,276.2 490.4,282.7 496.9,290.4 511.3,275.2 743.0,163.1" class="d-case" stroke-width="15.6" stroke-dasharray="9 6"/>
+<polyline points="182.0,1574.2 338.2,1018.1 406.2,771.6 421.3,708.0 430.3,660.6 440.4,605.3 447.1,535.0 447.4,474.3 443.5,378.4 433.6,376.2 424.3,372.2 415.8,366.7 408.5,359.7 402.5,351.5 398.2,342.3 395.5,332.5 394.6,322.4 395.6,312.4 398.3,302.6 402.8,293.5 408.8,285.3 416.2,278.4 424.7,272.9 434.0,269.0 443.9,266.9 454.1,266.5 464.1,268.0 473.7,271.3 482.6,276.2 490.4,282.7 496.9,290.4 511.3,275.2 743.0,163.1" style="stroke:var(--c-mag)" class="d-line" stroke-width="13" stroke-dasharray="9 6"/>
+<polygon points="771.0,149.5 733.9,144.4 752.0,181.8" style="fill:var(--c-mag)" class="d-head"/>
+<polyline points="182.0,1574.2 338.2,1018.1 406.2,771.6 421.3,708.0 430.3,660.6 440.4,605.3 447.1,535.0 447.4,474.3 441.6,392.7 429.0,389.8 417.2,384.7 406.4,377.5 397.2,368.5 389.7,358.0 384.3,346.3 381.1,333.7 380.3,320.9 381.8,308.0 385.6,295.7 391.6,284.3 399.6,274.1 343.5,209.7 331.8,143.1 330.4,111.1 332.9,55.1 347.4,-283.5 361.9,-699.4" class="d-case" stroke-width="21.6"/>
+<polyline points="182.0,1574.2 338.2,1018.1 406.2,771.6 421.3,708.0 430.3,660.6 440.4,605.3 447.1,535.0 447.4,474.3 441.6,392.7 429.0,389.8 417.2,384.7 406.4,377.5 397.2,368.5 389.7,358.0 384.3,346.3 381.1,333.7 380.3,320.9 381.8,308.0 385.6,295.7 391.6,284.3 399.6,274.1 343.5,209.7 331.8,143.1 330.4,111.1 332.9,55.1 347.4,-283.5 361.9,-699.4" style="stroke:var(--c-route)" class="d-line" stroke-width="19"/>
+<polygon points="363.5,-744.9 331.6,-700.4 392.3,-698.3" style="fill:var(--c-route)" class="d-head"/>
+<line x1="441.5" y1="652.7" x2="441.5" y2="652.7" class="d-leader"/> <circle cx="441.5" cy="652.7" r="7" class="d-dot" style="stroke:#111111"/>
+<rect x="320.4" y="632.9" width="513.6" height="99.6" rx="9" style="fill:var(--c-amber);stroke:#111111" class="d-lab"/>
+<text x="329.4" y="673.2" font-size="34" style="fill:#111111" class="d-text">◀ SIGNAL LEFT on approach</text>
+<text x="329.4" y="714.0" font-size="34" style="fill:#111111" class="d-text">(1st exit = A803 ahead)</text>
+<rect x="3.0" y="3.0" width="415.1" height="58.8" rx="9" style="fill:var(--d-label);stroke:var(--c-route)" class="d-lab"/>
+<text x="12.0" y="43.3" font-size="34" style="fill:var(--c-route)" class="d-text">1  A803 Glasgow Road</text>
+<rect x="466.9" y="172.3" width="367.1" height="58.8" rx="9" style="fill:var(--d-label);stroke:var(--c-mag)" class="d-lab"/>
+<text x="475.9" y="212.6" font-size="34" style="fill:var(--c-mag)" class="d-text">2  West High Street</text>
+</svg><figcaption>From above, with you driving up the page. Your route in solid blue, other choices dashed, amber = signal here.</figcaption></figure>
+  <ul class="opts"><li class="opt primary"><i class="sw" style="--sw:var(--c-route)" aria-hidden="true"></i><div><b>First exit  ·  YOUR ROUTE</b><span>Keep left. ◀ Signal left on approach, keep it on as you leave.</span></div></li><li class="opt"><i class="sw dash" style="--sw:var(--c-mag)" aria-hidden="true"></i><div><b>Second exit, right: West High Street</b><span>Signal right ▶ on approach, keep right, ◀ signal left once past exit 1.</span></div></li></ul>
+  <p class="trap">The 30 mph limit starts where Kirkintilloch Road becomes Glasgow Road, about 1 km before this roundabout.</p>
+  <div class="meta"><span class="dist">3.9 km</span><details><summary>Aerial photo</summary><img src="img/b2-peel-park.jpg" alt="Aerial photo of Peel Park Roundabout with the route drawn on." loading="lazy"></details><a class="sv" href="https://www.google.com/maps/@?api=1&amp;map_action=pano&amp;viewpoint=55.94018,-4.16424&amp;heading=45&amp;pitch=0&amp;fov=90" target="_blank" rel="noopener">Street View ↗</a></div>
+</article>
+<article class="jc" id="b3-new-lairdsland">
+  <div class="jh"><span class="jn">B3</span><div><h3>New Lairdsland Road Lights</h3><p>A803 Glasgow Road, Kirkintilloch  ·  30 mph</p></div><span class="mph" title="Speed limit 30 mph">30</span></div>
+  <p class="instr">STRAIGHT ON: LEFT lane (arrow ahead). Right lane = right turn into the A806. No signal.</p>
+  <figure class="lv"><svg viewBox="0 0 400 250" class="lane" role="img" aria-label="Lanes on the approach to New Lairdsland Road Lights">
+<rect width="400" height="250" class="l-sky"/>
+<polygon points="14.0,236.0 386.0,236.0 259.0,46.0 141.0,46.0" class="l-road"/>
+<polygon points="14.0,236.0 200.0,236.0 200.0,46.0 141.0,46.0" class="l-on"/>
+<polyline points="19.6,236.0 142.8,46.0" class="l-edge"/><polyline points="380.4,236.0 257.2,46.0" class="l-edge"/>
+<polyline points="200.0,236.0 200.0,224.6" class="l-dash"/>
+<polyline points="200.0,214.9 200.0,203.5" class="l-dash"/>
+<polyline points="200.0,193.8 200.0,182.4" class="l-dash"/>
+<polyline points="200.0,172.7 200.0,161.3" class="l-dash"/>
+<polyline points="200.0,151.6 200.0,140.2" class="l-dash"/>
+<polyline points="200.0,130.4 200.0,119.0" class="l-dash"/>
+<polyline points="200.0,109.3 200.0,97.9" class="l-dash"/>
+<polyline points="200.0,88.2 200.0,76.8" class="l-dash"/>
+<polyline points="200.0,67.1 200.0,55.7" class="l-dash"/>
+<polyline points="138.4,51.7 261.6,51.7" class="l-stop"/>
+<polyline points="118.4,201.8 146.4,118.2" class="l-arrow"/>
+<polygon points="157.8,84.0 126.4,122.0 163.8,122.0" class="l-head"/>
+<polyline points="281.6,201.8 262.5,144.8" class="l-arrow"/>
+<polyline points="267.6,160.0 277.7,159.0 286.1,155.9 292.0,151.1 295.0,144.8 294.9,137.5 291.9,129.6" class="l-arrow"/>
+<polygon points="310.3,129.6 279.7,110.6 299.5,148.6" class="l-head"/>
+<text x="109.2" y="228.0" text-anchor="middle" font-size="17" class="l-word">AHEAD</text>
+<text x="290.8" y="228.0" text-anchor="middle" font-size="17" class="l-word">RIGHT ONLY</text>
+<rect x="145.0" y="10" width="51" height="26" rx="13" class="l-tag"/><text x="170.5" y="29" text-anchor="middle" class="l-tagt">YOU</text>
+<polyline points="170.5,36 170.5,44" class="l-tick l-tag"/>
+<g><rect x="112.0" y="6" width="18" height="40" rx="4" fill="#141414" stroke="#ffffff" stroke-width="1.5"/><circle cx="121.0" cy="15" r="4.5" fill="#e6281e"/><circle cx="121.0" cy="26" r="4.5" fill="#faaf00"/><circle cx="121.0" cy="37" r="4.5" fill="#28be46"/></g>
+</svg><figcaption>What you see on the approach: the lanes and their painted arrows.</figcaption></figure>
+  <figure class="dv"><svg viewBox="40 0 856 837" role="img" aria-label="New Lairdsland Road Lights" class="diag">
+<rect x="35" y="-5" width="866" height="847" class="d-bg"/>
+<polyline points="470.0,1119.6 429.1,337.8 429.1,337.8 425.6,296.3 424.3,254.5 424.4,235.5 425.3,192.2 425.1,182.7 477.7,181.6 508.0,181.0 586.8,179.5" class="d-road" stroke-width="59.8"/>
+<polyline points="521.3,2027.2 503.9,1962.0 499.6,1930.2 497.3,1874.2 482.2,1535.6 482.2,1535.6 460.4,1120.1 450.9,1120.6 409.9,338.8 410.0,339.4 406.5,297.3 405.2,254.9 405.3,235.2 406.2,191.8 415.8,191.8 418.4,137.6 419.0,119.0 428.6,119.3 409.6,76.2 429.8,-83.1 461.6,-122.7" class="d-road" stroke-width="59.8"/>
+<polyline points="470.0,1119.6 429.1,337.8 429.1,337.8 425.6,296.3 424.3,254.5 424.4,235.5 425.3,192.2 425.1,182.7 477.7,181.6 508.0,181.0 586.8,179.5" class="d-case" stroke-width="15.6" stroke-dasharray="9 6"/>
+<polyline points="470.0,1119.6 429.1,337.8 429.1,337.8 425.6,296.3 424.3,254.5 424.4,235.5 425.3,192.2 425.1,182.7 477.7,181.6 508.0,181.0 586.8,179.5" style="stroke:var(--c-mag)" class="d-line" stroke-width="13" stroke-dasharray="9 6"/>
+<polygon points="618.0,178.9 586.4,158.7 587.2,200.3" style="fill:var(--c-mag)" class="d-head"/>
+<polyline points="521.3,2027.2 503.9,1962.0 499.6,1930.2 497.3,1874.2 482.2,1535.6 482.2,1535.6 460.4,1120.1 450.9,1120.6 409.9,338.8 410.0,339.4 406.5,297.3 405.2,254.9 405.3,235.2 406.2,191.8 415.8,191.8 418.4,137.6 419.0,119.0 428.6,119.3 409.6,76.2 429.8,-83.1 461.6,-122.7" class="d-case" stroke-width="21.6"/>
+<polyline points="521.3,2027.2 503.9,1962.0 499.6,1930.2 497.3,1874.2 482.2,1535.6 482.2,1535.6 460.4,1120.1 450.9,1120.6 409.9,338.8 410.0,339.4 406.5,297.3 405.2,254.9 405.3,235.2 406.2,191.8 415.8,191.8 418.4,137.6 419.0,119.0 428.6,119.3 409.6,76.2 429.8,-83.1 461.6,-122.7" style="stroke:var(--c-route)" class="d-line" stroke-width="19"/>
+<polygon points="490.2,-158.3 437.9,-141.7 485.3,-103.7" style="fill:var(--c-route)" class="d-head"/>
+<g class="d-lights"><rect x="351.6" y="183.1" width="26" height="66" rx="6"/><circle cx="364.6" cy="196.1" r="7.5" fill="#e6281e"/><circle cx="364.6" cy="216.1" r="7.5" fill="#faaf00"/><circle cx="364.6" cy="236.1" r="7.5" fill="#28be46"/></g>
+<rect x="440.7" y="180.1" width="452.3" height="58.8" rx="9" style="fill:var(--d-label);stroke:var(--c-mag)" class="d-lab"/>
+<text x="449.7" y="220.4" font-size="34" style="fill:var(--c-mag)" class="d-text">A806 New Lairdsland Rd</text>
+<rect x="89.6" y="3.0" width="371.1" height="58.8" rx="9" style="fill:var(--d-label);stroke:var(--c-route)" class="d-lab"/>
+<text x="98.6" y="43.3" font-size="34" style="fill:var(--c-route)" class="d-text">A803 Glasgow Road</text>
+</svg><figcaption>From above, with you driving up the page. Your route in solid blue, other choices dashed, amber = signal here.</figcaption></figure>
+  <ul class="opts"><li class="opt primary"><i class="sw" style="--sw:var(--c-route)" aria-hidden="true"></i><div><b>Straight on  ·  YOUR ROUTE</b><span>LEFT lane. No signal. Go on green.</span></div></li><li class="opt"><i class="sw dash" style="--sw:var(--c-mag)" aria-hidden="true"></i><div><b>Right: A806 New Lairdsland Road</b><span>RIGHT lane. Signal right ▶.</span></div></li></ul>
+  <p class="trap">On the way here the limit drops from 60 to 30 mph as you enter Kirkintilloch. Be at 30 by the signs.</p>
+  <div class="meta"><span class="dist">4.2 km</span><details><summary>Aerial photo</summary><img src="img/b3-new-lairdsland.jpg" alt="Aerial photo of New Lairdsland Road Lights with the route drawn on." loading="lazy"></details><a class="sv" href="https://www.google.com/maps/@?api=1&amp;map_action=pano&amp;viewpoint=55.94265,-4.160067&amp;heading=49&amp;pitch=0&amp;fov=90" target="_blank" rel="noopener">Street View ↗</a></div>
+</article>
+<article class="jc" id="b4-milton-road">
+  <div class="jh"><span class="jn">B4</span><div><h3>Milton Road Lights</h3><p>A803 Glasgow Road, Kirkintilloch town centre  ·  30 mph</p></div><span class="mph" title="Speed limit 30 mph">30</span></div>
+  <p class="instr">STRAIGHT ON: LEFT lane (arrows left + ahead). Right lane = Ledgate only. No signal.</p>
+  <figure class="lv"><svg viewBox="0 0 400 250" class="lane" role="img" aria-label="Lanes on the approach to Milton Road Lights">
+<rect width="400" height="250" class="l-sky"/>
+<polygon points="14.0,236.0 386.0,236.0 259.0,46.0 141.0,46.0" class="l-road"/>
+<polygon points="14.0,236.0 200.0,236.0 200.0,46.0 141.0,46.0" class="l-on"/>
+<polyline points="19.6,236.0 142.8,46.0" class="l-edge"/><polyline points="380.4,236.0 257.2,46.0" class="l-edge"/>
+<polyline points="200.0,236.0 200.0,224.6" class="l-dash"/>
+<polyline points="200.0,214.9 200.0,203.5" class="l-dash"/>
+<polyline points="200.0,193.8 200.0,182.4" class="l-dash"/>
+<polyline points="200.0,172.7 200.0,161.3" class="l-dash"/>
+<polyline points="200.0,151.6 200.0,140.2" class="l-dash"/>
+<polyline points="200.0,130.4 200.0,119.0" class="l-dash"/>
+<polyline points="200.0,109.3 200.0,97.9" class="l-dash"/>
+<polyline points="200.0,88.2 200.0,76.8" class="l-dash"/>
+<polyline points="200.0,67.1 200.0,55.7" class="l-dash"/>
+<polyline points="138.4,51.7 261.6,51.7" class="l-stop"/>
+<polyline points="118.4,201.8 146.4,118.2" class="l-arrow"/>
+<polygon points="157.8,84.0 126.4,122.0 163.8,122.0" class="l-head"/>
+<polyline points="132.4,160.0 122.3,159.0 113.9,155.9 108.0,151.1 105.0,144.8 105.1,137.5 108.1,129.6" class="l-arrow"/>
+<polygon points="89.7,129.6 120.3,110.6 100.5,148.6" class="l-head"/>
+<polyline points="281.6,201.8 262.5,144.8" class="l-arrow"/>
+<polyline points="267.6,160.0 277.7,159.0 286.1,155.9 292.0,151.1 295.0,144.8 294.9,137.5 291.9,129.6" class="l-arrow"/>
+<polygon points="310.3,129.6 279.7,110.6 299.5,148.6" class="l-head"/>
+<text x="109.2" y="228.0" text-anchor="middle" font-size="17" class="l-word">LEFT + AHEAD</text>
+<text x="290.8" y="228.0" text-anchor="middle" font-size="17" class="l-word">RIGHT ONLY</text>
+<rect x="145.0" y="10" width="51" height="26" rx="13" class="l-tag"/><text x="170.5" y="29" text-anchor="middle" class="l-tagt">YOU</text>
+<polyline points="170.5,36 170.5,44" class="l-tick l-tag"/>
+<g><rect x="112.0" y="6" width="18" height="40" rx="4" fill="#141414" stroke="#ffffff" stroke-width="1.5"/><circle cx="121.0" cy="15" r="4.5" fill="#e6281e"/><circle cx="121.0" cy="26" r="4.5" fill="#faaf00"/><circle cx="121.0" cy="37" r="4.5" fill="#28be46"/></g>
+</svg><figcaption>What you see on the approach: the lanes and their painted arrows.</figcaption></figure>
+  <figure class="dv"><svg viewBox="0 0 837 837" role="img" aria-label="Milton Road Lights" class="diag">
+<rect x="-5" y="-5" width="847" height="847" class="d-bg"/>
+<polyline points="387.8,680.3 400.0,387.3 400.0,362.3 400.1,253.3 422.5,262.3 329.7,296.0 284.9,312.2" class="d-road" stroke-width="59.8"/>
+<polyline points="406.9,681.1 419.1,388.1 419.1,362.3 419.2,253.3 416.3,244.2 643.8,170.3" class="d-road" stroke-width="59.8"/>
+<polyline points="378.8,942.2 380.2,891.0 389.8,891.3 392.9,777.5 397.4,680.6 387.8,680.3 400.0,387.3 400.0,362.3 400.1,253.3 409.6,253.1 414.3,-15.9" class="d-road" stroke-width="59.8"/>
+<polyline points="387.8,680.3 400.0,387.3 400.0,362.3 400.1,253.3 422.5,262.3 329.7,296.0 284.9,312.2" class="d-case" stroke-width="15.6" stroke-dasharray="9 6"/>
+<polyline points="387.8,680.3 400.0,387.3 400.0,362.3 400.1,253.3 422.5,262.3 329.7,296.0 284.9,312.2" style="stroke:var(--c-org)" class="d-line" stroke-width="13" stroke-dasharray="9 6"/>
+<polygon points="255.5,322.7 291.9,331.7 277.8,292.6" style="fill:var(--c-org)" class="d-head"/>
+<polyline points="406.9,681.1 419.1,388.1 419.1,362.3 419.2,253.3 416.3,244.2 643.8,170.3" class="d-case" stroke-width="15.6" stroke-dasharray="9 6"/>
+<polyline points="406.9,681.1 419.1,388.1 419.1,362.3 419.2,253.3 416.3,244.2 643.8,170.3" style="stroke:var(--c-mag)" class="d-line" stroke-width="13" stroke-dasharray="9 6"/>
+<polygon points="673.4,160.6 637.3,150.5 650.2,190.1" style="fill:var(--c-mag)" class="d-head"/>
+<polyline points="378.8,942.2 380.2,891.0 389.8,891.3 392.9,777.5 397.4,680.6 387.8,680.3 400.0,387.3 400.0,362.3 400.1,253.3 409.6,253.1 414.3,-15.9" class="d-case" stroke-width="21.6"/>
+<polyline points="378.8,942.2 380.2,891.0 389.8,891.3 392.9,777.5 397.4,680.6 387.8,680.3 400.0,387.3 400.0,362.3 400.1,253.3 409.6,253.1 414.3,-15.9" style="stroke:var(--c-route)" class="d-line" stroke-width="19"/>
+<polygon points="415.1,-61.5 384.0,-16.5 444.7,-15.4" style="fill:var(--c-route)" class="d-head"/>
+<g class="d-lights"><rect x="346.4" y="238.1" width="26" height="66" rx="6"/><circle cx="359.4" cy="251.1" r="7.5" fill="#e6281e"/><circle cx="359.4" cy="271.1" r="7.5" fill="#faaf00"/><circle cx="359.4" cy="291.1" r="7.5" fill="#28be46"/></g>
+<rect x="3.0" y="310.8" width="361.6" height="58.8" rx="9" style="fill:var(--d-label);stroke:var(--c-org)" class="d-lab"/>
+<text x="12.0" y="351.0" font-size="34" style="fill:var(--c-org)" class="d-text">Milton Road (B757)</text>
+<rect x="647.7" y="170.0" width="162.8" height="58.8" rx="9" style="fill:var(--d-label);stroke:var(--c-mag)" class="d-lab"/>
+<text x="656.7" y="210.3" font-size="34" style="fill:var(--c-mag)" class="d-text">Ledgate</text>
+<rect x="217.1" y="4.7" width="196.2" height="58.8" rx="9" style="fill:var(--d-label);stroke:var(--c-route)" class="d-lab"/>
+<text x="226.1" y="45.0" font-size="34" style="fill:var(--c-route)" class="d-text">A803 east</text>
+</svg><figcaption>From above, with you driving up the page. Your route in solid blue, other choices dashed, amber = signal here.</figcaption></figure>
+  <ul class="opts"><li class="opt primary"><i class="sw" style="--sw:var(--c-route)" aria-hidden="true"></i><div><b>Straight on  ·  YOUR ROUTE</b><span>LEFT lane. No signal. Watch for pedestrians in the town centre.</span></div></li><li class="opt"><i class="sw dash" style="--sw:var(--c-org)" aria-hidden="true"></i><div><b>Left: Milton Road (B757)</b><span>LEFT lane. ◀ Signal left.</span></div></li><li class="opt"><i class="sw dash" style="--sw:var(--c-mag)" aria-hidden="true"></i><div><b>Right: Ledgate</b><span>RIGHT lane. Signal right ▶.</span></div></li></ul>
+  
+  <div class="meta"><span class="dist">4.5 km</span><details><summary>Aerial photo</summary><img src="img/b4-milton-road.jpg" alt="Aerial photo of Milton Road Lights with the route drawn on." loading="lazy"></details><a class="sv" href="https://www.google.com/maps/@?api=1&amp;map_action=pano&amp;viewpoint=55.943044,-4.154919&amp;heading=96&amp;pitch=0&amp;fov=90" target="_blank" rel="noopener">Street View ↗</a></div>
+</article>
+  <p class="endnote">The guide stops here, about 3.3 miles from the test centre. The <span class="rn a">A803</span> continues east through Kirkintilloch towards Kilsyth.</p>
 </section>
 
-<section class="stack" aria-labelledby="rule-h" style="display:grid;gap:12px">
-  <h2 id="rule-h">The rule behind every roundabout picture</h2>
+<section aria-labelledby="rule-h" style="display:grid;gap:12px">
+  <h2 id="rule-h">The rule behind every roundabout card</h2>
   <div class="tablebox">
     <table>
       <thead><tr><th>Exit</th><th>Signal on approach</th><th>Lane</th><th>Signal to leave</th></tr></thead>
@@ -263,36 +1144,40 @@ td.k { font-weight: 700; white-space: nowrap; }
       </tbody>
     </table>
   </div>
-  <p class="muted">Highway Code rule 186. Lane arrows on the road override the usual lane, and on this route they often do: at Lowmoss, Westerhill Road and Torrance the left lane is left only.</p>
+  <p class="muted">Highway Code rule 186. Painted lane arrows override the usual lane, and on this route they often do: at Lowmoss, Westerhill Road and Torrance the left lane is left only.</p>
 </section>
 
 <section class="sources" aria-labelledby="src-h">
   <h2 id="src-h">Where this comes from, and its limits</h2>
   <ul>
-    <li><b>Photos:</b> Esri World Imagery aerial photos (Maxar, Earthstar Geographics). The capture date is not published, so the layout may have changed since.</li>
-    <li><b>Lanes, arrows, exits, speed limits:</b> OpenStreetMap, read on 17 Nov 2026. Each lane arrow in the pictures comes from the map's <code>turn:lanes</code> tags. Volunteers map these, and the arrows painted on the road are too small to check in these photos. Use the Street View links to confirm them.</li>
-    <li><b>Not mapped:</b> lane arrows at Colston Road and at the Springfield Road lights. Those pictures say so.</li>
-    <li><b>Direction signs:</b> signs can't be read from above, so I have not transcribed any sign wording. Send phone screenshots from Street View at any junction and I'll add the exact sign text to that card.</li>
-    <li><b>Signals:</b> <a href="https://www.gov.uk/guidance/the-highway-code/using-the-road-159-to-203" target="_blank" rel="noopener">The Highway Code, rules 159–203</a>.</li>
-    <li>The Westerhill Development Road, due by the end of 2027, will add roundabouts near Crosshill Road. On the day, the road markings and the examiner's instruction come first.</li>
+    <li><b>Drawings:</b> made from OpenStreetMap road shapes, lane counts and lane arrows (<code>turn:lanes</code>), read on 17 Nov 2026. Volunteers map the arrows, so check the road on the day.</li>
+    <li><b>Not mapped:</b> lane arrows at Colston Road and at the Springfield Road lights. Those cards say so.</li>
+    <li><b>Aerial photos:</b> Esri World Imagery (Maxar, Earthstar Geographics), under "Aerial photo" on each card.</li>
+    <li><b>Google Street View photos are not included.</b> Putting them in the page needs your own Google Maps Platform key (Map Tiles API) saved in this environment's settings. Or send phone screenshots of any junction and I'll add them with the lanes marked.</li>
+    <li><b>Direction signs:</b> sign wording is not included.</li>
+    <li><b>Signals:</b> <a href="https://www.gov.uk/guidance/the-highway-code/using-the-road-159-to-203" target="_blank" rel="noopener">The Highway Code, rules 159–203</a>. On the day, road markings and the examiner's instruction come first.</li>
   </ul>
 </section>
 
 </div>
 
-<div class="lb" id="lb" hidden role="dialog" aria-modal="true" aria-label="Junction picture, full size">
+<div class="lb" id="lb" hidden role="dialog" aria-modal="true" aria-label="Full-size view">
   <button type="button" id="lb-close">Close ✕</button>
-  <img id="lb-img" alt="">
+  <div class="inner" id="lb-inner"></div>
 </div>
 <script>
 (function () {
-  var lb = document.getElementById('lb'), im = document.getElementById('lb-img'), btn = document.getElementById('lb-close'), last = null;
-  function close() { lb.hidden = true; im.removeAttribute('src'); document.body.style.overflow = ''; if (last) last.focus(); }
-  document.querySelectorAll('.card figure img').forEach(function (el) {
-    el.tabIndex = 0;
-    function open() { last = el; im.src = el.currentSrc || el.src; im.alt = el.alt; lb.hidden = false; lb.scrollTo(0, 0); document.body.style.overflow = 'hidden'; btn.focus(); }
-    el.addEventListener('click', open);
-    el.addEventListener('keydown', function (e) { if (e.key === 'Enter' || e.key === ' ') { e.preventDefault(); open(); } });
+  var lb = document.getElementById('lb'), inner = document.getElementById('lb-inner'), btn = document.getElementById('lb-close'), last = null;
+  function close() { lb.hidden = true; inner.innerHTML = ''; document.body.style.overflow = ''; if (last) last.focus(); }
+  function open(el) {
+    last = el; inner.innerHTML = '';
+    var c = el.cloneNode(true); c.removeAttribute('tabindex'); inner.appendChild(c);
+    lb.hidden = false; lb.scrollTo(0, 0); document.body.style.overflow = 'hidden'; btn.focus();
+  }
+  document.querySelectorAll('.dv svg, .meta details img').forEach(function (el) {
+    el.setAttribute('tabindex', '0');
+    el.addEventListener('click', function () { open(el); });
+    el.addEventListener('keydown', function (e) { if (e.key === 'Enter' || e.key === ' ') { e.preventDefault(); open(el); } });
   });
   btn.addEventListener('click', close);
   lb.addEventListener('click', function (e) { if (e.target === lb) close(); });

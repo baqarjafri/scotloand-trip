@@ -38,11 +38,12 @@ def dashes(P, L):
     return out
 
 class Scene:
-    def __init__(self, bbox, z=19):
+    def __init__(self, bbox, z=19, heading=None, **kw):
         self.img = aer.fetch_box(*bbox, z=z); self.bbox = bbox
         a = self.img.px((bbox[0], bbox[1])); b = self.img.px((bbox[2], bbox[3]))
         self.crop = (int(min(a[0], b[0])), int(min(a[1], b[1])), int(max(a[0], b[0])), int(max(a[1], b[1])))
         self.d = self.img.d
+    def island(self, *a, **k): pass
     def P(self, segs):
         """segs: list of (lonlat_points, offset_m). Offset positive = right of travel."""
         out = []
@@ -218,6 +219,8 @@ def lane_pills(S, W, T, wid, d, back_m=16, use=(), turns_override=None, sz=26):
     pts = way_pts(W, wid, d); offs, turns = lanes_info(T[wid], d > 0)
     turns = turns_override or turns or ['?']*len(offs)
     p, b = back_point(pts, back_m)
+    if getattr(S, 'svg', False):
+        S.lane_pills(pts, offs, turns, use, p, b); return p, b, offs
     placed = []
     for i, (off, tr) in enumerate(zip(offs, turns)):
         q = dest(p, (b+90) % 360, off); xy = S.img.px(q)
@@ -231,6 +234,7 @@ def lane_pills(S, W, T, wid, d, back_m=16, use=(), turns_override=None, sz=26):
     S.boxes += placed
     return p, b, offs
 def lights(S, lonlat, sz=1.0):
+    if getattr(S, 'svg', False): return S.lights(lonlat)
     x, y = S.img.px(lonlat); w, h = 26*sz, 66*sz
     S.d.rounded_rectangle([x-w/2, y-h/2, x+w/2, y+h/2], radius=6, fill=(20, 20, 20, 255), outline=(255, 255, 255, 255), width=3)
     for i, c in enumerate([(230, 40, 30), (250, 175, 0), (40, 190, 70)]):

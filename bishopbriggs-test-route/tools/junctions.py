@@ -1,6 +1,8 @@
 import sys, os
 sys.path.insert(0, os.path.dirname(os.path.abspath(__file__)))
 from compose import *
+if os.environ.get('MODE') == 'svg':
+    from svgscene import SvgScene as Scene
 W, T = load_all()
 def centre(c): return (sum(p[0] for p in c)/len(c), sum(p[1] for p in c)/len(c))
 ONLY = sys.argv[1:]
@@ -10,19 +12,21 @@ LEG = lambda color, told, line2, primary=False, dash=False: dict(color=color, to
 # ===== 01 Gate + Cole Road roundabout =====
 if want('j01'):
     C = centre(W[24910637]); ACC = (-4.199620, 55.924472); ACC_IN = (-4.199406, 55.924085)
-    S = Scene(bbox_around(-4.20045, 55.92415, 150, 125))
+    S = Scene(bbox_around(-4.20045, 55.92415, 150, 125), heading=262)
     appr = [p for p in reversed(W[24910594]) if p[0] < ACC[0]]
     gate = S.offpx([ACC_IN, ACC], 0)
     a = S.offpx([ACC] + appr, -1.6)
     first = gate + a + S.P([(arc(C, 12.6, 95, 205), 0)]) + S.offpx(W[30738202][:4], -1.6)
     second = a + S.P([(arc(C, 9.4, 100, 345), 0)]) + S.offpx(list(reversed(W[8368975]))[:4], -1.6)
+    S.island(C, 6.5)
     S.path(second, ORANGE, w=11, dash=22)
     S.path(first, BLUE, w=15)
     g = S.img.px(ACC_IN); S.label((g[0]+40, g[1]+40), '◀ SIGNAL LEFT\nto leave the centre', bg=AMBER, border=INK, anchor='lm', dot=S.img.px(ACC))
-    q = S.img.px(appr[len(appr)//2]); S.label((q[0]-10, q[1]-110), '◀ SIGNAL LEFT again\n(1st exit) 57 m ahead', bg=AMBER, border=INK, anchor='mm', dot=q)
+    q = S.img.px(appr[len(appr)//2]); SVG = getattr(S, 'svg', False)
+    S.label((q[0]-60, q[1]+20) if SVG else (q[0]-10, q[1]-110), '◀ SIGNAL LEFT again\n(1st exit) 57 m ahead', bg=AMBER, border=INK, anchor='rm' if SVG else 'mm', dot=q)
     gw = S.img.px(dest(C, 75, 13)); S.label((gw[0]+60, gw[1]+70), 'GIVE WAY\nto your right', col=RED, anchor='lm', dot=gw)
     e1 = first[-1]; S.label((e1[0]+20, e1[1]+40), '1  Crosshill Rd to retail park', col=BLUE, anchor='lm')
-    e2 = second[-1]; S.label((e2[0]+20, e2[1]-30), '2  Cole Road (60 mph)', col=ORANGE, anchor='lm')
+    e2 = second[-1]; S.label((e2[0]+20, e2[1]+(60 if SVG else -30)), '2  Cole Road (60 mph)', col=ORANGE, anchor='lm')
     S.render('j01-gate-cole.jpg',
       head=dict(num='0·1', title='GATE + COLE ROAD ROUNDABOUT', sub='B819 Crosshill Road  ·  3 arms  ·  no lane markings', mph='40',
                 route='YOUR ROUTE: turn LEFT out of the centre, then FIRST EXIT at the roundabout 57 m later. Signal left twice.'),
@@ -33,7 +37,7 @@ if want('j01'):
 # ===== 02 Retail park lights =====
 if want('j02'):
     J = (-4.204178, 55.923284)
-    S = Scene(bbox_around(-4.20395, 55.92335, 140, 120))
+    S = Scene(bbox_around(-4.20395, 55.92335, 140, 120), heading=243)
     route = chain(S, W, T, [(30738202, 1, 0), (1427552262, 1, 0), (1427552263, 1, 0)])
     left = chain(S, W, T, [(30738202, 1, 0)]) + S.P([([J, dest(J, 153, 35)], -1.6)])
     S.path(left, MAGENTA, w=11, dash=22); S.path(route, BLUE, w=15)
@@ -52,10 +56,11 @@ if want('j02'):
 # ===== 04 Cadder roundabout =====
 if want('j04'):
     C = centre(W[32397])
-    S = Scene(bbox_around(-4.21035, 55.92105, 160, 165))
+    S = Scene(bbox_around(-4.21035, 55.92105, 160, 165), heading=222)
     appr = [(31093556, -1, 0)]
     A = chain(S, W, T, appr + [(1221577804, 1, 0)]) + S.P([(arc(C, 19.0, 120, 192), 0)]) + chain(S, W, T, [(1221577807, 1, 0), (1221577800, -1, 0), (249121829, -1, 0)])
     B = chain(S, W, T, appr + [(1221577804, 1, 1)]) + S.P([(arc(C, 15.2, 118, 330), 0)]) + chain(S, W, T, [(1221577806, 1, 0), (32395, 1, 0)])
+    S.island(C, 12.5); S.lane_tags = {0: 'A', 1: 'B'}
     S.path(B, ORANGE, w=14); S.path(A, BLUE, w=14)
     lp, lb, offs = lane_pills(S, W, T, 1221577804, 1, back_m=8, use=(0, 1))
     q = S.img.px(dest(lp, (lb+180) % 360, 45))
@@ -74,7 +79,7 @@ if want('j04'):
 # ===== A1 Cadder Road / Shell =====
 if want('a1'):
     J = W[1221577802][0]
-    S = Scene(bbox_around(-4.21125, 55.92070, 130, 140))
+    S = Scene(bbox_around(-4.21125, 55.92070, 130, 140), heading=208)
     route = chain(S, W, T, [(1221577807, 1, 0), (1221577802, -1, 0), (1221577800, -1, 0), (249121829, -1, 0)])
     right = chain(S, W, T, [(1221577807, 1, 0), (1221577802, -1, 1)]) + S.P([([J, dest(J, 296, 40)], -1.6)])
     S.path(right, MAGENTA, w=11, dash=22); S.path(route, BLUE, w=15)
@@ -91,7 +96,7 @@ if want('a1'):
 # ===== A2 Westerhill Road lights =====
 if want('a2'):
     J = W[1221577801][0]
-    S = Scene(bbox_around(-4.21315, 55.91890, 130, 150))
+    S = Scene(bbox_around(-4.21315, 55.91890, 130, 150), heading=208)
     route = chain(S, W, T, [(1221577799, -1, 1), (1221577801, -1, 1), (1221577797, -1, 0), (238095555, -1, 0)])
     left = chain(S, W, T, [(1221577799, -1, 0), (1221577801, -1, 0)]) + S.P([([J, dest(J, 118, 40)], -1.6)])
     S.path(left, MAGENTA, w=11, dash=22); S.path(route, BLUE, w=15)
@@ -111,7 +116,7 @@ if want('a2'):
 # ===== A3 Meadowburn =====
 if want('a3'):
     J = W[238095556][0]
-    S = Scene(bbox_around(-4.21560, 55.91650, 120, 140))
+    S = Scene(bbox_around(-4.21560, 55.91650, 120, 140), heading=209)
     route = chain(S, W, T, [(238095555, -1, 0), (238095556, -1, 0), (238093291, -1, 0)])
     right = chain(S, W, T, [(238095555, -1, 0), (238095556, -1, 1)]) + S.P([([J, dest(J, 296, 40)], -1.6)])
     S.path(right, MAGENTA, w=11, dash=22); S.path(route, BLUE, w=15)
@@ -127,7 +132,7 @@ if want('a3'):
 # ===== A4+A5 Asda and Hilton Road lights =====
 if want('a45'):
     J4 = W[238093294][0]; J5 = W[238093299][0]
-    S = Scene(bbox_around(-4.21835, 55.91380, 150, 230))
+    S = Scene(bbox_around(-4.21835, 55.91380, 150, 230), heading=209)
     route = chain(S, W, T, [(238093291, -1, 0), (238093293, -1, 0), (238093294, -1, 0), (238093297, -1, 0), (238093299, -1, 0), (238093292, -1, 0), (107204091, -1, 0)])
     lft = chain(S, W, T, [(238093293, -1, 0), (238093294, -1, 0)]) + S.P([([J4, dest(J4, 114, 40)], -1.6)])
     r4 = chain(S, W, T, [(238093293, -1, 1), (238093294, -1, 2)]) + S.P([([J4, dest(J4, 284, 40)], -1.6)])
@@ -152,7 +157,7 @@ if want('a45'):
 # ===== A7 South Crosshill Road lights =====
 if want('a7'):
     J = W[1133499075][0]
-    S = Scene(bbox_around(-4.22415, 55.90690, 120, 160))
+    S = Scene(bbox_around(-4.22415, 55.90690, 120, 160), heading=184)
     route = chain(S, W, T, [(247132527, -1, 0), (1133499062, -1, 0), (257658423, -1, 0), (1133499075, -1, 0), (272344765, -1, 0)])
     left = chain(S, W, T, [(257658423, -1, 0), (1133499075, -1, 0)]) + S.P([([J, dest(J, 95, 40)], -1.6)])
     S.path(left, MAGENTA, w=11, dash=22); S.path(route, BLUE, w=15)
@@ -170,7 +175,7 @@ if want('a7'):
 # ===== A8/A9 Bishopbriggs Cross =====
 if want('a89'):
     J9 = W[249121830][0]
-    S = Scene(bbox_around(-4.22490, 55.90470, 160, 210))
+    S = Scene(bbox_around(-4.22490, 55.90470, 160, 210), heading=205)
     route = chain(S, W, T, [(272344765, -1, 0), (257658422, -1, 0), (1447690658, 1, 1), (249121830, -1, 1), (257590895, -1, 1), (31000816, -1, 0)])
     lft = chain(S, W, T, [(1447690658, 1, 0), (249121830, -1, 0)]) + S.P([([J9, dest(J9, 160, 40)], -1.6)])
     rgt = chain(S, W, T, [(1447690658, 1, 1), (249121830, -1, 2)]) + S.P([([J9, dest(J9, 290, 40)], -1.6)])
@@ -192,7 +197,7 @@ if want('a89'):
 # ===== A11 Colston Road =====
 if want('a11'):
     J = W[4470843][0]
-    S = Scene(bbox_around(-4.23145, 55.89690, 130, 170))
+    S = Scene(bbox_around(-4.23145, 55.89690, 130, 170), heading=180)
     route = chain(S, W, T, [(536214137, -1, 0), (4470843, -1, 0), (31000828, -1, 0)])
     S.path(S.offpx(way_pts(W, 4470843, -1)[-3:] + [J, dest(J, 95, 40)], -1.6), ORANGE, w=10, dash=20)
     S.path(S.offpx(way_pts(W, 4470843, -1)[-3:] + [J, dest(J, 270, 40)], -1.6), MAGENTA, w=10, dash=20)
@@ -214,13 +219,13 @@ if want('a11'):
 if want('b1'):
     ring = [p for w in (247132533, 1123138909, 1123138911, 1123138910, 2425, 247132532) for p in W[w]]
     C = centre(ring)
-    S = Scene(bbox_around(-4.20410, 55.92770, 140, 175))
+    S = Scene(bbox_around(-4.20410, 55.92770, 140, 175), heading=25)
     rad = sum(math.hypot((p[0]-C[0])*111320*math.cos(math.radians(C[1])), (p[1]-C[1])*110540) for p in ring)/len(ring)
     bin_ = brg(C, W[1123138917][-1]); bout = brg(C, W[1123138913][0])
     route = chain(S, W, T, [(107204097, 1, 0), (1311050665, 1, 1), (1123138917, 1, 1)]) + S.P([(arc(C, rad-1.6, bin_+12, bout-8), 0)]) + chain(S, W, T, [(1123138913, 1, 0), (4272906, 1, 0)])
     left = chain(S, W, T, [(1311050665, 1, 0), (1123138917, 1, 0)]) + S.P([(arc(C, rad+1.6, bin_+12, 318), 0), ([dest(C, 322, rad+2), dest(C, 330, rad+40)], -1.6)])
     rgt = chain(S, W, T, [(1123138917, 1, 1)]) + S.P([(arc(C, rad-1.6, bin_+12, 125), 0), ([dest(C, 130, rad+2), dest(C, 145, rad+40)], -1.6)])
-    S.path(left, MAGENTA, w=10, dash=20); S.path(rgt, GREY, w=10, dash=20); S.path(route, BLUE, w=15)
+    S.island(C, max(rad-4.5, 3)); S.path(left, MAGENTA, w=10, dash=20); S.path(rgt, GREY, w=10, dash=20); S.path(route, BLUE, w=15)
     lane_pills(S, W, T, 1123138917, 1, back_m=10, use=(1,))
     sp = S.img.px(dest(C, 345, rad-1.6)); S.label((sp[0]-40, sp[1]-120), '◀ SIGNAL LEFT\nonce past Torrance Rd', bg=AMBER, border=INK, anchor='mm', dot=sp)
     q = S.img.px(dest(W[1311050665][0], 225, 10)); S.signal((q[0]+40, q[1]+40), 'N', text='NO SIGNAL on approach\nRIGHT lane', anchor='lm')
@@ -238,7 +243,7 @@ if want('b1'):
 # ===== B3 New Lairdsland Road =====
 if want('b3'):
     J = W[1204558500][-1]
-    S = Scene(bbox_around(-4.16020, 55.94255, 150, 140))
+    S = Scene(bbox_around(-4.16020, 55.94255, 150, 140), heading=50)
     route = chain(S, W, T, [(55797460, 1, 0), (1217589583, 1, 0), (239507310, 1, 0), (1204558500, 1, 0), (246568459, 1, 0), (1327381426, 1, 0)])
     rgt = chain(S, W, T, [(239507310, 1, 1), (1204558500, 1, 1)]) + S.P([(way_pts(W, 1204558499, -1), -1.6)])
     S.path(rgt, MAGENTA, w=10, dash=20); S.path(route, BLUE, w=15)
@@ -256,7 +261,7 @@ if want('b3'):
 # ===== B4 Milton Road / Ledgate =====
 if want('b4'):
     J = W[1324500075][-1]
-    S = Scene(bbox_around(-4.15500, 55.94305, 140, 140))
+    S = Scene(bbox_around(-4.15500, 55.94305, 140, 140), heading=96)
     route = chain(S, W, T, [(1324500076, 1, 0), (35536505, 1, 0), (1324500075, 1, 0)]) + S.P([([J, dest(J, 97, 45)], -1.6)])
     lft = chain(S, W, T, [(1324500075, 1, 0)]) + S.P([(W[8232564][:3], -1.6)])
     rgt = chain(S, W, T, [(1324500075, 1, 1)]) + S.P([([J, dest(J, 168, 40)], -1.6)])
@@ -278,12 +283,12 @@ if want('b2'):
     C = (-4.16339, 55.940665)
     rad = max(math.hypot((p[0]-C[0])*111320*math.cos(math.radians(C[1])), (p[1]-C[1])*110540) for p in W[34083616])
     print('peel radius', round(rad, 1))
-    S = Scene(bbox_around(C[0]-0.0003, C[1]-0.0001, 140, 150))
+    S = Scene(bbox_around(C[0]-0.0003, C[1]-0.0001, 140, 150), heading=45)
     appr = W[1091042230][-8:]
     bin_ = brg(C, appr[-1]); bout = brg(C, W[55797460][0])
     route = S.offpx(appr, -1.6) + S.P([(arc(C, rad+1.2, bin_+10, bout-6), 0)]) + S.offpx(W[55797460] + W[1217589583][1:], -1.6)
     alt = S.offpx(appr, -1.6) + S.P([(arc(C, rad-1.2, bin_+10, 100), 0), ([dest(C, 104, rad+2), dest(C, 108, rad+45)], -1.6)])
-    S.path(alt, MAGENTA, w=10, dash=20); S.path(route, BLUE, w=15)
+    S.island(C, rad-4.2); S.path(alt, MAGENTA, w=10, dash=20); S.path(route, BLUE, w=15)
     q = S.img.px(back_point(appr, 30)[0]); S.label((q[0]+60, q[1]+30), '◀ SIGNAL LEFT on approach\n(1st exit = A803 ahead)', bg=AMBER, border=INK, anchor='lm', dot=q)
     gw = S.img.px(dest(C, bin_, rad+3)); S.label((gw[0]-40, gw[1]-90), 'GIVE WAY to your right', col=RED, anchor='rm', dot=gw)
     S.label((route[-1][0]-10, route[-1][1]-30), '1  A803 Glasgow Road', col=BLUE, anchor='rm')

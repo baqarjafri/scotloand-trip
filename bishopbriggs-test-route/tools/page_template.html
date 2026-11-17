@@ -1,0 +1,285 @@
+<title>Bishopbriggs Test Route</title>
+<meta name="claude:viewport-fit-sides" content="cover">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Atkinson+Hyperlegible:wght@400;700&family=Barlow+Condensed:wght@600;700&family=JetBrains+Mono:wght@400;600&display=swap">
+<style>
+/* Layout: a pocket route book. One card per junction in driving order: instruction, driver's-eye lane view, heading-up junction diagram, options. */
+:root {
+  --bg: #f2f4f1;
+  --surface: #ffffff;
+  --fg: #16201a;
+  --muted: #56625b;
+  --rule: #d6ddd7;
+  --sign: #00703c;
+  --route-no: #ffd200;
+  --route: #1d5fd1;
+  --tint: #e6eefc;
+  --trap-bg: #fdf1d6;
+  --trap-ink: #7a4a00;
+  --stretch-bg: #e8ece8;
+  --d-bg: #eef1ec;
+  --d-road: #c3c9c4;
+  --d-island: #a9d6a0;
+  --d-label: #ffffff;
+  --l-sky: #dde6ee;
+  --c-route: #1d5fd1;
+  --c-mag: #c2338f;
+  --c-org: #d9691a;
+  --c-grey: #5f6663;
+  --c-red: #c0261d;
+  --c-teal: #00897b;
+  --c-amber: #ffb000;
+  --font-display: "Barlow Condensed", "Arial Narrow", "Roboto Condensed", sans-serif;
+  --font-body: "Atkinson Hyperlegible", "Segoe UI", Roboto, Helvetica, Arial, sans-serif;
+  --font-data: "JetBrains Mono", ui-monospace, SFMono-Regular, Menlo, Consolas, monospace;
+}
+@media (prefers-color-scheme: dark) {
+  :root:not([data-theme="light"]) {
+    --bg: #0f1411; --surface: #171e1a; --fg: #e6ebe7; --muted: #9ba8a0; --rule: #2b362f; --sign: #1c8f53; --route-no: #ffd200; --route: #7ea6f0;
+    --tint: #1c2840; --trap-bg: #3a2e12; --trap-ink: #f3c76b; --stretch-bg: #1d2621;
+    --d-bg: #1a211d; --d-road: #46514a; --d-island: #2f5a36; --d-label: #222a25; --l-sky: #18212a;
+    --c-route: #7ea6f0; --c-mag: #f07fcd; --c-org: #f5a25a; --c-grey: #b3bab6; --c-red: #ff8a7a; --c-teal: #5fd0c0; --c-amber: #ffb000;
+    color-scheme: dark;
+  }
+}
+:root[data-theme="dark"] {
+  --bg: #0f1411; --surface: #171e1a; --fg: #e6ebe7; --muted: #9ba8a0; --rule: #2b362f; --sign: #1c8f53; --route-no: #ffd200; --route: #7ea6f0;
+  --tint: #1c2840; --trap-bg: #3a2e12; --trap-ink: #f3c76b; --stretch-bg: #1d2621;
+  --d-bg: #1a211d; --d-road: #46514a; --d-island: #2f5a36; --d-label: #222a25; --l-sky: #18212a;
+  --c-route: #7ea6f0; --c-mag: #f07fcd; --c-org: #f5a25a; --c-grey: #b3bab6; --c-red: #ff8a7a; --c-teal: #5fd0c0; --c-amber: #ffb000;
+  color-scheme: dark;
+}
+* { box-sizing: border-box; }
+body {
+  background: var(--bg); color: var(--fg);
+  font-family: var(--font-body); font-size: 16px; line-height: 1.55;
+  padding-left: max(16px, env(safe-area-inset-left, 0px));
+  padding-right: max(16px, env(safe-area-inset-right, 0px));
+  padding-block: 24px 64px;
+}
+.wrap { max-width: 720px; margin: 0 auto; display: grid; gap: 26px; }
+h1, h2, h3 { font-family: var(--font-display); font-weight: 700; line-height: 1.1; text-wrap: balance; margin: 0; letter-spacing: 0.01em; }
+h1 { font-size: clamp(2.2rem, 7vw, 3.4rem); }
+h2 { font-size: 1.9rem; }
+p { margin: 0; max-width: 65ch; }
+a { color: var(--route); }
+a:focus-visible, summary:focus-visible, svg:focus-visible { outline: 3px solid var(--route); outline-offset: 2px; }
+.eyebrow { font-family: var(--font-data); font-size: 0.78rem; letter-spacing: 0.06em; text-transform: uppercase; color: var(--muted); }
+.muted { color: var(--muted); }
+.rn { display: inline-block; font-family: var(--font-display); font-weight: 700; font-size: 0.95em; padding: 0 0.35em; border-radius: 3px; line-height: 1.35; white-space: nowrap; }
+.rn.a { background: var(--sign); color: var(--route-no); }
+.rn.b { background: #ffffff; color: #111111; border: 1.5px solid #111111; }
+.sub { font-size: 1.05rem; color: var(--muted); }
+
+.howto { display: grid; gap: 10px; background: var(--surface); border: 1px solid var(--rule); border-radius: 12px; padding: 14px 16px; }
+.howto ul { margin: 0; padding: 0; list-style: none; display: grid; gap: 8px; font-size: 0.95rem; }
+.howto li { display: flex; gap: 10px; align-items: center; }
+.ic { flex: none; width: 40px; height: 22px; border-radius: 6px; display: inline-grid; place-items: center; font-weight: 700; font-size: 0.8rem; }
+.ic.you { background: #1d5fd1; color: #ffffff; }
+.ic.road { background: #3b4045; color: #ffffff; font-size: 1rem; }
+.ic.line { background: var(--c-route); height: 8px; }
+.ic.dash { background: repeating-linear-gradient(90deg, var(--c-mag) 0 9px, transparent 9px 14px); height: 8px; }
+.ic.amb { background: var(--c-amber); color: #111111; border: 2px solid #111111; }
+
+figure { margin: 0; display: grid; gap: 6px; }
+figure img { width: 100%; height: auto; display: block; border-radius: 10px; border: 1px solid var(--rule); }
+figcaption { font-size: 0.85rem; color: var(--muted); }
+nav.jump { display: flex; flex-wrap: wrap; gap: 8px; }
+nav.jump a { text-decoration: none; font-weight: 700; padding: 7px 14px; border-radius: 999px; border: 1.5px solid var(--rule); background: var(--surface); color: var(--fg); }
+nav.jump a.a { border-color: var(--c-route); }
+nav.jump a.b { border-color: var(--c-org); }
+
+section.leg { display: grid; gap: 18px; }
+.leghead { display: grid; gap: 6px; border-top: 4px solid var(--sign); padding-top: 14px; }
+.leghead.a { border-color: var(--c-route); }
+.leghead.b { border-color: var(--c-org); }
+
+/* junction card */
+.jc { background: var(--surface); border: 1px solid var(--rule); border-radius: 14px; overflow: hidden; display: grid; gap: 14px; padding-bottom: 16px; }
+.jc > :not(.jh) { margin-inline: 16px; }
+.jh { display: grid; grid-template-columns: auto minmax(0, 1fr) auto; gap: 12px; align-items: center; background: var(--sign); color: #ffffff; padding: 12px 16px; }
+.jn { min-width: 2.6rem; height: 2.6rem; padding: 0 6px; border-radius: 1.3rem; background: #ffffff; color: var(--sign); font-family: var(--font-display); font-weight: 700; font-size: 1.35rem; display: grid; place-items: center; }
+.jh h3 { font-size: 1.5rem; color: #ffffff; }
+.jh p { font-size: 0.85rem; opacity: 0.92; }
+.mph { display: inline-grid; place-items: center; width: 2.6rem; height: 2.6rem; border-radius: 50%; border: 0.3rem solid #d4211b; background: #ffffff; color: #111111; font-family: var(--font-display); font-weight: 700; font-size: 1.1rem; }
+.instr { font-size: 1.15rem; font-weight: 700; line-height: 1.4; background: var(--tint); border-left: 5px solid var(--c-route); padding: 10px 12px; border-radius: 6px; }
+.lv svg, .dv svg { width: 100%; height: auto; display: block; border-radius: 10px; margin: 0 auto; }
+.dv svg { max-width: 560px; border: 1px solid var(--rule); cursor: zoom-in; }
+.lv svg { max-width: 560px; }
+.opts { list-style: none; padding: 0; display: grid; gap: 8px; }
+.opt { display: flex; gap: 12px; align-items: flex-start; padding: 8px 10px; border-radius: 8px; }
+.opt.primary { background: var(--tint); }
+.opt div { display: grid; gap: 2px; min-width: 0; }
+.opt span { font-size: 0.93rem; color: var(--muted); }
+.sw { flex: none; width: 30px; height: 8px; border-radius: 4px; margin-top: 8px; background: var(--sw); }
+.sw.dash { background: repeating-linear-gradient(90deg, var(--sw) 0 8px, transparent 8px 12px); }
+.trap { background: var(--trap-bg); color: var(--trap-ink); font-weight: 700; padding: 10px 12px; border-radius: 8px; font-size: 0.95rem; }
+.meta { display: flex; flex-wrap: wrap; gap: 10px 16px; align-items: center; font-size: 0.9rem; }
+.meta details { flex: 1 1 100%; order: 3; }
+.meta summary { cursor: pointer; color: var(--route); font-weight: 700; display: inline-block; }
+.meta details img { margin-top: 8px; cursor: zoom-in; }
+.dist { font-family: var(--font-data); font-weight: 600; background: var(--bg); border: 1px solid var(--rule); padding: 2px 8px; border-radius: 6px; }
+.sv { color: var(--muted); }
+
+/* diagram parts */
+.d-bg { fill: var(--d-bg); }
+.d-road { fill: none; stroke: var(--d-road); stroke-linecap: round; stroke-linejoin: round; }
+.d-island { fill: var(--d-island); stroke: var(--d-road); stroke-width: 4; }
+.d-case { fill: none; stroke: var(--d-bg); stroke-linecap: round; stroke-linejoin: round; }
+.d-line { fill: none; stroke-linecap: round; stroke-linejoin: round; }
+.d-head { stroke: var(--d-bg); stroke-width: 3; }
+.d-lights rect { fill: #141414; stroke: #ffffff; stroke-width: 3; }
+.d-leader { stroke: var(--fg); stroke-width: 3; opacity: 0.55; }
+.d-dot { fill: var(--d-label); stroke-width: 4; }
+.d-lab { stroke-width: 3; }
+.d-text { font-family: var(--font-body); font-weight: 700; }
+.d-north text { fill: var(--muted); font-family: var(--font-data); }
+/* lane view parts */
+.l-sky { fill: var(--l-sky); }
+.l-road { fill: #3b4045; }
+.l-on { fill: #1d5fd1; opacity: 0.6; }
+.l-on-b { fill: #e0741a; opacity: 0.6; }
+.l-edge, .l-dash { stroke: #ffffff; stroke-width: 3; fill: none; }
+.l-gw { stroke: #ffffff; stroke-width: 2.5; }
+.l-stop { stroke: #ffffff; stroke-width: 5; }
+.l-arrow { fill: none; stroke: #ffffff; stroke-width: 7; stroke-linecap: round; stroke-linejoin: round; }
+.l-head { fill: #ffffff; }
+.l-word { fill: #ffffff; font-family: var(--font-body); font-weight: 700; }
+.l-q { fill: #ffffff; font-family: var(--font-body); font-weight: 700; font-size: 40px; }
+.l-tag { fill: #1d5fd1; }
+.l-tag-b { fill: #e0741a; }
+.l-tagt { fill: #ffffff; font-family: var(--font-body); font-weight: 700; font-size: 15px; }
+.l-tick { fill: none; stroke: #1d5fd1; stroke-width: 3; }
+.l-tick.l-tag-b { stroke: #e0741a; }
+.l-gwt { fill: var(--fg); font-family: var(--font-data); font-weight: 600; font-size: 13px; }
+
+.stretch { background: var(--stretch-bg); border-radius: 8px; padding: 10px 14px; font-size: 0.95rem; display: flex; gap: 10px; align-items: baseline; }
+.stretch b.k { font-family: var(--font-data); font-size: 0.74rem; letter-spacing: 0.05em; text-transform: uppercase; color: var(--muted); white-space: nowrap; }
+.endnote { border: 1.5px dashed var(--rule); border-radius: 8px; padding: 12px 14px; font-size: 0.95rem; }
+.tablebox { overflow-x: auto; border: 1px solid var(--rule); border-radius: 8px; background: var(--surface); }
+table { border-collapse: collapse; width: 100%; font-size: 0.93rem; }
+th, td { text-align: left; vertical-align: top; padding: 8px 10px; border-bottom: 1px solid var(--rule); }
+th { font-family: var(--font-data); font-weight: 600; font-size: 0.72rem; letter-spacing: 0.05em; text-transform: uppercase; color: var(--muted); white-space: nowrap; }
+tr:last-child td { border-bottom: 0; }
+td.k { font-weight: 700; white-space: nowrap; }
+.sources { font-size: 0.9rem; color: var(--muted); display: grid; gap: 8px; }
+.sources ul { margin: 0; padding-left: 1.1em; display: grid; gap: 4px; }
+.sources h2 { color: var(--fg); }
+.lb { position: fixed; inset: 0; z-index: 50; background: var(--bg); overflow: auto; -webkit-overflow-scrolling: touch;
+  padding: calc(env(safe-area-inset-top, 0px) + 58px) max(12px, env(safe-area-inset-right, 0px)) calc(env(safe-area-inset-bottom, 0px) + 24px) max(12px, env(safe-area-inset-left, 0px)); }
+.lb .inner { width: max(100%, 960px); margin: 0 auto; }
+.lb .inner svg, .lb .inner img { width: 100%; height: auto; display: block; border-radius: 8px; }
+.lb button { position: fixed; top: calc(env(safe-area-inset-top, 0px) + 10px); right: max(12px, env(safe-area-inset-right, 0px)); font-family: var(--font-body); font-weight: 700; font-size: 1rem;
+  background: var(--fg); color: var(--bg); border: 0; border-radius: 999px; padding: 8px 16px; cursor: pointer; }
+</style>
+
+<div class="wrap">
+
+<header style="display:grid;gap:10px">
+  <div class="eyebrow">Bishopbriggs driving test centre · Crosshill Road <span class="rn b">B819</span> · G64 2QA · v0.3</div>
+  <h1>Bishopbriggs Test Route</h1>
+  <p class="sub">One card per junction, in driving order. Each shows the lanes as you see them from the driver's seat, then the junction from above with your direction of travel pointing up the page. Start to Cadder Roundabout, then <span class="rn a">A803</span> south to Springburn or <span class="rn a">A803</span> north to Kirkintilloch.</p>
+</header>
+
+<div class="howto">
+  <b>How to read a card</b>
+  <ul>
+    <li><span class="ic road" aria-hidden="true">↑</span>Dark road = the lanes on approach. White arrows = arrows painted on the road.</li>
+    <li><span class="ic you" aria-hidden="true">YOU</span>Your lane, highlighted. At Cadder, A and B mark the two extensions.</li>
+    <li><span class="ic line" aria-hidden="true"></span>Your route on the junction drawing. You always drive up the page.</li>
+    <li><span class="ic dash" aria-hidden="true"></span>What to do if the examiner sends you another way.</li>
+    <li><span class="ic amb" aria-hidden="true">◀</span>Where to signal.</li>
+  </ul>
+  <p class="muted" style="font-size:0.88rem">Tap a junction drawing to see it full size.</p>
+</div>
+
+<figure>
+  <img src="img/overview-full.jpg" alt="Map of the whole route: the start on Crosshill Road to Cadder Roundabout, extension A south on the A803 to Colston Road, and extension B north to Torrance Roundabout and east into Kirkintilloch." width="1400" height="1657">
+  <figcaption>Black: start leg. Blue: extension A (south). Orange: extension B (north). Map © OpenStreetMap contributors.</figcaption>
+</figure>
+
+<nav class="jump" aria-label="Jump to">
+  <a href="#start">Start · 0.85 km</a>
+  <a class="a" href="#ext-a">A · south · 3.1 km</a>
+  <a class="b" href="#ext-b">B · north · 4.5 km</a>
+</nav>
+
+<section class="leg" id="start" aria-labelledby="start-h">
+  <div class="leghead">
+    <h2 id="start-h">Start: test centre to Cadder Roundabout</h2>
+    <p class="muted">0.85 km on Crosshill Road, 40 mph. Three roundabouts and one set of lights.</p>
+  </div>
+{{START}}
+</section>
+
+<section class="leg" id="ext-a" aria-labelledby="a-h">
+  <div class="leghead a">
+    <h2 id="a-h">Extension A: <span class="rn a">A803</span> south to Springburn</h2>
+    <p class="muted">Cadder Roundabout, first exit. 3.1 km to Colston Road. Distances are from Cadder Roundabout.</p>
+  </div>
+{{EXTA}}
+  <p class="endnote">The guide stops here, about 2.5 miles from the test centre. Beyond Colston Road the <span class="rn a">A803</span> is Springburn Road, and about 0.8 km further it becomes a dual carriageway. Tell me if your route goes on.</p>
+</section>
+
+<section class="leg" id="ext-b" aria-labelledby="b-h">
+  <div class="leghead b">
+    <h2 id="b-h">Extension B: <span class="rn a">A803</span> north to Kirkintilloch</h2>
+    <p class="muted">Cadder Roundabout, second exit. 4.5 km to Kirkintilloch town centre. Distances are from Cadder Roundabout.</p>
+  </div>
+{{EXTB}}
+  <p class="endnote">The guide stops here, about 3.3 miles from the test centre. The <span class="rn a">A803</span> continues east through Kirkintilloch towards Kilsyth.</p>
+</section>
+
+<section aria-labelledby="rule-h" style="display:grid;gap:12px">
+  <h2 id="rule-h">The rule behind every roundabout card</h2>
+  <div class="tablebox">
+    <table>
+      <thead><tr><th>Exit</th><th>Signal on approach</th><th>Lane</th><th>Signal to leave</th></tr></thead>
+      <tbody>
+        <tr><td class="k">First exit</td><td>◀ Left</td><td>Left</td><td>Keep left signal on</td></tr>
+        <tr><td class="k">Ahead / middle</td><td>None</td><td>As marked</td><td>◀ Left after the exit before yours</td></tr>
+        <tr><td class="k">Right / full circle</td><td>Right ▶</td><td>Right</td><td>◀ Left after the exit before yours</td></tr>
+      </tbody>
+    </table>
+  </div>
+  <p class="muted">Highway Code rule 186. Painted lane arrows override the usual lane, and on this route they often do: at Lowmoss, Westerhill Road and Torrance the left lane is left only.</p>
+</section>
+
+<section class="sources" aria-labelledby="src-h">
+  <h2 id="src-h">Where this comes from, and its limits</h2>
+  <ul>
+    <li><b>Drawings:</b> made from OpenStreetMap road shapes, lane counts and lane arrows (<code>turn:lanes</code>), read on 17 Nov 2026. Volunteers map the arrows, so check the road on the day.</li>
+    <li><b>Not mapped:</b> lane arrows at Colston Road and at the Springfield Road lights. Those cards say so.</li>
+    <li><b>Aerial photos:</b> Esri World Imagery (Maxar, Earthstar Geographics), under "Aerial photo" on each card.</li>
+    <li><b>Google Street View photos are not included.</b> Putting them in the page needs your own Google Maps Platform key (Map Tiles API) saved in this environment's settings. Or send phone screenshots of any junction and I'll add them with the lanes marked.</li>
+    <li><b>Direction signs:</b> sign wording is not included.</li>
+    <li><b>Signals:</b> <a href="https://www.gov.uk/guidance/the-highway-code/using-the-road-159-to-203" target="_blank" rel="noopener">The Highway Code, rules 159–203</a>. On the day, road markings and the examiner's instruction come first.</li>
+  </ul>
+</section>
+
+</div>
+
+<div class="lb" id="lb" hidden role="dialog" aria-modal="true" aria-label="Full-size view">
+  <button type="button" id="lb-close">Close ✕</button>
+  <div class="inner" id="lb-inner"></div>
+</div>
+<script>
+(function () {
+  var lb = document.getElementById('lb'), inner = document.getElementById('lb-inner'), btn = document.getElementById('lb-close'), last = null;
+  function close() { lb.hidden = true; inner.innerHTML = ''; document.body.style.overflow = ''; if (last) last.focus(); }
+  function open(el) {
+    last = el; inner.innerHTML = '';
+    var c = el.cloneNode(true); c.removeAttribute('tabindex'); inner.appendChild(c);
+    lb.hidden = false; lb.scrollTo(0, 0); document.body.style.overflow = 'hidden'; btn.focus();
+  }
+  document.querySelectorAll('.dv svg, .meta details img').forEach(function (el) {
+    el.setAttribute('tabindex', '0');
+    el.addEventListener('click', function () { open(el); });
+    el.addEventListener('keydown', function (e) { if (e.key === 'Enter' || e.key === ' ') { e.preventDefault(); open(el); } });
+  });
+  btn.addEventListener('click', close);
+  lb.addEventListener('click', function (e) { if (e.target === lb) close(); });
+  document.addEventListener('keydown', function (e) { if (e.key === 'Escape' && !lb.hidden) close(); });
+})();
+</script>
