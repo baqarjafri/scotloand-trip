@@ -156,11 +156,17 @@ body::before { content: ""; position: fixed; inset: 0 0 auto; height: env(safe-a
 .kind { font-size: 0.8rem; color: var(--muted); }
 .km { font-family: var(--font-data); font-size: 0.82rem; color: var(--muted); }
 .det { font-size: 0.85rem; font-weight: 700; }
-.dir { display: grid; grid-template-columns: auto auto minmax(0, 1fr); gap: 4px 10px; align-items: start; padding: 8px 10px; border-radius: 8px; background: var(--bg); }
+.dir { display: grid; gap: 6px; padding: 9px 10px; border-radius: 8px; background: var(--bg); }
+.dh { display: flex; flex-wrap: wrap; gap: 6px 10px; align-items: center; }
+.dh b { font-size: 0.98rem; }
+.dtrap { font-size: 0.86rem; font-weight: 700; color: var(--trap-ink); }
+.msm { display: grid; grid-template-columns: max-content minmax(0, 1fr); gap: 3px 10px; margin: 0; font-size: 0.9rem; }
+.msm dt { font-family: var(--font-data); font-weight: 600; font-size: 0.7rem; letter-spacing: 0.04em; text-transform: uppercase; color: var(--muted); padding-top: 3px; }
+.msm dd { margin: 0; }
+.msm dt:nth-of-type(6) { color: var(--c-route); }
 .dir.back { background: var(--trap-bg); background: color-mix(in srgb, var(--c-org) 10%, var(--surface)); }
 .dir .dl { font-family: var(--font-data); font-weight: 600; font-size: 0.74rem; padding-top: 4px; white-space: nowrap; }
-.dir p { font-size: 0.93rem; }
-.dir .sv { grid-column: 3; font-weight: 700; color: var(--route); font-size: 0.9rem; }
+.dir .sv { font-weight: 700; color: var(--route); font-size: 0.9rem; justify-self: start; }
 .chips { display: inline-flex; gap: 3px; padding: 3px; background: #3b4045; border-radius: 6px; align-self: start; }
 .lc { min-width: 26px; height: 24px; padding: 0 3px; display: inline-grid; place-items: center; color: #ffffff; font-weight: 700; font-size: 0.95rem; border-radius: 4px; border: 1px dashed rgba(255,255,255,0.35); }
 .lc.on { background: #1d5fd1; border: 1px solid #ffffff; }
