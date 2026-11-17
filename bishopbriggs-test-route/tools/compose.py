@@ -169,7 +169,7 @@ LW = 3.2
 def load_all():
     W, T = {}, {}
     D = os.path.join(os.path.dirname(os.path.abspath(__file__)), 'osm')
-    for f in ['ways1.json', 'ways2.json', 'ways3.json', 's_20_Glasgow_Road.json', 's_21_Torrance.json', 's_25_peelpark.json']:
+    for f in ['ways1.json', 'ways2.json', 'ways3.json', 's_20_Glasgow_Road.json', 's_21_Torrance.json', 's_25_peelpark.json', 's_3_kilsyth.json', 's_26_k1ring.json']:
         try: data = json.load(open(os.path.join(D, f)))
         except Exception: continue
         for e in data:
@@ -183,7 +183,7 @@ def lanes_info(t, forward):
     oneway = t.get('oneway') == 'yes'
     n = int(t.get('lanes', '1' if oneway else '2'))
     if oneway:
-        ours, total, turns = n, n, t.get('turn:lanes')
+        ours, total, turns = n, n, (t.get('turn:lanes') or t.get('turn:lanes:forward'))
     else:
         lf, lb = t.get('lanes:forward'), t.get('lanes:backward')
         if lf or lb:

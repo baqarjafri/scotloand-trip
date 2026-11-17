@@ -134,5 +134,5 @@ def section(key):
     return '\n'.join(out)
 
 tpl = open(ROOT + 'tools/page_template.html').read()
-page = tpl.replace('{{START}}', section('start')).replace('{{EXTA}}', section('a')).replace('{{EXTB}}', section('b'))
+page = tpl.replace('{{FLOW}}', open(ROOT + 'data/flow.html').read()).replace('{{START}}', section('start')).replace('{{EXTA}}', section('a')).replace('{{EXTB}}', section('b'))
 open(ROOT + 'index.html', 'w').write(page); print('page', len(page)//1024, 'KB')

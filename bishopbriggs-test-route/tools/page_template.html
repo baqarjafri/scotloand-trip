@@ -122,6 +122,52 @@ section.leg { display: grid; gap: 18px; }
 .dist { font-family: var(--font-data); font-weight: 600; background: var(--bg); border: 1px solid var(--rule); padding: 2px 8px; border-radius: 6px; }
 .sv { color: var(--muted); }
 
+
+/* route flow */
+body::before { content: ""; position: fixed; inset: 0 0 auto; height: env(safe-area-inset-top, 0px); z-index: 10; background: var(--bg); }
+.flow { display: grid; gap: 16px; }
+.modes { display: flex; flex-wrap: wrap; gap: 8px; position: sticky; top: env(safe-area-inset-top, 0px); z-index: 5; background: var(--bg); padding-block: 8px; }
+.modes button { font-family: var(--font-body); font-weight: 700; font-size: 0.95rem; padding: 8px 14px; border-radius: 999px; border: 1.5px solid var(--rule); background: var(--surface); color: var(--fg); cursor: pointer; }
+.modes button[aria-pressed="true"] { background: var(--fg); color: var(--bg); border-color: var(--fg); }
+.flowbody { display: flex; flex-direction: column; gap: 18px; }
+.flowbody.back { flex-direction: column-reverse; }
+.branches { display: grid; grid-template-columns: minmax(0, 1fr); gap: 18px; }
+.blk { background: var(--surface); border: 1px solid var(--rule); border-radius: 14px; padding: 14px 14px 6px; display: grid; gap: 8px; border-top: 5px solid var(--sign); }
+.blk.a { border-top-color: var(--c-route); }
+.blk.b { border-top-color: var(--c-org); }
+.blk h3 { font-size: 1.4rem; }
+.bn { font-size: 0.9rem; color: var(--muted); }
+.stops { list-style: none; margin: 0; padding: 0 0 0 14px; display: flex; flex-direction: column; border-left: 4px solid var(--sign); }
+.blk.a .stops { border-left-color: var(--c-route); }
+.blk.b .stops { border-left-color: var(--c-org); }
+.flowbody.back .stops { flex-direction: column-reverse; }
+.stop { position: relative; display: grid; gap: 6px; padding: 10px 0 14px; border-bottom: 1px solid var(--rule); }
+.stop:last-child { border-bottom: 0; }
+.flowbody.back .stop:last-child { border-bottom: 1px solid var(--rule); }
+.flowbody.back .stop:first-child { border-bottom: 0; }
+.stop::before { content: ""; position: absolute; left: -23px; top: 16px; width: 14px; height: 14px; border-radius: 50%; background: var(--surface); border: 4px solid var(--sign); }
+.blk.a .stop::before { border-color: var(--c-route); }
+.blk.b .stop::before { border-color: var(--c-org); }
+.stop.minor::before { width: 10px; height: 10px; left: -21px; border-width: 3px; }
+.st-head { display: flex; flex-wrap: wrap; gap: 4px 10px; align-items: baseline; }
+.st-head > div { display: grid; flex: 1 1 12rem; min-width: 0; }
+.st-head b { font-size: 1.02rem; }
+.sid { font-family: var(--font-data); font-weight: 600; font-size: 0.8rem; background: var(--bg); border: 1px solid var(--rule); border-radius: 5px; padding: 0 6px; }
+.kind { font-size: 0.8rem; color: var(--muted); }
+.km { font-family: var(--font-data); font-size: 0.82rem; color: var(--muted); }
+.det { font-size: 0.85rem; font-weight: 700; }
+.dir { display: grid; grid-template-columns: auto auto minmax(0, 1fr); gap: 4px 10px; align-items: start; padding: 8px 10px; border-radius: 8px; background: var(--bg); }
+.dir.back { background: var(--trap-bg); background: color-mix(in srgb, var(--c-org) 10%, var(--surface)); }
+.dir .dl { font-family: var(--font-data); font-weight: 600; font-size: 0.74rem; padding-top: 4px; white-space: nowrap; }
+.dir p { font-size: 0.93rem; }
+.dir .sv { grid-column: 3; font-weight: 700; color: var(--route); font-size: 0.9rem; }
+.chips { display: inline-flex; gap: 3px; padding: 3px; background: #3b4045; border-radius: 6px; align-self: start; }
+.lc { min-width: 26px; height: 24px; padding: 0 3px; display: inline-grid; place-items: center; color: #ffffff; font-weight: 700; font-size: 0.95rem; border-radius: 4px; border: 1px dashed rgba(255,255,255,0.35); }
+.lc.on { background: #1d5fd1; border: 1px solid #ffffff; }
+.lc.q { color: #c9ced2; }
+.flowbody.out .dir.back, .flowbody.back .dir.out { display: none; }
+@media (min-width: 760px) { .branches { grid-template-columns: minmax(0, 1fr) minmax(0, 1fr); } }
+
 /* diagram parts */
 .d-bg { fill: var(--d-bg); }
 .d-road { fill: none; stroke: var(--d-road); stroke-linecap: round; stroke-linejoin: round; }
@@ -177,9 +223,9 @@ td.k { font-weight: 700; white-space: nowrap; }
 <div class="wrap">
 
 <header style="display:grid;gap:10px">
-  <div class="eyebrow">Bishopbriggs driving test centre · Crosshill Road <span class="rn b">B819</span> · G64 2QA · v0.3</div>
+  <div class="eyebrow">Bishopbriggs driving test centre · Crosshill Road <span class="rn b">B819</span> · G64 2QA · v0.4</div>
   <h1>Bishopbriggs Test Route</h1>
-  <p class="sub">One card per junction, in driving order. Each shows the lanes as you see them from the driver's seat, then the junction from above with your direction of travel pointing up the page. Start to Cadder Roundabout, then <span class="rn a">A803</span> south to Springburn or <span class="rn a">A803</span> north to Kirkintilloch.</p>
+  <p class="sub">Start with the route flow: every junction on both branches, going out and coming back, with your lane, the signal and a Street View link for each direction. Below it, one card per junction, in driving order. Each shows the lanes as you see them from the driver's seat, then the junction from above with your direction of travel pointing up the page. Start to Cadder Roundabout, then <span class="rn a">A803</span> south to Springburn or <span class="rn a">A803</span> north to Kirkintilloch.</p>
 </header>
 
 <div class="howto">
@@ -200,10 +246,13 @@ td.k { font-weight: 700; white-space: nowrap; }
 </figure>
 
 <nav class="jump" aria-label="Jump to">
+  <a href="#flow">Out &amp; back flow</a>
   <a href="#start">Start · 0.85 km</a>
   <a class="a" href="#ext-a">A · south · 3.1 km</a>
   <a class="b" href="#ext-b">B · north · 4.5 km</a>
 </nav>
+
+{{FLOW}}
 
 <section class="leg" id="start" aria-labelledby="start-h">
   <div class="leghead">
@@ -250,7 +299,8 @@ td.k { font-weight: 700; white-space: nowrap; }
   <h2 id="src-h">Where this comes from, and its limits</h2>
   <ul>
     <li><b>Drawings:</b> made from OpenStreetMap road shapes, lane counts and lane arrows (<code>turn:lanes</code>), read on 17 Nov 2026. Volunteers map the arrows, so check the road on the day.</li>
-    <li><b>Not mapped:</b> lane arrows at Colston Road and at the Springfield Road lights. Those cards say so.</li>
+    <li><b>Not mapped:</b> lane arrows at Colston Road, the Springfield Road lights, the Springburn dual carriageway lights and some return approaches. Those rows show <b>?</b> chips.</li>
+    <li><b>Return lanes:</b> from the same OpenStreetMap tags, read for the opposite direction. Exits marked "just past 12 o'clock" (Lowmoss, Peel Park and Eastside on the way back) can be signalled either way; follow your instructor.</li>
     <li><b>Aerial photos:</b> Esri World Imagery (Maxar, Earthstar Geographics), under "Aerial photo" on each card.</li>
     <li><b>Google Street View photos are not included.</b> Putting them in the page needs your own Google Maps Platform key (Map Tiles API) saved in this environment's settings. Or send phone screenshots of any junction and I'll add them with the lanes marked.</li>
     <li><b>Direction signs:</b> sign wording is not included.</li>
@@ -281,5 +331,19 @@ td.k { font-weight: 700; white-space: nowrap; }
   btn.addEventListener('click', close);
   lb.addEventListener('click', function (e) { if (e.target === lb) close(); });
   document.addEventListener('keydown', function (e) { if (e.key === 'Escape' && !lb.hidden) close(); });
+})();
+</script>
+
+<script>
+(function () {
+  var body = document.getElementById('flowbody'); if (!body) return;
+  var btns = document.querySelectorAll('.modes button');
+  function set(m) {
+    body.classList.remove('out', 'back'); if (m !== 'both') body.classList.add(m);
+    btns.forEach(function (b) { b.setAttribute('aria-pressed', b.getAttribute('data-mode') === m ? 'true' : 'false'); });
+    try { localStorage.setItem('flowMode', m); } catch (e) {}
+  }
+  btns.forEach(function (b) { b.addEventListener('click', function () { set(b.getAttribute('data-mode')); }); });
+  try { var m = localStorage.getItem('flowMode'); if (m) set(m); } catch (e) {}
 })();
 </script>
