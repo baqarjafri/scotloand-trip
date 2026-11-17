@@ -1,0 +1,469 @@
+<title>Bishopbriggs Test Route</title>
+<meta name="claude:viewport-fit-sides" content="cover">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Atkinson+Hyperlegible:wght@400;700&family=Barlow+Condensed:wght@600;700&family=JetBrains+Mono:wght@400;600&display=swap">
+<style>
+/* Layout: a pocket route book. One column of junction cards in driving order; each card = map, lane picture, do-this grid, evidence. */
+:root {
+  --bg: #f2f4f1;
+  --surface: #ffffff;
+  --fg: #16201a;
+  --muted: #56625b;
+  --rule: #d6ddd7;
+  --sign: #00703c;          /* UK primary-route sign green */
+  --sign-ink: #ffffff;
+  --route-no: #ffd200;      /* primary route number yellow */
+  --route: #174aa0;         /* the drawn route (matches the maps) */
+  --alt: #c44a10;           /* extension B on the maps */
+  --asphalt: #2c3034;
+  --paint: #ffffff;
+  --ok: #157f3b;
+  --ok-bg: #e3f3e8;
+  --check: #8a5a00;
+  --check-bg: #fdf1d6;
+  --stop: #b42318;
+  --font-display: "Barlow Condensed", "Arial Narrow", "Roboto Condensed", sans-serif;
+  --font-body: "Atkinson Hyperlegible", "Segoe UI", Roboto, Helvetica, Arial, sans-serif;
+  --font-data: "JetBrains Mono", ui-monospace, SFMono-Regular, Menlo, Consolas, monospace;
+}
+@media (prefers-color-scheme: dark) {
+  :root:not([data-theme="light"]) {
+    --bg: #0f1411; --surface: #171e1a; --fg: #e6ebe7; --muted: #9ba8a0; --rule: #2b362f;
+    --sign: #1c8f53; --sign-ink: #ffffff; --route-no: #ffd200; --route: #7ea6f0; --alt: #f08a4b;
+    --asphalt: #2c3034; --paint: #ffffff; --ok: #5fd08a; --ok-bg: #173323; --check: #f3c76b; --check-bg: #3a2e12; --stop: #ff8a7a;
+    color-scheme: dark;
+  }
+}
+:root[data-theme="dark"] {
+  --bg: #0f1411; --surface: #171e1a; --fg: #e6ebe7; --muted: #9ba8a0; --rule: #2b362f;
+  --sign: #1c8f53; --sign-ink: #ffffff; --route-no: #ffd200; --route: #7ea6f0; --alt: #f08a4b;
+  --asphalt: #2c3034; --paint: #ffffff; --ok: #5fd08a; --ok-bg: #173323; --check: #f3c76b; --check-bg: #3a2e12; --stop: #ff8a7a;
+  color-scheme: dark;
+}
+* { box-sizing: border-box; }
+body {
+  background: var(--bg); color: var(--fg);
+  font-family: var(--font-body); font-size: 16px; line-height: 1.55;
+  padding-left: max(16px, env(safe-area-inset-left, 0px));
+  padding-right: max(16px, env(safe-area-inset-right, 0px));
+  padding-block: 24px 64px;
+}
+.wrap { max-width: 860px; margin: 0 auto; display: grid; gap: 28px; }
+h1, h2, h3 { font-family: var(--font-display); font-weight: 700; line-height: 1.1; text-wrap: balance; margin: 0; letter-spacing: 0.01em; }
+h1 { font-size: clamp(2.2rem, 7vw, 3.4rem); }
+h2 { font-size: 1.75rem; }
+h3 { font-size: 1.3rem; }
+p { margin: 0; max-width: 65ch; }
+a { color: var(--route); }
+a:focus-visible, button:focus-visible { outline: 3px solid var(--route); outline-offset: 2px; }
+.eyebrow { font-family: var(--font-data); font-size: 0.78rem; letter-spacing: 0.06em; text-transform: uppercase; color: var(--muted); }
+.stack { display: grid; gap: 12px; }
+.muted { color: var(--muted); }
+
+/* road number badges, styled on UK sign conventions */
+.rn { display: inline-block; font-family: var(--font-display); font-weight: 700; font-size: 0.95em; padding: 0 0.35em; border-radius: 3px; line-height: 1.35; white-space: nowrap; }
+.rn.a { background: var(--sign); color: var(--route-no); }
+.rn.b { background: var(--paint); color: #111; border: 1.5px solid #111; }
+.mph { display: inline-grid; place-items: center; width: 2.1em; height: 2.1em; border-radius: 50%; border: 0.28em solid #d4211b; background: #fff; color: #111; font-family: var(--font-display); font-weight: 700; font-size: 0.95rem; line-height: 1; }
+
+header.top { display: grid; gap: 10px; }
+.sub { font-size: 1.05rem; color: var(--muted); }
+
+.confirm { background: var(--surface); border: 2px solid var(--route); border-radius: 10px; padding: 18px; display: grid; gap: 14px; }
+.confirm ol { margin: 0; padding-left: 1.3em; display: grid; gap: 6px; }
+.qs { display: grid; gap: 8px; margin: 0; padding-left: 1.3em; }
+.qs li::marker { font-weight: 700; color: var(--route); }
+
+figure { margin: 0; display: grid; gap: 6px; }
+figure img { width: 100%; height: auto; border-radius: 8px; border: 1px solid var(--rule); display: block; }
+figcaption { font-size: 0.85rem; color: var(--muted); }
+
+.tablebox { overflow-x: auto; border: 1px solid var(--rule); border-radius: 8px; background: var(--surface); }
+table { border-collapse: collapse; width: 100%; font-size: 0.95rem; }
+th, td { text-align: left; vertical-align: top; padding: 9px 11px; border-bottom: 1px solid var(--rule); }
+th { font-family: var(--font-data); font-weight: 600; font-size: 0.74rem; letter-spacing: 0.05em; text-transform: uppercase; color: var(--muted); white-space: nowrap; }
+tr:last-child td { border-bottom: 0; }
+td.k { font-weight: 700; white-space: nowrap; }
+
+.sig { font-weight: 700; white-space: nowrap; }
+.sig.l::before { content: "◀ "; }
+.sig.r::after { content: " ▶"; }
+.sig.n { color: var(--muted); font-weight: 400; }
+
+/* junction cards */
+.module { background: var(--surface); border: 1px solid var(--rule); border-radius: 12px; overflow: hidden; }
+.mhead { display: grid; grid-template-columns: auto 1fr auto; gap: 14px; align-items: center; padding: 16px 18px; background: var(--sign); color: var(--sign-ink); }
+.mnum { font-family: var(--font-display); font-weight: 700; font-size: 1.6rem; width: 2.2rem; height: 2.2rem; border-radius: 50%; background: var(--sign-ink); color: var(--sign); display: grid; place-items: center; }
+.mhead h3 { color: var(--sign-ink); }
+.mhead .meta { font-family: var(--font-data); font-size: 0.78rem; opacity: 0.9; }
+.mbody { padding: 18px; display: grid; gap: 18px; }
+.say { font-size: 1.12rem; font-weight: 700; border-left: 4px solid var(--route); padding: 2px 0 2px 12px; }
+.say .q { font-weight: 400; color: var(--muted); display: block; font-size: 0.85rem; }
+.twocol { display: grid; grid-template-columns: minmax(0, 1fr) minmax(0, 1fr); gap: 18px; align-items: start; }
+@media (max-width: 640px) { .twocol { grid-template-columns: minmax(0, 1fr); } }
+.lanes { display: grid; gap: 6px; justify-items: center; }
+.lanes svg { width: 100%; max-width: 260px; height: auto; display: block; }
+.lanes .cap { font-size: 0.82rem; color: var(--muted); text-align: center; }
+.dl { display: grid; grid-template-columns: max-content minmax(0, 1fr); gap: 8px 14px; margin: 0; }
+.dl dt { font-family: var(--font-data); font-size: 0.74rem; letter-spacing: 0.05em; text-transform: uppercase; color: var(--muted); padding-top: 3px; }
+.dl dd { margin: 0; }
+.trap { background: var(--check-bg); color: var(--fg); border-radius: 8px; padding: 12px 14px; display: block; }
+.trap .lbl { display: block; margin-bottom: 4px; color: var(--check); font-family: var(--font-data); font-weight: 600; font-size: 0.76rem; letter-spacing: 0.06em; text-transform: uppercase; }
+.evidence { display: grid; gap: 8px; border-top: 1px dashed var(--rule); padding-top: 14px; }
+.evidence code { font-family: var(--font-data); font-size: 0.8rem; background: var(--bg); padding: 1px 5px; border-radius: 4px; overflow-wrap: anywhere; }
+.chips { display: flex; flex-wrap: wrap; gap: 8px; align-items: center; }
+.chip { font-family: var(--font-data); font-size: 0.74rem; font-weight: 600; letter-spacing: 0.04em; padding: 3px 9px; border-radius: 999px; }
+.chip.ok { background: var(--ok-bg); color: var(--ok); }
+.chip.check { background: var(--check-bg); color: var(--check); }
+.sv { display: inline-flex; align-items: center; gap: 6px; font-weight: 700; text-decoration: none; border: 1.5px solid var(--route); color: var(--route); padding: 6px 12px; border-radius: 999px; font-size: 0.92rem; }
+.sv:hover { background: var(--route); color: var(--surface); }
+
+.fork { display: grid; grid-template-columns: minmax(0, 1fr) minmax(0, 1fr); gap: 14px; }
+@media (max-width: 640px) { .fork { grid-template-columns: minmax(0, 1fr); } }
+.branch { border: 1.5px solid var(--rule); border-radius: 10px; padding: 14px; display: grid; gap: 8px; background: var(--surface); }
+.branch.a { border-color: var(--route); }
+.branch.b { border-color: var(--alt); }
+.branch h3 .tag { font-family: var(--font-data); font-size: 0.8rem; padding: 1px 7px; border-radius: 4px; color: var(--surface); margin-right: 6px; vertical-align: 2px; }
+.branch.a .tag { background: var(--route); }
+.branch.b .tag { background: var(--alt); }
+.branch ul { margin: 0; padding-left: 1.1em; display: grid; gap: 4px; font-size: 0.95rem; }
+
+.sources { font-size: 0.9rem; color: var(--muted); display: grid; gap: 8px; }
+.sources ul { margin: 0; padding-left: 1.1em; display: grid; gap: 4px; }
+
+/* lane picture parts, colored from tokens */
+.l-asphalt { fill: var(--asphalt); }
+.l-paint { stroke: var(--paint); fill: none; }
+.l-arrow { stroke: var(--paint); fill: none; stroke-width: 5; stroke-linecap: round; stroke-linejoin: round; }
+.l-head { fill: var(--paint); }
+.l-on { fill: var(--route); opacity: 0.45; }
+.l-on-b { fill: var(--alt); opacity: 0.5; }
+.l-onc { fill: #000; opacity: 0.35; }
+.l-tagbg { fill: var(--route); }
+.l-tagbg-b { fill: var(--alt); }
+.l-tagtx { fill: #fff; font: 700 15px var(--font-data); }
+.l-txt { fill: var(--paint); font: 600 11px var(--font-data); opacity: 0.85; }
+@media (prefers-reduced-motion: no-preference) { .sv { transition: background 120ms, color 120ms; } }
+</style>
+
+<div class="wrap">
+
+<header class="top">
+  <div class="eyebrow">Bishopbriggs driving test centre · Crosshill Road <span class="rn b">B819</span> · G64 2QA</div>
+  <h1>Bishopbriggs Test Route</h1>
+  <p class="sub">Sample v0.1: the first 0.85 km, from the test centre gate to Cadder Roundabout on the <span class="rn a">A803</span>. Five junctions, each with lane, signal and Street View check. Confirm this, then I build both extensions out to 4 miles.</p>
+</header>
+
+<section class="confirm" aria-labelledby="confirm-h">
+  <h2 id="confirm-h">Is this your route?</h2>
+  <p>My reading of what you described, matched against the map:</p>
+  <ol>
+    <li>Leave the test centre and turn <b>left</b> onto Crosshill Road, heading west.</li>
+    <li>About 57 m later, at the small <b>Cole Road roundabout</b>, take the <b>first exit</b> (left). That keeps you on Crosshill Road.</li>
+    <li>Crosshill Road runs past <b>Strathkelvin Retail Park on your left</b> (Aldi, B&amp;Q, Home Bargains, Matalan, Currys, M&amp;S, Next). There are traffic lights at the car-park entrance, then <b>Lowmoss Roundabout</b>.</li>
+    <li>The road ends at <b>Cadder Roundabout</b> on the <span class="rn a">A803</span> Kirkintilloch Road, where it splits two ways. These are your two extensions: <b>A</b>, left/south towards Bishopbriggs, past <b>Asda (276 Kirkintilloch Rd, on your left)</b> and Morrisons; <b>B</b>, right/north towards Torrance Roundabout.</li>
+  </ol>
+  <p><b>Three things to confirm:</b></p>
+  <ol class="qs">
+    <li>The store you remember on the left of Crosshill Road is <b>Aldi</b>; there is no Asda on that road. Asda is on the A803 heading south, about 0.9 km after Cadder Roundabout, also on your left. Which long road do you mean: Crosshill Road, or the A803 south past Asda?</li>
+    <li>Are the "two extensions" left (A803 south) and right (A803 north) at Cadder Roundabout? If they are further on (for example where the A803 meets Auchinairn Road or Springburn), tell me where.</li>
+    <li>Is the format below right: one card per junction, with the lane picture, signal, lane and a Street View link?</li>
+  </ol>
+</section>
+
+<figure>
+  <img src="img/overview.png" alt="Map of the route: from the test centre exit (0) west along Crosshill Road through the Cole Road roundabout (1), retail-park traffic lights (2) and Lowmoss Roundabout (3) to Cadder Roundabout (4) on the A803, which forks into extension A south and extension B north." width="1400" height="904">
+  <figcaption>Solid line: the sample route. Dashed: the two extensions from Cadder Roundabout. Map © OpenStreetMap contributors.</figcaption>
+</figure>
+
+<section class="stack" aria-labelledby="rule-h">
+  <h2 id="rule-h">The signalling rule at every roundabout</h2>
+  <p class="muted">Highway Code rule 186. It applies unless the lane arrows or signs say otherwise, and on this route they sometimes do (Lowmoss, card 3).</p>
+  <div class="tablebox">
+    <table>
+      <thead><tr><th>Exit</th><th>Signal on approach</th><th>Lane on approach</th><th>On the roundabout</th><th>Signal to leave</th></tr></thead>
+      <tbody>
+        <tr><td class="k">First exit (left)</td><td><span class="sig l">Left</span></td><td>Left</td><td>Keep left</td><td>Keep the left signal on</td></tr>
+        <tr><td class="k">Ahead / middle exit</td><td><span class="sig n">None</span></td><td>As marked (normally left)</td><td>Stay in your lane</td><td><span class="sig l">Left</span> once you pass the exit before yours</td></tr>
+        <tr><td class="k">Right (past 12 o'clock)</td><td><span class="sig r">Right</span></td><td>Right</td><td>Keep right</td><td><span class="sig l">Left</span> once you pass the exit before yours</td></tr>
+        <tr><td class="k">Full circle / back</td><td><span class="sig r">Right</span></td><td>Right</td><td>Keep right</td><td><span class="sig l">Left</span> once you pass the exit before yours</td></tr>
+      </tbody>
+    </table>
+  </div>
+  <p class="muted">Every time: <b>M</b>irrors, <b>S</b>ignal, <b>P</b>osition, <b>S</b>peed, <b>L</b>ook. Give way to traffic coming from your right (rule 185). Check the left mirror before you leave the roundabout.</p>
+</section>
+
+<!-- ============ 0 ============ -->
+<article class="module" id="m0" aria-labelledby="m0-h">
+  <div class="mhead">
+    <div class="mnum" aria-hidden="true">0</div>
+    <div><h3 id="m0-h">Leave the test centre</h3><div class="meta">Gate → Crosshill Road · T-junction</div></div>
+    <span class="mph" title="Speed limit 40 mph">40</span>
+  </div>
+  <div class="mbody">
+    <p class="say"><span class="q">You'll hear something like</span>"Drive out of the centre and turn left."</p>
+    <div class="twocol">
+      <figure>
+        <img src="img/m01-cole-roundabout.png" alt="Close-up map: the test centre access road meets Crosshill Road (0); the route turns left, west, to the Cole Road roundabout (1) and takes its first exit south-west." width="1200" height="1072">
+        <figcaption>0 = where the centre's access road meets Crosshill Road. 1 = Cole Road roundabout, about 57 m west.</figcaption>
+      </figure>
+      <dl class="dl">
+        <dt>Mirrors</dt><dd>Interior and left mirror before moving off and before the turn.</dd>
+        <dt>Signal</dt><dd><span class="sig l">Left</span>, before the give-way line.</dd>
+        <dt>Position</dt><dd>Left side of the exit road; turn into the left-hand (westbound) lane.</dd>
+        <dt>Look</dt><dd>Right first, for traffic from the east (60 mph limit beyond the prison), then left, for traffic coming off the Cole Road roundabout.</dd>
+      </dl>
+    </div>
+    <div class="trap"><span class="lbl">Watch</span>The Cole Road roundabout is only about 57 m ahead. The indicator cancels as you straighten up, so check the left mirror and <b>signal left again straight away</b> for card 1.</div>
+    <div class="evidence">
+      <div class="chips"><span class="chip check">Check: gate layout</span><a class="sv" href="https://www.google.com/maps/@?api=1&amp;map_action=pano&amp;viewpoint=55.924472,-4.199620&amp;heading=262&amp;pitch=0&amp;fov=90" target="_blank" rel="noopener">Street View at the gate ↗</a></div>
+      <p class="muted">Crosshill Road here: <code>way 24910594</code>, <code>B819</code>, <code>maxspeed=40 mph</code>. The centre itself is not labelled on OpenStreetMap. I placed it at the site with a one-way vehicle loop on the south side of Crosshill Road, matching DVSA's move of car tests to the Bishopbriggs goods-vehicle testing station. Confirm this is the gate you use.</p>
+    </div>
+  </div>
+</article>
+
+<!-- ============ 1 ============ -->
+<article class="module" id="m1" aria-labelledby="m1-h">
+  <div class="mhead">
+    <div class="mnum" aria-hidden="true">1</div>
+    <div><h3 id="m1-h">Cole Road roundabout</h3><div class="meta">57 m from gate · 3 arms · no lane markings</div></div>
+    <span class="mph" title="Speed limit 40 mph">40</span>
+  </div>
+  <div class="mbody">
+    <p class="say"><span class="q">You'll hear something like</span>"At the roundabout, take the first exit."</p>
+    <div class="twocol">
+      <div class="lanes">
+        <svg data-lanes='[[]]' data-use='{"0":"YOU"}' data-oncoming="1" viewBox="0 0 200 190" role="img" aria-label="One approach lane, no lane arrows, oncoming lane to the right. Use your normal left-hand lane."></svg>
+        <div class="cap">Approach from the gate: one lane each way, no arrows</div>
+      </div>
+      <dl class="dl">
+        <dt>Mirrors</dt><dd>Interior, then left.</dd>
+        <dt>Signal</dt><dd><span class="sig l">Left</span> on approach, kept on through the exit.</dd>
+        <dt>Position</dt><dd>Normal left-hand position.</dd>
+        <dt>Speed</dt><dd>Slow right down; give way to traffic already on the roundabout, coming from your right.</dd>
+        <dt>On it</dt><dd>Keep left; leave at the first exit onto Crosshill Road, south-west.</dd>
+      </dl>
+    </div>
+    <div class="trap"><span class="lbl">Watch</span>The first exit bends only about 20° left, so it looks like straight on. It is still the first exit, so <b>signal left</b>. The second exit, Cole Road, goes north on a 60 mph road.</div>
+    <div class="tablebox">
+      <table>
+        <thead><tr><th>If told</th><th>Exit</th><th>Signal on approach</th><th>Position</th><th>Signal to leave</th></tr></thead>
+        <tbody>
+          <tr><td class="k">First exit</td><td>Crosshill Rd SW (this route)</td><td><span class="sig l">Left</span></td><td>Left</td><td>Keep left on</td></tr>
+          <tr><td class="k">Second exit</td><td>Cole Road, north (right)</td><td><span class="sig r">Right</span></td><td>Towards the centre line</td><td><span class="sig l">Left</span> after passing Crosshill SW</td></tr>
+        </tbody>
+      </table>
+    </div>
+    <div class="evidence">
+      <div class="chips"><span class="chip ok">Mapped: layout and exit order</span><a class="sv" href="https://www.google.com/maps/@?api=1&amp;map_action=pano&amp;viewpoint=55.924483,-4.199844&amp;heading=261&amp;pitch=0&amp;fov=90" target="_blank" rel="noopener">Street View on approach ↗</a></div>
+      <p class="muted">Roundabout <code>way 24910637</code>: <code>junction=roundabout</code>, <code>lanes=2</code>, <code>lane_markings=no</code>, <code>maxspeed=40 mph</code>. Arms measured clockwise from the centre: entry 83°, Crosshill Rd SW 217° (1st), Cole Rd 359° (2nd). Cole Road <code>way 8368975</code>: <code>maxspeed=60 mph</code> (national limit).</p>
+    </div>
+  </div>
+</article>
+
+<!-- ============ 2 ============ -->
+<article class="module" id="m2" aria-labelledby="m2-h">
+  <div class="mhead">
+    <div class="mnum" aria-hidden="true">2</div>
+    <div><h3 id="m2-h">Retail park traffic lights</h3><div class="meta">≈270 m after card 1 · signal-controlled T-junction</div></div>
+    <span class="mph" title="Speed limit 40 mph">40</span>
+  </div>
+  <div class="mbody">
+    <p class="say"><span class="q">You'll hear something like</span>"Follow the road ahead." (Nothing said means straight on.)</p>
+    <div class="twocol">
+      <figure>
+        <img src="img/m02-retail-park-lights.png" alt="Close-up map of Crosshill Road with traffic signals at the Strathkelvin Retail Park car-park entrance on the south side; the route continues straight on westwards." width="1100" height="1100">
+        <figcaption>Car-park entrance (Aldi side) on your left, controlled by lights.</figcaption>
+      </figure>
+      <dl class="dl">
+        <dt>Lane</dt><dd>One lane westbound. Stay in it.</dd>
+        <dt>Signal</dt><dd><span class="sig n">None</span> for straight on. <span class="sig l">Left</span> only if told to turn into the retail park.</dd>
+        <dt>Lights</dt><dd>Red: stop at the line. Amber: stop unless stopping is unsafe. Green: go if the way is clear.</dd>
+        <dt>Look</dt><dd>Cars nosing out of the car park, pedestrians crossing at the lights, and queues ahead from Lowmoss Roundabout.</dd>
+      </dl>
+    </div>
+    <div class="trap"><span class="lbl">Return leg</span>Coming back east, this road has two lanes: left = ahead, right = right turn into the retail park. Stay in the <b>left</b> lane to head back to the centre.</div>
+    <div class="evidence">
+      <div class="chips"><span class="chip ok">Mapped: lights and lanes</span><a class="sv" href="https://www.google.com/maps/@?api=1&amp;map_action=pano&amp;viewpoint=55.923455,-4.203695&amp;heading=238&amp;pitch=0&amp;fov=90" target="_blank" rel="noopener">Street View on approach ↗</a></div>
+      <p class="muted"><code>way 1427552262</code>: <code>lanes=3</code>, <code>lanes:forward=1</code> (westbound, your way), <code>lanes:backward=2</code>, <code>turn:lanes:backward=through|right</code>. Traffic-signal symbols at both approaches on the OpenStreetMap render.</p>
+    </div>
+  </div>
+</article>
+
+<!-- ============ 3 ============ -->
+<article class="module" id="m3" aria-labelledby="m3-h">
+  <div class="mhead">
+    <div class="mnum" aria-hidden="true">3</div>
+    <div><h3 id="m3-h">Lowmoss Roundabout</h3><div class="meta">≈300 m after card 2 · 4 arms · 2 marked lanes</div></div>
+    <span class="mph" title="Speed limit 40 mph">40</span>
+  </div>
+  <div class="mbody">
+    <p class="say"><span class="q">You'll hear something like</span>"At the roundabout, follow the road ahead. That's the second exit."</p>
+    <div class="twocol">
+      <div class="lanes">
+        <svg data-lanes='[["left"],["through","right"]]' data-use='{"1":"YOU"}' viewBox="0 0 200 190" role="img" aria-label="Two approach lanes. Left lane: left turn only. Right lane: ahead or right. Use the right lane for ahead."></svg>
+        <div class="cap">Left lane: left only (retail park). Right lane: ahead or right.</div>
+      </div>
+      <dl class="dl">
+        <dt>Mirrors</dt><dd>Interior, then right before you settle in the right lane.</dd>
+        <dt>Position</dt><dd><b>Right lane.</b> The left lane only goes into the retail park.</dd>
+        <dt>Signal</dt><dd><span class="sig n">None</span> on approach.</dd>
+        <dt>On it</dt><dd>Stay in your lane. After you pass the 1st exit (retail park), check the left mirror and <span class="sig l">signal left</span>.</dd>
+        <dt>Leave</dt><dd>Second exit, Crosshill Road towards Cadder Roundabout.</dd>
+      </dl>
+    </div>
+    <figure>
+      <img src="img/m03-lowmoss-roundabout.png" alt="Close-up map of Lowmoss Roundabout: the route arrives from the north-east, goes round the south side and leaves south-west on Crosshill Road. The first exit goes into the retail-park car park, the third exit goes to the Burger King and the Cadder mining memorial." width="1200" height="800">
+      <figcaption>1st exit: retail-park car park. 2nd exit: Crosshill Road to Cadder (this route). 3rd exit: Burger King drive-through and the Cadder mining memorial.</figcaption>
+    </figure>
+    <div class="trap"><span class="lbl">Common trap</span>Most people sit in the left lane by habit. Here the left lane is marked <b>left only</b>, so from it you can only turn into the car park. For straight on, use the <b>right lane</b>.</div>
+    <div class="tablebox">
+      <table>
+        <thead><tr><th>If told</th><th>Exit</th><th>Lane</th><th>Signal on approach</th><th>Signal to leave</th></tr></thead>
+        <tbody>
+          <tr><td class="k">First exit</td><td>Retail-park car park</td><td>Left</td><td><span class="sig l">Left</span></td><td>Keep left on</td></tr>
+          <tr><td class="k">Ahead (2nd)</td><td>Crosshill Rd to Cadder (this route)</td><td>Right</td><td><span class="sig n">None</span></td><td><span class="sig l">Left</span> after the car-park exit</td></tr>
+          <tr><td class="k">Right (3rd)</td><td>Burger King / memorial access</td><td>Right</td><td><span class="sig r">Right</span></td><td><span class="sig l">Left</span> after the Crosshill SW exit</td></tr>
+        </tbody>
+      </table>
+    </div>
+    <div class="evidence">
+      <div class="chips"><span class="chip ok">Mapped: lane arrows</span><span class="chip check">Confirm the arrows on Street View</span><a class="sv" href="https://www.google.com/maps/@?api=1&amp;map_action=pano&amp;viewpoint=55.922302,-4.207978&amp;heading=215&amp;pitch=0&amp;fov=90" target="_blank" rel="noopener">Street View on approach ↗</a></div>
+      <p class="muted">Approach <code>way 1222830046</code>: <code>oneway=yes</code>, <code>lanes=2</code>, <code>turn:lanes=left|through;right</code> (lanes listed left to right). Roundabout <code>ways 1222830039, 247132528</code>: <code>lanes=2</code>, <code>maxspeed=40 mph</code>. Arms measured clockwise: entry 58°, car park (SE), Crosshill SW ≈221–235°, access road 289°.</p>
+    </div>
+  </div>
+</article>
+
+<!-- ============ 4 ============ -->
+<article class="module" id="m4" aria-labelledby="m4-h">
+  <div class="mhead">
+    <div class="mnum" aria-hidden="true">4</div>
+    <div><h3 id="m4-h">Cadder Roundabout · <span class="rn a">A803</span></h3><div class="meta">≈175 m after card 3 · end of Crosshill Road · the fork</div></div>
+    <span class="mph" title="Speed limit 40 mph">40</span>
+  </div>
+  <div class="mbody">
+    <p class="say"><span class="q">The road opens into two lanes at the splitter island, just before the give-way line. Be positioned before it opens.</span>A = first exit, left lane. B = second exit, right lane.</p>
+    <div class="twocol">
+      <div class="lanes">
+        <svg data-lanes='[["through"],["right"]]' data-use='{"0":"A","1":"B"}' viewBox="0 0 200 190" role="img" aria-label="Two approach lanes. Left lane, ahead arrow: A803 south, extension A. Right lane, right arrow: A803 north, extension B."></svg>
+        <div class="cap">Left lane (ahead arrow) = A. Right lane (right arrow) = B.</div>
+      </div>
+      <figure>
+        <img src="img/m04-cadder-roundabout.png" alt="Close-up map of Cadder Roundabout: the route arrives from Crosshill Road in the east. Extension A leaves at the first exit, south-west onto Kirkintilloch Road A803 south. Extension B goes round the west side to the second exit, A803 north." width="1200" height="800">
+        <figcaption>Blue dashed: A, 1st exit, A803 south. Orange dashed: B, 2nd exit, A803 north.</figcaption>
+      </figure>
+    </div>
+    <div class="tablebox">
+      <table>
+        <thead><tr><th>If told</th><th>Exit</th><th>Lane</th><th>Signal on approach</th><th>On it</th><th>Signal to leave</th></tr></thead>
+        <tbody>
+          <tr><td class="k">"First exit" (A)</td><td><span class="rn a">A803</span> south, Bishopbriggs</td><td>Left (ahead arrow)</td><td><span class="sig l">Left</span></td><td>Keep left</td><td>Keep left on</td></tr>
+          <tr><td class="k">"Second exit, that's right" (B)</td><td><span class="rn a">A803</span> north, Torrance</td><td>Right</td><td><span class="sig r">Right</span></td><td>Keep right</td><td><span class="sig l">Left</span> after passing the A803 south exit</td></tr>
+          <tr><td class="k">Full circle</td><td>Back to Crosshill Rd</td><td>Right</td><td><span class="sig r">Right</span></td><td>Keep right</td><td><span class="sig l">Left</span> after passing A803 north</td></tr>
+        </tbody>
+      </table>
+    </div>
+    <div class="trap"><span class="lbl">Watch</span>Both exits are a single lane. For B, check your left mirror and blind spot before you move left to exit, because a car may be alongside you on the roundabout. The left-lane arrow points ahead, but it is still the first exit, so signal left (rule 186).</div>
+    <div class="evidence">
+      <div class="chips"><span class="chip ok">Mapped: lane arrows and exits</span><span class="chip check">Confirm the arrows on Street View</span><a class="sv" href="https://www.google.com/maps/@?api=1&amp;map_action=pano&amp;viewpoint=55.921281,-4.209868&amp;heading=235&amp;pitch=0&amp;fov=90" target="_blank" rel="noopener">Street View on approach ↗</a></div>
+      <p class="muted">Approach <code>way 1221577804</code>: <code>oneway=yes</code>, <code>lanes=2</code>, <code>turn:lanes=through|right</code>. Roundabout <code>way 32397</code> (Cadder Roundabout, <code>A803</code>, 40 mph). Exits: A803 south <code>way 1221577807</code> and A803 north <code>way 1221577806</code>, both <code>lanes=1</code>. Arms clockwise: entry 107°, A803 S exit 199° (1st), A803 N exit 338° (2nd).</p>
+    </div>
+  </div>
+</article>
+
+<section class="stack" aria-labelledby="next-h">
+  <h2 id="next-h">Built next, once you confirm</h2>
+  <p class="muted">Each extension runs to about 4 miles and uses the same card format: every roundabout, set of lights and lane change.</p>
+  <div class="fork">
+    <div class="branch a">
+      <h3><span class="tag">A</span><span class="rn a">A803</span> south</h3>
+      <ul>
+        <li>Southbound widens to two lanes about 150 m after Cadder (mapped <code>lanes:backward=2</code>).</li>
+        <li>Asda, 276 Kirkintilloch Road, on your left, about 0.9 km from Cadder. Lane arrows are mapped on this stretch.</li>
+        <li>Morrisons (Springfield Road), on your left, about 1.9 km. The limit drops to 30 mph around here.</li>
+        <li>On through Bishopbriggs towards Auchinairn.</li>
+      </ul>
+      <a class="sv" href="https://www.google.com/maps/@?api=1&amp;map_action=pano&amp;viewpoint=55.919994,-4.212039&amp;heading=210&amp;pitch=0&amp;fov=90" target="_blank" rel="noopener">Street View heading south ↗</a>
+    </div>
+    <div class="branch b">
+      <h3><span class="tag">B</span><span class="rn a">A803</span> north</h3>
+      <ul>
+        <li>Torrance Roundabout, about 0.9 km. Mapped as a two-lane roundabout.</li>
+        <li>There the <span class="rn a">A803</span> turns east towards Kirkintilloch, and another road heads north to Kelvinbridge Roundabout (about 1 km). Tell me which way your route goes.</li>
+      </ul>
+      <a class="sv" href="https://www.google.com/maps/@?api=1&amp;map_action=pano&amp;viewpoint=55.921838,-4.210196&amp;heading=29&amp;pitch=0&amp;fov=90" target="_blank" rel="noopener">Street View heading north ↗</a>
+    </div>
+  </div>
+</section>
+
+<section class="sources" aria-labelledby="src-h">
+  <h2 id="src-h" style="color: var(--fg)">Where the data comes from</h2>
+  <ul>
+    <li><b>Lanes, exits, speed limits:</b> OpenStreetMap tags (way IDs on each card), read through the Nominatim service on 17 Nov 2026. Lane arrows (<code>turn:lanes</code>) are mapped by volunteers from aerial and street imagery, so each card has a Street View link to check them.</li>
+    <li><b>Exit order:</b> worked out from the roundabout geometry, measuring each arm's bearing from the centre and counting clockwise.</li>
+    <li><b>Maps:</b> © OpenStreetMap contributors, with the route drawn on top.</li>
+    <li><b>Signals:</b> <a href="https://www.gov.uk/guidance/the-highway-code/using-the-road-159-to-203" target="_blank" rel="noopener">The Highway Code, rules 184–190</a> (roundabouts) and the traffic-light rules.</li>
+    <li><b>Not used:</b> I could not open Google Street View images or YouTube videos from my side. The Street View links are for you to check. If you send phone screenshots of each approach, I'll read the arrows and signs and mark each card as verified.</li>
+    <li>Routes change and roadworks happen. The Westerhill Development Road, due by the end of 2027, will add roundabouts near Crosshill Road. On the day, the road markings and the examiner's instruction come first.</li>
+  </ul>
+</section>
+
+</div>
+
+<script>
+(function () {
+  var NS = "http://www.w3.org/2000/svg";
+  function el(name, attrs, parent) {
+    var e = document.createElementNS(NS, name);
+    for (var k in attrs) e.setAttribute(k, attrs[k]);
+    if (parent) parent.appendChild(e);
+    return e;
+  }
+  function arrows(g, cx, turns) {
+    if (!turns.length) return;
+    var stemTop = turns.indexOf("through") >= 0 ? 52 : 84;
+    el("path", { d: "M" + cx + " 160 L" + cx + " " + stemTop, "class": "l-arrow" }, g);
+    if (turns.indexOf("through") >= 0) el("polygon", { points: cx + ",34 " + (cx - 11) + ",56 " + (cx + 11) + ",56", "class": "l-head" }, g);
+    if (turns.indexOf("left") >= 0) {
+      el("path", { d: "M" + cx + " 96 Q" + cx + " 74 " + (cx - 14) + " 74", "class": "l-arrow" }, g);
+      el("polygon", { points: (cx - 28) + ",74 " + (cx - 13) + ",63 " + (cx - 13) + ",85", "class": "l-head" }, g);
+    }
+    if (turns.indexOf("right") >= 0) {
+      el("path", { d: "M" + cx + " 96 Q" + cx + " 74 " + (cx + 14) + " 74", "class": "l-arrow" }, g);
+      el("polygon", { points: (cx + 28) + ",74 " + (cx + 13) + ",63 " + (cx + 13) + ",85", "class": "l-head" }, g);
+    }
+  }
+  document.querySelectorAll("svg[data-lanes]").forEach(function (svg) {
+    var lanes, use, onc;
+    try { lanes = JSON.parse(svg.getAttribute("data-lanes")); use = JSON.parse(svg.getAttribute("data-use") || "{}"); } catch (e) { return; }
+    onc = svg.getAttribute("data-oncoming") === "1";
+    var n = lanes.length + (onc ? 1 : 0), LW = 60, x0 = (200 - n * LW) / 2, top = 26, h = 150;
+    el("rect", { x: x0 - 6, y: top, width: n * LW + 12, height: h, rx: 4, "class": "l-asphalt" }, svg);
+    lanes.forEach(function (turns, i) {
+      var lx = x0 + i * LW, tag = use[String(i)];
+      if (tag) el("rect", { x: lx + 3, y: top + 14, width: LW - 6, height: h - 14, rx: 3, "class": tag === "B" ? "l-on-b" : "l-on" }, svg);
+      arrows(svg, lx + LW / 2, turns);
+      if (!turns.length) { var t = el("text", { x: lx + LW / 2, y: top + 92, "text-anchor": "middle", "class": "l-txt" }, svg); t.textContent = "no arrows"; }
+      if (tag) {
+        var tw = tag.length * 10 + 14;
+        el("rect", { x: lx + LW / 2 - tw / 2, y: 2, width: tw, height: 20, rx: 10, "class": tag === "B" ? "l-tagbg-b" : "l-tagbg" }, svg);
+        var tt = el("text", { x: lx + LW / 2, y: 17, "text-anchor": "middle", "class": "l-tagtx" }, svg); tt.textContent = tag;
+      }
+    });
+    if (onc) {
+      var ox = x0 + lanes.length * LW;
+      el("rect", { x: ox, y: top, width: LW + 6, height: h, "class": "l-onc" }, svg);
+      var ot = el("text", { x: ox + LW / 2, y: top + 92, "text-anchor": "middle", "class": "l-txt" }, svg); ot.textContent = "oncoming";
+    }
+    /* give-way line: double broken white line across your side */
+    var gw = x0 + lanes.length * LW;
+    el("line", { x1: x0, y1: top + 6, x2: gw, y2: top + 6, "stroke-dasharray": "8 6", "stroke-width": 3, "class": "l-paint" }, svg);
+    el("line", { x1: x0, y1: top + 12, x2: gw, y2: top + 12, "stroke-dasharray": "8 6", "stroke-width": 3, "class": "l-paint" }, svg);
+    for (var i = 1; i < lanes.length; i++) el("line", { x1: x0 + i * LW, y1: top + 18, x2: x0 + i * LW, y2: top + h, "stroke-dasharray": "14 10", "stroke-width": 3, "class": "l-paint" }, svg);
+    if (onc) el("line", { x1: gw, y1: top + 18, x2: gw, y2: top + h, "stroke-dasharray": "22 8", "stroke-width": 3, "class": "l-paint" }, svg);
+    el("line", { x1: x0, y1: top, x2: x0, y2: top + h, "stroke-width": 3, "class": "l-paint" }, svg);
+    if (!onc) el("line", { x1: x0 + n * LW, y1: top, x2: x0 + n * LW, y2: top + h, "stroke-width": 3, "class": "l-paint" }, svg);
+  });
+})();
+</script>
