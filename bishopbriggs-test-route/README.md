@@ -1,30 +1,36 @@
 # Bishopbriggs Test Route
 
 Study guide for the Bishopbriggs driving test centre (Crosshill Road, B819, G64 2QA).
-One card ("module") per junction, in driving order. Each card gives the lane, the signal on approach,
-what to do on the roundabout, the signal to leave, the common mistake, the data source and a Street View link.
+Open `index.html`. Each junction is one picture (`img/`): an aerial photo with the route lane,
+lane arrows, other choices, traffic lights and signal points drawn on, plus the instruction and options.
 
-Open `index.html` in a browser.
+## Cards
 
-## Status
-
-| Card | Junction | Status |
+| Card | Junction | From Cadder |
 |---|---|---|
-| 0 | Test centre gate → Crosshill Road (turn left) | Sample, gate position to confirm |
-| 1 | Cole Road roundabout (1st exit) | Sample |
-| 2 | Retail park traffic lights (straight on) | Sample |
-| 3 | Lowmoss Roundabout (ahead = right lane) | Sample, check arrows on Street View |
-| 4 | Cadder Roundabout, A803 (fork: A = 1st exit south, B = 2nd exit north) | Sample, check arrows on Street View |
-| A | A803 south past Asda and Morrisons, to ~4 miles | Waiting for route confirmation |
-| B | A803 north via Torrance Roundabout, to ~4 miles | Waiting for route confirmation |
+| 0·1 | Gate → Cole Road roundabout (1st exit) | start |
+| 2 | Retail park lights (straight on) | start |
+| 3 | Lowmoss Roundabout (ahead = right lane) | start |
+| 4 | Cadder Roundabout, A803 (A = 1st exit south, B = 2nd exit north) | 0 |
+| A1 | Side road by Shell Lowmoss | 70 m |
+| A2 | Westerhill Road lights (ahead = right lane) | 310 m |
+| A3 | Meadowburn | 610 m |
+| A4 | Asda + Hilton Road lights | 0.9–1.0 km |
+| A5 | South Crosshill Road lights (30 mph) | 1.8 km |
+| A6 | Bishopbriggs Cross (ahead = middle lane) | 2.1 km |
+| A7 | Colston Road crossroads | 3.1 km |
+| B1 | Torrance Roundabout (ahead = right lane) | 0.9 km |
+| B2 | Peel Park Roundabout, Kirkintilloch (1st exit) | 3.9 km |
+| B3 | New Lairdsland Road lights | 4.2 km |
+| B4 | Milton Road lights | 4.5 km |
 
 ## Data and method
 
-- Lanes, lane arrows (`turn:lanes`), exits and speed limits: OpenStreetMap tags, read through Nominatim
-  (17 Nov 2026). Way IDs are printed on each card.
+- Photos: Esri World Imagery (Maxar, Earthstar Geographics).
+- Lanes (`turn:lanes`), exits, speed limits, geometry: OpenStreetMap via Nominatim, 17 Nov 2026.
 - Exit order: bearing of each arm from the roundabout centre, counted clockwise.
 - Signalling: Highway Code rules 184–190.
-- Maps in `img/`: © OpenStreetMap contributors, with the route drawn on top.
-- `data/route-geometry.json`: the drawn route line and junction centres (lon, lat).
+- `data/route-geometry.json` (start leg) and `data/extensions.json` (A and B centrelines, distances).
 
-OpenStreetMap lane arrows are volunteer-mapped. Check each card against the Street View link before relying on it.
+Lane arrows are volunteer-mapped and too small to verify in the photos. Check them with the Street View links.
+Direction-sign wording is not included.
